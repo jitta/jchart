@@ -1,6 +1,6 @@
-# JChart: canvas charts for Jitta
+# JChart : canvas charts for Jitta
 
-## Version 0.0.1
+## Version 0.0.2
 
 ### This module could be run both frontend and backend!
 
@@ -12,8 +12,7 @@ npm install
 
 ### Development and Production
 ```
-- gulp build
-- gulp uglify
+- gulp dist
 ```
 
 ### Preview (frontend)

@@ -8,18 +8,14 @@ var gulp = require('gulp'),
     header = ";(function() {",
     footer = "}.call(this));";
 
-gulp.task('build', function() {
+gulp.task('dist', function() {
   gulp.src(['./src/helper.coffee','./src/lodash.custom.js','./src/jchart.coffee'])
       .pipe(gulpif(/[.]coffee$/, coffee({bare: true})))
       .pipe(concat('jchart.js'))
       .pipe(concat.header(header))
       .pipe(concat.footer(footer))
       .pipe(gulp.dest('./dist/'))
-})
-
-gulp.task('uglify', function() {
-  gulp.src(['./dist/jchart.js'])
-      .pipe(uglify())
       .pipe(rename('jchart.min.js'))
+      .pipe(uglify())
       .pipe(gulp.dest('./dist/'))
 })

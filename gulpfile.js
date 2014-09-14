@@ -19,3 +19,7 @@ gulp.task('dist', function() {
       .pipe(uglify())
       .pipe(gulp.dest('./dist/'))
 })
+
+gulp.task('watch', function() {
+  gulp.watch('./src/*', ['dist'])
+})

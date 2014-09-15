@@ -1,7 +1,7 @@
 {
   "name": "jchart",
-  "version": "0.0.1",
-  "description": "Canvas graph lib for Jitta.com",
+  "version": "0.0.4",
+  "description": "Light-weight Javscript chart render on Server/Client by canvas",
   "dependencies": {
     "gulp": "^3.8.8",
     "gulp-coffee": "^2.2.0",
@@ -17,6 +17,5 @@
   "keywords": [
     "jchart"
   ],
-  "author": "Jitta",
-  "license": "ISC"
+  "author": "Jitta"
 }

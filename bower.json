@@ -1,0 +1,22 @@
+{
+  "name": "jchart",
+  "version": "0.0.4",
+  "homepage": "https://github.com/jitta/jchart",
+  "authors": [
+    "Jitta"
+  ],
+  "description": "Light-weight Javscript chart render on Server/Client by canvas.",
+  "main": "dist/jchart.js",
+  "keywords": [
+    "jchart"
+  ],
+  "ignore": [
+    ".gitignore",
+    "gulpfile.js",
+    "package.json",
+    "node_modules",
+    "bower_components",
+    "src",
+    "temp"
+  ]
+}

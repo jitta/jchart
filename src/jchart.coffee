@@ -1,22 +1,3 @@
-#canvas = require 'canvas'
-#_ = require 'lodash'
-
-###
-  data[name] = 
-    name: 
-    type: 'line' or 'column'
-    style: 
-      line: 'dashed' or 'solid'
-      lineWidth: 2
-      columnWidth: 'auto'
-      color: 'rgba(0,0,0,0.5)' or '#000'
-    data: []
-    caption: true
-    legend: true
-
-  chart = new Jchart data, options
-  chart.writeFile ''
-###
 
 class Jchart
   canvas: null
@@ -97,7 +78,6 @@ class Jchart
         breaks: 5
     , @options
 
-
     # canvas things
     #@canvas = new canvas @options.chart.width, @options.chart.height
     @ctx = @canvas.getContext '2d'
@@ -108,7 +88,6 @@ class Jchart
 
     @drawGraph()
     @process_legend() if @options.legend.enable
-
 
   preprocess_data: ->
     if @options.yAxis.min?
@@ -128,13 +107,11 @@ class Jchart
       @max_data = max + pad if !@options.yAxis.max?
       @min_data = min if !@options.yAxis.min?
 
-
     # auto calculate margin left from max text length
     if @options.graph.marginLeft is 'auto' # ~40
       max_text = @auto_format @max_data
       digit = max_text.length
       @options.graph.marginLeft = 10 + digit*8 + @options.yAxis.tick.size
-
 
     # assign variables
     @graph_width = @options.chart.width - @options.chart.paddingLeft - @options.chart.paddingRight
@@ -158,7 +135,6 @@ class Jchart
             y: @pt + @inner_height - (value-@min_data) / @interval * @inner_height + @options.graph.marginTop
         else
           item.plot.push null
-
 
   preprocess_style: ->
     @ctx.font = @font_format(@options.chart.font)
@@ -186,13 +162,11 @@ class Jchart
 
     # @ctx.drawImage(c , @options.chart.paddingLeft, @options.chart.paddingTop, @graph_width, @graph_height)
 
-
   addLine: (data) ->
     switch data.type
       when 'line'   then @draw_line_graph data
       when 'column' then @draw_column_graph data
       
-
   draw_column_graph: (data) ->
     barWidth = @inner_width / _.size(data.data)
     columnWidth = barWidth / 2
@@ -246,7 +220,6 @@ class Jchart
     @ctx.stroke()
     @ctx.closePath()
 
-
   addFlag: (index, text) ->
     width = @graph_width - (@options.graph.marginLeft + @options.graph.marginRight)
     barWidth = width / _.size @data[0].data
@@ -281,7 +254,6 @@ class Jchart
       @ctx.textBaseline = 'bottom'
       @ctx.textAlign = 'center'
       @multiLine @ctx, text, x - 3*barWidth , @data[0].plot[index].y + overlap
-
 
   addLabel: (text, option) ->
     option = {} unless option?
@@ -319,27 +291,7 @@ class Jchart
       when 'bottom' then y = option.y + option.height
     @ctx.fillText text, x, y
 
-
   shade: () ->
-    # for i in [0...@data[0].plot.length]
-    #   if @data[0].plot[i]? and @data[0].plot[i+1]? and @data[1].plot[i]? and @data[1].plot[i+1]?
-    #     # price - jitta_line
-    #     above = @data[0].plot[i].y - @data[1].plot[i].y
-    #     if above < 0
-    #       @ctx.fillStyle = '#fd726d'
-    #     else
-    #       @ctx.fillStyle = '#00bd9c'
-
-    #     @ctx.beginPath()
-    #     @ctx.moveTo @data[0].plot[i].x, @data[0].plot[i].y
-    #     @ctx.lineTo @data[1].plot[i].x, @data[1].plot[i].y
-    #     @ctx.lineTo @data[1].plot[i+1].x, @data[1].plot[i+1].y
-    #     @ctx.lineTo @data[0].plot[i+1].x, @data[0].plot[i+1].y
-    #     @ctx.closePath()
-    #     @ctx.fill()
-
-    # 0 -> price
-    # 1 -> jitta line
     before_above = null
     above_color = 'rgba(253, 115, 109, 0.4)' # '#fd726d'
     below_color = 'rgba(0, 183, 151, 0.4)'  # '#00bd9c'
@@ -393,15 +345,11 @@ class Jchart
 
         before_above = above
 
-
-
-
   multiLine: (ctx, text, x, y) ->
     texts = text.split '\n'
     lineHeight = @options.chart.font.size.replace 'px', ''
     for t in texts
       ctx.fillText t, x, y + _i*lineHeight
-
 
   horizontal_line: () ->
     interval = @max_data - @min_data
@@ -504,8 +452,6 @@ class Jchart
 
     @ctx.closePath()
 
-
-
   process_legend: () ->
     legend_width = 150
     text_height = parseInt(@options.legend.font.size.replace('px',''))*2
@@ -531,7 +477,6 @@ class Jchart
         @ctx.lineTo x + legend_width/2.5 , y + text_height
         @ctx.stroke()
   
-
   httpOut: (resp) ->
     resp.contentType 'image/png'
     stream = @canvas.createPNGStream()

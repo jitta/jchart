@@ -1,19 +1,31 @@
-# JChart : canvas charts for Jitta
+# JChart : Light-weight Javscript chart render on Server/Client by canvas.
 
-## Version 0.0.2
+## Version 0.0.4
 
-### This module could be run both frontend and backend!
-
-## Installation
+## Development
 ```
 nvm use 0.10
 npm install
+gulp watch
 ```
 
-### Development and Production
+### Production
 ```
-- gulp dist
+gulp dist
+```
+
+### Bower install
+```
+bower install jchart
 ```
 
 ### Preview (frontend)
 - Open docs/index.html in browser.
+
+### node.js usage
+```javascript
+var Jchart = require('jchart');
+var canvas = require('canvas');
+canvas = new canvas(width, height);
+new Jchart(canvas, data, options);
+```

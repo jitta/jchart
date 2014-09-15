@@ -16,8 +16,7 @@
   new Jchart(line_canvas, line_data.data, line_options);
 
 
-
-  var score_data = {"data":[{"name":"Jitta Score 2009 - Present","type":"column","style":{"columnWidth":"auto","color":"#47C6F1"},"data":[6.13,6.25,5.25,6.17,7.6,7.83],"caption":true},{"type":"column","style":{"columnWidth":"auto","color":"#09C"},"data":[null,null,null,null,null,7.83],"caption":true,"legend":false}]}
+  var score_data = {"data":[{"name":"Jitta Score 2008 - Present","type":"column","style":{"columnWidth":"auto","color":"#47C6F1"},"data":[5.7,5.72,7.64,6.91,7.58,7.15,7.05],"caption":true},{"type":"column","style":{"columnWidth":"auto","color":"#09C"},"data":[null,null,null,null,null,null,7.05],"caption":true,"legend":false}]}
 
   var score_options = { chart: { width: 800, height: 336 },
   xAxis: 

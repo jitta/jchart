@@ -2113,23 +2113,6 @@ lodash.VERSION = '2.4.1';
 
 root._ = lodash;
 
-
-/*
-  data[name] = 
-    name: 
-    type: 'line' or 'column'
-    style: 
-      line: 'dashed' or 'solid'
-      lineWidth: 2
-      columnWidth: 'auto'
-      color: 'rgba(0,0,0,0.5)' or '#000'
-    data: []
-    caption: true
-    legend: true
-
-  chart = new Jchart data, options
-  chart.writeFile ''
- */
 var Jchart;
 
 Jchart = (function() {

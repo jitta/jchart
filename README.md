@@ -1,4 +1,4 @@
-# JChart : canvas charts for Jitta
+# JChart : Light-weight Javscript chart render on Server/Client by canvas
 
 ## Version 0.0.2
 

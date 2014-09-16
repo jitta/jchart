@@ -1,7 +1,7 @@
 
 # JChart : Light-weight Javscript chart render on Server/Client by canvas
 
-## Version 0.0.5
+## Version 0.0.6
 
 ## Development
 ```
@@ -35,5 +35,5 @@ bower install jchart
 var Jchart = require('jchart');
 var canvas = require('canvas');
 canvas = new canvas(width, height);
-new Jchart(canvas, data, options);
+new Jchart(canvas, data, options, ipo);
 ```

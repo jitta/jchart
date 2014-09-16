@@ -4,7 +4,7 @@ class Jchart
   ctw: null
   position: {}
 
-  constructor: (@canvas, @data, @options=null) ->
+  constructor: (@canvas, @data, @options=null, @ipo) ->
     @device_ratio = 1
     # default options
     @options = {} unless @options?
@@ -159,6 +159,8 @@ class Jchart
 
     for line in @data
       @addLine line
+
+    @addFlag @ipo, "IPO\nDATE" if @ipo?
 
     # @ctx.drawImage(c , @options.chart.paddingLeft, @options.chart.paddingTop, @graph_width, @graph_height)
 

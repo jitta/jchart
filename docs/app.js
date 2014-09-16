@@ -13,10 +13,7 @@
   line_canvas.width = line_options.chart.width;
   line_canvas.height = line_options.chart.height;
   document.body.appendChild(line_canvas);
-  var jittaLineChart = new Jchart(line_canvas, line_data.data, line_options);
-  if (typeof line_data.ipo_index !== "undefined" && line_data.ipo_index !== null) {
-    jittaLineChart.addFlag(line_data.ipo_index, "IPO\nDATE");
-  }
+  var jittaLineChart = new Jchart(line_canvas, line_data.data, line_options, line_data.ipo_index);
 
 
   var score_data = {"data":[{"name":"Jitta Score 2008 - Present","type":"column","style":{"columnWidth":"auto","color":"#47C6F1"},"data":[5.7,5.72,7.64,6.91,7.58,7.15,7.05],"caption":true},{"type":"column","style":{"columnWidth":"auto","color":"#09C"},"data":[null,null,null,null,null,null,7.05],"caption":true,"legend":false}]}

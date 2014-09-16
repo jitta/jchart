@@ -2122,10 +2122,11 @@ Jchart = (function() {
 
   Jchart.prototype.position = {};
 
-  function Jchart(canvas, data, options) {
+  function Jchart(canvas, data, options, ipo) {
     this.canvas = canvas;
     this.data = data;
     this.options = options != null ? options : null;
+    this.ipo = ipo;
     this.device_ratio = 1;
     if (this.options == null) {
       this.options = {};
@@ -2302,7 +2303,7 @@ Jchart = (function() {
   };
 
   Jchart.prototype.drawGraph = function() {
-    var line, _i, _len, _ref, _results;
+    var line, _i, _len, _ref;
     this.ctx.strokeStyle = this.options.chart.color;
     if (this.options.graph.border) {
       this.ctx.lineWidth = this.options.chart.lineWidth;
@@ -2314,12 +2315,13 @@ Jchart = (function() {
     this.horizontal_line();
     this.vertical_line();
     _ref = this.data;
-    _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       line = _ref[_i];
-      _results.push(this.addLine(line));
+      this.addLine(line);
     }
-    return _results;
+    if (this.ipo != null) {
+      return this.addFlag(this.ipo, "IPO\nDATE");
+    }
   };
 
   Jchart.prototype.addLine = function(data) {

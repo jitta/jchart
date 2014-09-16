@@ -1,7 +1,7 @@
 
 # JChart : Light-weight Javscript chart render on Server/Client by canvas
 
-## Version 0.0.4
+## Version 0.0.5
 
 ## Development
 ```

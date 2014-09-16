@@ -1,6 +1,6 @@
 {
   "name": "jchart",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Light-weight Javscript chart render on Server/Client by canvas",
   "dependencies": {
     "gulp": "^3.8.8",

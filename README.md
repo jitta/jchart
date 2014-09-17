@@ -1,7 +1,5 @@
-
-# JChart : Light-weight Javscript chart render on Server/Client by canvas
-
-## Version 0.0.6
+# JChart
+Light-weight Javscript chart render on Server/Client by canvas
 
 ## Development
 ```
@@ -30,7 +28,14 @@ bower install jchart
 ### Preview (frontend)
 - Open docs/index.html in browser.
 
-### node.js usage
+## Node.js usage
+### Installation
+Install via npm:
+```sh
+npm install jchart
+```
+
+### In your code
 ```javascript
 var Jchart = require('jchart');
 var canvas = require('canvas');

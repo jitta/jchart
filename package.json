@@ -1,26 +1,42 @@
 {
   "name": "jchart",
-  "version": "0.0.6",
   "description": "Light-weight Javscript chart render on Server/Client by canvas",
+  "version": "0.0.7",
+  "author": "Jitta <dev@jitta.com>",
+  "contributors": [
+    "Yanin <khame@jitta.com>",
+    "Hunt <hunt@jitta.com>"
+  ],
   "dependencies": {
+    "canvas": "^1.1.6"
+  },
+  "devDependencies": {
     "gulp": "^3.8.8",
     "gulp-coffee": "^2.2.0",
     "gulp-concat-util": "^0.4.0",
     "gulp-if": "^1.2.4",
     "gulp-rename": "^1.2.0",
-    "gulp-uglify": "^1.0.1"
-  },
-  "devDependencies": {
+    "gulp-uglify": "^1.0.1",
     "should": "^4.0.4",
     "mocha": "^1.21.4",
-    "imagediff": "^1.0.7",
-    "canvas": "^1.1.6"
+    "imagediff": "^1.0.7"
   },
   "scripts": {
     "test": "mocha"
   },
   "keywords": [
-    "jchart"
+    "chart",
+    "graph",
+    "line",
+    "bar",
+    "browser",
+    "canvas"
   ],
-  "author": "Jitta"
+  "main": "index.js",
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "homepage": "https://github.com/jitta/jchart",
+  "repository": "git://github.com/jitta/jchart",
+  "license": "MIT"
 }

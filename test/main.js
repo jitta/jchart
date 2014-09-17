@@ -1,4 +1,4 @@
-var Jchart = require('../dist/jchart.js');
+var Jchart = require('../');
 var imagediff = require('imagediff');
 var Canvas = require('../node_modules/imagediff/node_modules/canvas/index.js');
 var should = require('should');
@@ -33,6 +33,23 @@ function loadImage (url, callback) {
   });
   return image;
 }
+
+describe('API', function(){
+
+  it('For Node.js', function(done){
+    Jchart.should.be.Function;
+    Jchart.prototype.preprocess_data.should.be.Function;
+    Jchart.prototype.preprocess_style.should.be.Function;
+    Jchart.prototype.drawGraph.should.be.Function;
+    // build chart
+    var canvas = new Canvas(1, 1);
+    var jittaScoreChart = new Jchart(canvas, {}, {});
+    jittaScoreChart.canvas.should.be.Canvas;
+    jittaScoreChart.ctx.should.be.Object;
+    done()
+  });
+
+});
 
 describe('Line Chart', function(){
 
@@ -75,7 +92,6 @@ describe('Bar Chart', function(){
   it('Use Jchart', function(done){
     // build chart
     var score_data = {"data":[{"name":"Jitta Score 2008 - Present","type":"column","style":{"columnWidth":"auto","color":"#47C6F1"},"data":[5.7,5.72,7.64,6.91,7.58,7.15,7.05],"caption":true},{"type":"column","style":{"columnWidth":"auto","color":"#09C"},"data":[null,null,null,null,null,null,7.05],"caption":true,"legend":false}]}
-
     var score_options = { chart: { width: 800, height: 336 },
     xAxis: 
      { grid: { enable: false },

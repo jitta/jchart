@@ -87,7 +87,6 @@ class Jchart
     @preprocess_data()
 
     @drawGraph()
-    @process_legend() if @options.legend.enable
 
   preprocess_data: ->
     if @options.yAxis.min?
@@ -161,6 +160,7 @@ class Jchart
       @addLine line
 
     @addFlag @ipo, "IPO\nDATE" if @ipo?
+    @process_legend() if @options.legend.enable
 
     # @ctx.drawImage(c , @options.chart.paddingLeft, @options.chart.paddingTop, @graph_width, @graph_height)
 

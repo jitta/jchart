@@ -2220,9 +2220,6 @@ Jchart = (function() {
     this.preprocess_style();
     this.preprocess_data();
     this.drawGraph();
-    if (this.options.legend.enable) {
-      this.process_legend();
-    }
   }
 
   Jchart.prototype.preprocess_data = function() {
@@ -2320,7 +2317,10 @@ Jchart = (function() {
       this.addLine(line);
     }
     if (this.ipo != null) {
-      return this.addFlag(this.ipo, "IPO\nDATE");
+      this.addFlag(this.ipo, "IPO\nDATE");
+    }
+    if (this.options.legend.enable) {
+      return this.process_legend();
     }
   };
 

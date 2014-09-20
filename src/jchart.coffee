@@ -5,7 +5,7 @@ class Jchart
   position: {}
 
   constructor: (@canvas, @data, @options=null, @ipo) ->
-    @device_ratio = 1
+    
     # default options
     @options = {} unless @options?
     @options = _.merge
@@ -83,10 +83,29 @@ class Jchart
     @ctx = @canvas.getContext '2d'
     @rect @ctx, 0, 0, @ctx.canvas.width, @ctx.canvas.height, 0 if @options.debug is true
 
+    #if window
+    #@device_ratio = 1
+    @device_ratio = if window then @scaleRatio(@canvas) else 1
+
     @preprocess_style()
     @preprocess_data()
 
     @drawGraph()
+
+  scaleRatio: (canvas) ->
+    context = canvas.getContext("2d")
+    devicePixelRatio = window.devicePixelRatio or 1
+    backingStoreRatio = context.webkitBackingStorePixelRatio or context.mozBackingStorePixelRatio or context.msBackingStorePixelRatio or context.oBackingStorePixelRatio or context.backingStorePixelRatio or 1
+    ratio = devicePixelRatio / backingStoreRatio
+    if devicePixelRatio isnt backingStoreRatio
+      oldWidth = canvas.width
+      oldHeight = canvas.height
+      canvas.width = oldWidth * ratio
+      canvas.height = oldHeight * ratio
+      canvas.style.width = oldWidth + "px"
+      canvas.style.height = oldHeight + "px"
+      context.scale ratio, ratio
+    ratio
 
   preprocess_data: ->
     if @options.yAxis.min?

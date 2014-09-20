@@ -2127,7 +2127,6 @@ Jchart = (function() {
     this.data = data;
     this.options = options != null ? options : null;
     this.ipo = ipo;
-    this.device_ratio = 1;
     if (this.options == null) {
       this.options = {};
     }
@@ -2217,10 +2216,29 @@ Jchart = (function() {
     if (this.options.debug === true) {
       this.rect(this.ctx, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height, 0);
     }
+    this.device_ratio = window ? this.scaleRatio(this.canvas) : 1;
     this.preprocess_style();
     this.preprocess_data();
     this.drawGraph();
   }
+
+  Jchart.prototype.scaleRatio = function(canvas) {
+    var backingStoreRatio, context, devicePixelRatio, oldHeight, oldWidth, ratio;
+    context = canvas.getContext("2d");
+    devicePixelRatio = window.devicePixelRatio || 1;
+    backingStoreRatio = context.webkitBackingStorePixelRatio || context.mozBackingStorePixelRatio || context.msBackingStorePixelRatio || context.oBackingStorePixelRatio || context.backingStorePixelRatio || 1;
+    ratio = devicePixelRatio / backingStoreRatio;
+    if (devicePixelRatio !== backingStoreRatio) {
+      oldWidth = canvas.width;
+      oldHeight = canvas.height;
+      canvas.width = oldWidth * ratio;
+      canvas.height = oldHeight * ratio;
+      canvas.style.width = oldWidth + "px";
+      canvas.style.height = oldHeight + "px";
+      context.scale(ratio, ratio);
+    }
+    return ratio;
+  };
 
   Jchart.prototype.preprocess_data = function() {
     var barWidth, digit, item, max, max_obj, max_text, min, min_obj, pad, value, _i, _len, _ref, _results;

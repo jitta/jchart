@@ -9,7 +9,7 @@ var gulp = require('gulp'),
     footer = "}.call(this));";
 
 gulp.task('dist', function() {
-  gulp.src(['./src/helper.coffee','./src/lodash.custom.js','./src/jchart.coffee'])
+  gulp.src(['./src/helper.coffee','./src/lodash.custom.js','./src/jchart.coffee','./src/jchart.coordinate.coffee','./src/jchart.line.coffee','./src/jchart.bar.coffee'])
       .pipe(gulpif(/[.]coffee$/, coffee({bare: true})))
       .pipe(concat('jchart.js'))
       .pipe(concat.header(header))

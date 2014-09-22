@@ -13,7 +13,7 @@
   line_canvas.width = line_options.chart.width;
   line_canvas.height = line_options.chart.height;
   document.body.appendChild(line_canvas);
-  var jittaLineChart = new Jchart(line_canvas, line_data.data, line_options, line_data.ipo_index);
+  var jittaLineChart = new Jchart.line(line_canvas, line_data.data, line_options, line_data.ipo_index);
 
 
   var score_data = {"data":[{"name":"Jitta Score 2008 - Present","type":"column","style":{"columnWidth":"auto","color":"#47C6F1"},"data":[5.7,5.72,7.64,6.91,7.58,7.15,7.05],"caption":true},{"type":"column","style":{"columnWidth":"auto","color":"#09C"},"data":[null,null,null,null,null,null,7.05],"caption":true,"legend":false}]};
@@ -31,6 +31,6 @@
   score_canvas.width = score_options.chart.width;
   score_canvas.height = score_options.chart.height;
   document.body.appendChild(score_canvas);
-  var jittaScoreChart = new Jchart(score_canvas, score_data.data, score_options);
+  var jittaScoreChart = new Jchart.bar(score_canvas, score_data.data, score_options);
 
 }.call(this));

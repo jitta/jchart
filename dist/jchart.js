@@ -2130,96 +2130,11 @@ Jchart = (function() {
     if (this.options == null) {
       this.options = {};
     }
-    this.options = _.merge({
-      chart: {
-        width: 1060,
-        height: 480,
-        paddingLeft: 5,
-        paddingTop: 5,
-        paddingRight: 5,
-        paddingBottom: 5,
-        lineWidth: 2,
-        font: {
-          style: 'normal',
-          weight: 'normal',
-          size: '13px',
-          family: 'Arial'
-        },
-        color: '#888',
-        background: '#ffffff'
-      },
-      graph: {
-        border: true,
-        marginLeft: 'auto',
-        marginBottom: 30,
-        marginTop: 5,
-        marginRight: 20,
-        background: '#ffffff',
-        background_stripe: '#FCFCFC'
-      },
-      legend: {
-        font: {
-          style: 'italic',
-          size: '13px'
-        },
-        color: 'rgba(0,0,0,0.3)',
-        enable: true,
-        layout: 'horizontal',
-        marginTop: 35,
-        marginBottom: 0
-      },
-      xAxis: {
-        data: [],
-        title: '',
-        grid: {
-          enable: true,
-          align: 'margin'
-        },
-        tick: {
-          enable: true,
-          align: 'margin',
-          size: 10
-        },
-        label: {
-          enable: true,
-          align: 'margin',
-          font: {},
-          color: '#000'
-        },
-        min: null,
-        max: null,
-        breaks: 5
-      },
-      yAxis: {
-        data: [],
-        title: '',
-        grid: {
-          enable: false,
-          align: 'margin'
-        },
-        tick: {
-          enable: true,
-          size: 10
-        },
-        label: {
-          enable: true,
-          align: 'left',
-          font: {},
-          color: '#000'
-        },
-        min: null,
-        max: null,
-        breaks: 5
-      }
-    }, this.options);
     this.ctx = this.canvas.getContext('2d');
     if (this.options.debug === true) {
       this.rect(this.ctx, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height, 0);
     }
-    this.device_ratio = window ? this.scaleRatio(this.canvas) : 1;
-    this.preprocess_style();
-    this.preprocess_data();
-    this.drawGraph();
+    this.device_ratio = typeof window !== 'undefined' ? this.scaleRatio(this.canvas) : 1;
   }
 
   Jchart.prototype.scaleRatio = function(canvas) {
@@ -2240,225 +2155,35 @@ Jchart = (function() {
     return ratio;
   };
 
-  Jchart.prototype.preprocess_data = function() {
-    var barWidth, digit, item, max, max_obj, max_text, min, min_obj, pad, value, _i, _len, _ref, _results;
-    if (this.options.yAxis.min != null) {
-      this.min_data = this.options.yAxis.min;
-    }
-    if (this.options.yAxis.max != null) {
-      this.max_data = this.options.yAxis.max;
-    }
-    if ((this.options.yAxis.min == null) || (this.options.yAxis.max == null)) {
-      min_obj = _.min(this.data, function(item) {
-        return _min(item.data);
-      });
-      min = _.min(min_obj.data);
-      max_obj = _.max(this.data, function(item) {
-        return _max(item.data);
-      });
-      max = _.max(max_obj.data);
-      pad = (max - min) * 0.1;
-      if (pad === 0) {
-        pad = this.options.yAxis.breaks;
-      }
-      pad = 0;
-      if (this.options.yAxis.max == null) {
-        this.max_data = max + pad;
-      }
-      if (this.options.yAxis.min == null) {
-        this.min_data = min;
-      }
-    }
-    if (this.options.graph.marginLeft === 'auto') {
-      max_text = this.auto_format(this.max_data);
-      digit = max_text.length;
-      this.options.graph.marginLeft = 10 + digit * 8 + this.options.yAxis.tick.size;
-    }
-    this.graph_width = this.options.chart.width - this.options.chart.paddingLeft - this.options.chart.paddingRight;
-    this.graph_height = this.options.chart.height - this.options.chart.paddingTop - this.options.chart.paddingBottom;
-    this.interval = this.max_data - this.min_data;
-    this.inner_width = this.graph_width - (this.options.graph.marginLeft + this.options.graph.marginRight);
-    this.inner_height = this.graph_height - (this.options.graph.marginTop + this.options.graph.marginBottom);
-    this.pl = this.options.chart.paddingLeft;
-    this.pt = this.options.chart.paddingTop;
-    _ref = this.data;
+  Jchart.prototype.process_legend = function() {
+    var data_legend, item, legend_width, text_height, x, y, _i, _len, _results;
+    legend_width = 150;
+    text_height = parseInt(this.options.legend.font.size.replace('px', '')) * 2;
+    data_legend = _.filter(this.data, function(item) {
+      return item.legend !== false;
+    });
     _results = [];
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      item = _ref[_i];
-      barWidth = this.inner_width / (_.size(item.data) - 1);
-      item.plot = [];
-      _results.push((function() {
-        var _j, _len1, _ref1, _results1;
-        _ref1 = item.data;
-        _results1 = [];
-        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-          value = _ref1[_j];
-          if (value != null) {
-            _results1.push(item.plot.push({
-              x: this.pl + _j * barWidth + this.options.graph.marginLeft,
-              y: this.pt + this.inner_height - (value - this.min_data) / this.interval * this.inner_height + this.options.graph.marginTop
-            }));
-          } else {
-            _results1.push(item.plot.push(null));
-          }
-        }
-        return _results1;
-      }).call(this));
-    }
-    return _results;
-  };
-
-  Jchart.prototype.preprocess_style = function() {
-    var legend_height;
-    this.ctx.font = this.font_format(this.options.chart.font);
-    if (this.options.legend.enable) {
-      legend_height = parseInt(this.options.legend.font.size.replace('px', '')) * 2 + this.options.legend.marginTop + this.options.legend.marginBottom;
-      return this.options.chart.paddingBottom += legend_height;
-    }
-  };
-
-  Jchart.prototype.drawGraph = function() {
-    var line, _i, _len, _ref;
-    this.ctx.strokeStyle = this.options.chart.color;
-    if (this.options.graph.border) {
-      this.ctx.lineWidth = this.options.chart.lineWidth;
-      this.ctx.moveTo(this.pl + this.options.graph.marginLeft, this.pt);
-      this.ctx.lineTo(this.pl + this.options.graph.marginLeft, this.pt + this.graph_height - this.options.graph.marginBottom);
-      this.ctx.lineTo(this.pl + this.graph_width, this.pt + this.graph_height - this.options.graph.marginBottom);
-      this.ctx.stroke();
-    }
-    this.horizontal_line();
-    this.vertical_line();
-    _ref = this.data;
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      line = _ref[_i];
-      this.addLine(line);
-    }
-    if (this.ipo != null) {
-      this.addFlag(this.ipo, "IPO\nDATE");
-    }
-    if (this.options.legend.enable) {
-      return this.process_legend();
-    }
-  };
-
-  Jchart.prototype.addLine = function(data) {
-    switch (data.type) {
-      case 'line':
-        return this.draw_line_graph(data);
-      case 'column':
-        return this.draw_column_graph(data);
-    }
-  };
-
-  Jchart.prototype.draw_column_graph = function(data) {
-    var barWidth, columnWidth, value, x, y, _i, _len, _ref, _results;
-    barWidth = this.inner_width / _.size(data.data);
-    columnWidth = barWidth / 2;
-    this.ctx.textBaseline = 'bottom';
-    _ref = data.data;
-    _results = [];
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      value = _ref[_i];
-      if (value != null) {
-        x = (_i + 1) * barWidth + this.options.graph.marginLeft;
-        if (this.options.xAxis.label.align === 'center' || this.options.xAxis.tick.align === 'center') {
-          x -= barWidth / 2;
-        }
-        y = this.inner_height - (value - this.min_data) / this.interval * this.inner_height + this.options.graph.marginTop;
-        this.ctx.fillStyle = data.style.color;
-        this.ctx.fillRect(this.pl + x - columnWidth / 2, this.pt + y, columnWidth, (value - this.min_data) / this.interval * this.inner_height - this.options.chart.lineWidth + 1);
-        if (data.caption) {
-          this.ctx.fillStyle = this.options.chart.color;
-          _results.push(this.ctx.fillText(value.format(2), this.pl + x, this.pt + y));
-        } else {
-          _results.push(void 0);
-        }
-      } else {
-        _results.push(void 0);
-      }
-    }
-    return _results;
-  };
-
-  Jchart.prototype.draw_line_graph = function(data) {
-    var before, last_data, null_count, plot, _i, _len, _ref;
-    this.ctx.beginPath();
-    this.ctx.lineWidth = data.style.lineWidth || 2;
-    this.ctx.strokeStyle = data.style.color || '#000';
-    this.ctx.fillStyle = data.style.color || '#000';
-    null_count = 0;
-    before = data.plot[0];
-    _ref = data.plot;
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      plot = _ref[_i];
-      if ((plot != null) && (before != null)) {
-        null_count = 0;
-        if (data.style.line === 'dashed' && _i !== 0) {
-          this.dashedLine(this.ctx, before.x, before.y, plot.x, plot.y);
-        } else if (data.style.line === 'point') {
-          this.ctx.fillRect(plot.x, plot.y, 3, 3);
-        } else {
-          this.ctx.lineTo(plot.x, plot.y);
-        }
-        last_data = plot;
-      } else {
-        if ((plot != null) && null_count > 12) {
-          this.ctx.moveTo(plot.x, plot.y);
-        } else if ((plot != null) && (last_data != null) && null_count < 12) {
-          if (data.style.line === 'dashed') {
-            this.dashedLine(this.ctx, last_data.x, last_data.y, plot.x, plot.y);
-          } else if (data.style.line === 'point') {
-            this.ctx.fillRect(plot.x, plot.y, 1, 1);
-          } else {
-            this.ctx.lineTo(plot.x, plot.y);
-          }
-        }
-      }
-      if (plot == null) {
-        null_count++;
-      }
-      before = plot;
-    }
-    this.ctx.stroke();
-    return this.ctx.closePath();
-  };
-
-  Jchart.prototype.addFlag = function(index, text) {
-    var barWidth, diff, overlap, width, x, y, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
-    width = this.graph_width - (this.options.graph.marginLeft + this.options.graph.marginRight);
-    barWidth = width / _.size(this.data[0].data);
-    x = index * barWidth + this.options.chart.paddingLeft + this.options.graph.marginLeft;
-    y = this.graph_height - this.options.graph.marginBottom;
-    this.ctx.lineWidth = 1;
-    this.ctx.strokeStyle = this.data[0].style.color;
-    this.dashedLine(this.ctx, x, this.options.chart.paddingTop, x, this.options.chart.paddingTop + y);
-    overlap = 0;
-    if (((_ref = this.data[0]) != null ? (_ref1 = _ref.plot[index]) != null ? _ref1.y : void 0 : void 0) != null) {
-      if (((_ref2 = this.data[1]) != null ? (_ref3 = _ref2.plot[index]) != null ? _ref3.y : void 0 : void 0) != null) {
-        diff = Math.abs((this.data[1].plot[index].y - this.data[0].plot[index].y) / this.data[0].plot[index].y * 100);
-        if (diff < 15) {
-          if (((_ref4 = this.data[1].plot[index - 1]) != null ? _ref4.y : void 0) > ((_ref5 = this.data[1]) != null ? _ref5.plot[index].y : void 0)) {
-            overlap = -20;
-          } else {
-            overlap = 20;
-          }
-        }
-      }
-      if ((this.data[0].plot[index].y - this.pt) / this.inner_height * 100 > 92) {
-        overlap -= 15;
-      }
-      if ((this.data[0].plot[index].y - this.pt) / this.inner_height * 100 < 8) {
-        overlap += 15;
-      }
-      this.options.chart.font.weight = 'normal';
-      this.options.chart.font.size = '13px';
-      this.ctx.font = this.font_format(this.options.chart.font);
-      this.ctx.fillStyle = this.data[0].style.color;
-      this.ctx.textBaseline = 'bottom';
+    for (_i = 0, _len = data_legend.length; _i < _len; _i++) {
+      item = data_legend[_i];
+      x = this.options.chart.width / 2 + ((_i + 1) - (data_legend.length + 1) / 2) * legend_width;
+      y = this.options.chart.height - this.options.chart.paddingBottom + this.options.legend.marginTop;
+      this.ctx.fillStyle = this.options.legend.color || this.options.chart.color;
+      this.ctx.font = this.font_format(this.options.legend.font);
       this.ctx.textAlign = 'center';
-      return this.multiLine(this.ctx, text, x - 3 * barWidth, this.data[0].plot[index].y + overlap);
+      this.ctx.textBaseline = 'top';
+      this.ctx.fillText(item.name, x, y);
+      this.ctx.strokeStyle = item.style.color;
+      this.ctx.lineWidth = this.options.chart.lineWidth;
+      if (item.style.line === 'dashed') {
+        _results.push(this.dashedLine(this.ctx, x - legend_width / 2.5, y + text_height, x + legend_width / 2.5, y + text_height));
+      } else {
+        this.ctx.beginPath();
+        this.ctx.moveTo(x - legend_width / 2.5, y + text_height);
+        this.ctx.lineTo(x + legend_width / 2.5, y + text_height);
+        _results.push(this.ctx.stroke());
+      }
     }
+    return _results;
   };
 
   Jchart.prototype.addLabel = function(text, option) {
@@ -2513,207 +2238,6 @@ Jchart = (function() {
         y = option.y + option.height;
     }
     return this.ctx.fillText(text, x, y);
-  };
-
-  Jchart.prototype.shade = function() {
-    var a, above, above_color, b, barWidth, before_above, below_color, change, i, index, last_change, start, x, y, y1, y2, _i, _j, _k, _ref, _ref1, _results;
-    before_above = null;
-    above_color = 'rgba(253, 115, 109, 0.4)';
-    below_color = 'rgba(0, 183, 151, 0.4)';
-    this.ctx.fillStyle = above_color;
-    last_change = 0;
-    start = false;
-    _results = [];
-    for (i = _i = 0, _ref = this.data[0].plot.length; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-      if (((this.data[0].plot[i] == null) || (this.data[1].plot[i] == null)) && !start) {
-        _results.push(last_change = i + 1);
-      } else if (((this.data[0].plot[i] == null) || (this.data[1].plot[i] == null)) && start) {
-        for (index = _j = _ref1 = i - 1; _ref1 <= last_change ? _j <= last_change : _j >= last_change; index = _ref1 <= last_change ? ++_j : --_j) {
-          this.ctx.lineTo(this.data[1].plot[index].x, this.data[1].plot[index].y);
-        }
-        this.ctx.closePath();
-        this.ctx.fillStyle = before_above ? above_color : below_color;
-        this.ctx.fill();
-        break;
-      } else if ((this.data[0].plot[i] != null) && (this.data[1].plot[i] != null) && !start) {
-        this.ctx.beginPath();
-        this.ctx.moveTo(this.data[0].plot[i].x, this.data[0].plot[i].y);
-        _results.push(start = true);
-      } else {
-        above = this.data[0].plot[i].y < this.data[1].plot[i].y ? true : false;
-        change = (before_above != null) && before_above !== above ? true : false;
-        if (!change) {
-          this.ctx.lineTo(this.data[0].plot[i].x, this.data[0].plot[i].y);
-        } else {
-          if ((this.data[0].plot[i - 1] != null) && (this.data[1].plot[i - 1] != null)) {
-            y1 = this.data[0].plot[i - 1].y;
-            y2 = this.data[0].plot[i].y;
-            a = y1 - _min([y1, y2]);
-            b = y2 - _min([y1, y2]);
-            barWidth = this.data[0].plot[i].x - this.data[0].plot[i - 1].x;
-            x = this.data[0].plot[i - 1].x + (a * barWidth / (a + b));
-            y = _min([y1, y2]) + (a * b) / (a + b);
-            this.ctx.lineTo(x, y);
-            for (index = _k = i; i <= last_change ? _k <= last_change : _k >= last_change; index = i <= last_change ? ++_k : --_k) {
-              this.ctx.lineTo(this.data[1].plot[index].x, this.data[1].plot[index].y);
-            }
-            this.ctx.closePath();
-            this.ctx.fillStyle = above ? below_color : above_color;
-            this.ctx.fill();
-            this.ctx.beginPath();
-            this.ctx.moveTo(this.data[0].plot[i - 1].x, this.data[0].plot[i - 1].y);
-            this.ctx.lineTo(x, y);
-            this.ctx.lineTo(this.data[0].plot[i].x, this.data[0].plot[i].y);
-            last_change = i;
-          }
-        }
-        _results.push(before_above = above);
-      }
-    }
-    return _results;
-  };
-
-  Jchart.prototype.multiLine = function(ctx, text, x, y) {
-    var lineHeight, t, texts, _i, _len, _results;
-    texts = text.split('\n');
-    lineHeight = this.options.chart.font.size.replace('px', '');
-    _results = [];
-    for (_i = 0, _len = texts.length; _i < _len; _i++) {
-      t = texts[_i];
-      _results.push(ctx.fillText(t, x, y + _i * lineHeight));
-    }
-    return _results;
-  };
-
-  Jchart.prototype.horizontal_line = function() {
-    var height, i, interval, lines, start_position, value, y, _i, _ref;
-    interval = this.max_data - this.min_data;
-    lines = this.options.yAxis.breaks;
-    this.ctx.beginPath();
-    height = this.graph_height - (this.options.graph.marginTop + this.options.graph.marginBottom);
-    for (i = _i = 0, _ref = this.options.yAxis.breaks; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-      value = this.min_data + interval / lines * i;
-      y = height - height / lines * i + this.options.graph.marginTop;
-      if (this.options.graph.background_stripe) {
-        if (i % 2 === 0) {
-          this.ctx.fillStyle = this.options.graph.background_stripe;
-          this.ctx.fillRect(this.pl + this.options.graph.marginLeft + this.options.chart.lineWidth, this.pt + y - height / lines - this.options.chart.lineWidth - 1, this.pl + this.graph_width, this.pt + height / lines - this.options.chart.lineWidth - 1);
-        }
-      }
-      if (this.options.yAxis.grid.enable) {
-        this.ctx.strokeStyle = this.options.chart.color;
-        this.dashedLine(this.ctx, this.pl + this.options.graph.marginLeft, this.pt + y, this.pl + this.graph_width, this.pt + y, 2);
-      }
-      if (this.options.yAxis.label.enable) {
-        this.ctx.fillStyle = this.options.yAxis.label.color || this.options.chart.label.color;
-        this.ctx.font = this.font_format(this.options.yAxis.label.font);
-        if (this.options.yAxis.label.align === 'left') {
-          this.ctx.textAlign = 'right';
-          this.ctx.textBaseline = 'middle';
-          start_position = this.pl + this.options.graph.marginLeft - 10;
-          if (this.options.yAxis.tick.enable) {
-            start_position -= this.options.yAxis.tick.size;
-          }
-        } else {
-          this.ctx.textAlign = 'left';
-          this.ctx.textBaseline = 'bottom';
-          start_position = this.pl + this.options.graph.marginLeft;
-        }
-        this.ctx.fillText(this.auto_format(value), start_position, this.pt + y);
-      }
-      if (this.options.yAxis.tick.enable) {
-        this.ctx.beginPath();
-        this.ctx.strokeStyle = this.options.chart.color;
-        this.ctx.moveTo(this.pl + this.options.graph.marginLeft - this.options.chart.lineWidth + 1, this.pt + y);
-        this.ctx.lineTo(this.pl + this.options.graph.marginLeft - this.options.chart.lineWidth - this.options.yAxis.tick.size + 1, this.pt + y);
-        this.ctx.stroke();
-        this.ctx.closePath();
-      }
-    }
-    this.ctx.stroke();
-    return this.ctx.closePath();
-  };
-
-  Jchart.prototype.vertical_line = function() {
-    var barWidth, value, width, x, y, _i, _len, _ref, _x, _y;
-    width = this.graph_width - (this.options.graph.marginLeft + this.options.graph.marginRight);
-    this.ctx.beginPath();
-    this.ctx.textAlign = 'center';
-    this.ctx.fillStyle = this.options.xAxis.color || this.options.chart.color;
-    this.ctx.strokeStyle = this.options.xAxis.color || this.options.chart.color;
-    if ((this.options.xAxis.data != null) && this.options.xAxis.data.length > 0) {
-      barWidth = width / this.options.xAxis.data.length;
-      _ref = this.options.xAxis.data;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        value = _ref[_i];
-        x = (_i + 1) * barWidth + this.options.graph.marginLeft;
-        y = this.graph_height - this.options.graph.marginBottom;
-        if (this.options.xAxis.label.enable) {
-          this.ctx.fillStyle = this.options.xAxis.label.color || this.options.chart.label.color;
-          this.ctx.font = this.font_format(this.options.xAxis.label.font);
-          _x = x;
-          if (this.options.xAxis.label.align === 'center') {
-            _x = x - barWidth / 2;
-          }
-          _y = y + this.options.xAxis.tick.size;
-          this.ctx.textBaseline = 'top';
-          this.ctx.fillText(value, this.pl + _x, this.pt + _y);
-        }
-        if (this.options.xAxis.grid.enable) {
-          if (this.options.xAxis.grid.align === 'center') {
-            _x = x - barWidth / 2;
-          } else {
-            _x = x;
-          }
-          this.ctx.lineWidth = 0.5;
-          this.dashedLine(this.ctx, this.pl + _x, this.pt, this.pl + _x, this.pt + y, 2);
-        }
-        if (this.options.xAxis.tick.enable) {
-          if (this.options.xAxis.tick.align === 'center') {
-            _x = x - barWidth / 2;
-          } else {
-            _x = x;
-          }
-          this.ctx.beginPath();
-          this.ctx.lineWidth = this.options.chart.lineWidth;
-          this.ctx.moveTo(this.pl + _x, this.pt + y);
-          this.ctx.lineTo(this.pl + _x, this.pt + y + this.options.xAxis.tick.size);
-          this.ctx.stroke();
-        }
-      }
-    }
-    return this.ctx.closePath();
-  };
-
-  Jchart.prototype.process_legend = function() {
-    var data_legend, item, legend_width, text_height, x, y, _i, _len, _results;
-    legend_width = 150;
-    text_height = parseInt(this.options.legend.font.size.replace('px', '')) * 2;
-    data_legend = _.filter(this.data, function(item) {
-      return item.legend !== false;
-    });
-    _results = [];
-    for (_i = 0, _len = data_legend.length; _i < _len; _i++) {
-      item = data_legend[_i];
-      x = this.options.chart.width / 2 + ((_i + 1) - (data_legend.length + 1) / 2) * legend_width;
-      y = this.options.chart.height - this.options.chart.paddingBottom + this.options.legend.marginTop;
-      this.ctx.fillStyle = this.options.legend.color || this.options.chart.color;
-      this.ctx.font = this.font_format(this.options.legend.font);
-      this.ctx.textAlign = 'center';
-      this.ctx.textBaseline = 'top';
-      this.ctx.fillText(item.name, x, y);
-      this.ctx.strokeStyle = item.style.color;
-      this.ctx.lineWidth = this.options.chart.lineWidth;
-      if (item.style.line === 'dashed') {
-        _results.push(this.dashedLine(this.ctx, x - legend_width / 2.5, y + text_height, x + legend_width / 2.5, y + text_height));
-      } else {
-        this.ctx.beginPath();
-        this.ctx.moveTo(x - legend_width / 2.5, y + text_height);
-        this.ctx.lineTo(x + legend_width / 2.5, y + text_height);
-        _results.push(this.ctx.stroke());
-      }
-    }
-    return _results;
   };
 
   Jchart.prototype.httpOut = function(resp) {
@@ -2823,4 +2347,551 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
   this.Jchart = Jchart;
 }
+
+var JchartCoordinate,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+JchartCoordinate = (function(_super) {
+  __extends(JchartCoordinate, _super);
+
+  function JchartCoordinate(canvas, data, options, ipo) {
+    this.canvas = canvas;
+    this.data = data;
+    this.options = options != null ? options : null;
+    this.ipo = ipo;
+    this.options = _.merge({
+      chart: {
+        width: 1060,
+        height: 480,
+        paddingLeft: 5,
+        paddingTop: 5,
+        paddingRight: 5,
+        paddingBottom: 5,
+        lineWidth: 2,
+        font: {
+          style: 'normal',
+          weight: 'normal',
+          size: '13px',
+          family: 'Arial'
+        },
+        color: '#888',
+        background: '#ffffff'
+      },
+      graph: {
+        border: true,
+        marginLeft: 'auto',
+        marginBottom: 30,
+        marginTop: 5,
+        marginRight: 20,
+        background: '#ffffff',
+        background_stripe: '#FCFCFC'
+      },
+      legend: {
+        font: {
+          style: 'italic',
+          size: '13px'
+        },
+        color: 'rgba(0,0,0,0.3)',
+        enable: true,
+        layout: 'horizontal',
+        marginTop: 35,
+        marginBottom: 0
+      },
+      xAxis: {
+        data: [],
+        title: '',
+        grid: {
+          enable: true,
+          align: 'margin'
+        },
+        tick: {
+          enable: true,
+          align: 'margin',
+          size: 10
+        },
+        label: {
+          enable: true,
+          align: 'margin',
+          font: {},
+          color: '#000'
+        },
+        min: null,
+        max: null,
+        breaks: 5
+      },
+      yAxis: {
+        data: [],
+        title: '',
+        grid: {
+          enable: false,
+          align: 'margin'
+        },
+        tick: {
+          enable: true,
+          size: 10
+        },
+        label: {
+          enable: true,
+          align: 'left',
+          font: {},
+          color: '#000'
+        },
+        min: null,
+        max: null,
+        breaks: 5
+      }
+    }, this.options);
+    JchartCoordinate.__super__.constructor.call(this, this.canvas, this.data, this.options, this.ipo);
+  }
+
+  JchartCoordinate.prototype.preprocess_data = function() {
+    var barWidth, digit, item, max, max_obj, max_text, min, min_obj, pad, value, _i, _len, _ref, _results;
+    if (this.options.yAxis.min != null) {
+      this.min_data = this.options.yAxis.min;
+    }
+    if (this.options.yAxis.max != null) {
+      this.max_data = this.options.yAxis.max;
+    }
+    if ((this.options.yAxis.min == null) || (this.options.yAxis.max == null)) {
+      min_obj = _.min(this.data, function(item) {
+        return _min(item.data);
+      });
+      min = _.min(min_obj.data);
+      max_obj = _.max(this.data, function(item) {
+        return _max(item.data);
+      });
+      max = _.max(max_obj.data);
+      pad = (max - min) * 0.1;
+      if (pad === 0) {
+        pad = this.options.yAxis.breaks;
+      }
+      pad = 0;
+      if (this.options.yAxis.max == null) {
+        this.max_data = max + pad;
+      }
+      if (this.options.yAxis.min == null) {
+        this.min_data = min;
+      }
+    }
+    if (this.options.graph.marginLeft === 'auto') {
+      max_text = this.auto_format(this.max_data);
+      digit = max_text.length;
+      this.options.graph.marginLeft = 10 + digit * 8 + this.options.yAxis.tick.size;
+    }
+    this.graph_width = this.options.chart.width - this.options.chart.paddingLeft - this.options.chart.paddingRight;
+    this.graph_height = this.options.chart.height - this.options.chart.paddingTop - this.options.chart.paddingBottom;
+    this.interval = this.max_data - this.min_data;
+    this.inner_width = this.graph_width - (this.options.graph.marginLeft + this.options.graph.marginRight);
+    this.inner_height = this.graph_height - (this.options.graph.marginTop + this.options.graph.marginBottom);
+    this.pl = this.options.chart.paddingLeft;
+    this.pt = this.options.chart.paddingTop;
+    _ref = this.data;
+    _results = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      item = _ref[_i];
+      barWidth = this.inner_width / (_.size(item.data) - 1);
+      item.plot = [];
+      _results.push((function() {
+        var _j, _len1, _ref1, _results1;
+        _ref1 = item.data;
+        _results1 = [];
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          value = _ref1[_j];
+          if (value != null) {
+            _results1.push(item.plot.push({
+              x: this.pl + _j * barWidth + this.options.graph.marginLeft,
+              y: this.pt + this.inner_height - (value - this.min_data) / this.interval * this.inner_height + this.options.graph.marginTop
+            }));
+          } else {
+            _results1.push(item.plot.push(null));
+          }
+        }
+        return _results1;
+      }).call(this));
+    }
+    return _results;
+  };
+
+  JchartCoordinate.prototype.preprocess_style = function() {
+    var legend_height;
+    this.ctx.font = this.font_format(this.options.chart.font);
+    if (this.options.legend.enable) {
+      legend_height = parseInt(this.options.legend.font.size.replace('px', '')) * 2 + this.options.legend.marginTop + this.options.legend.marginBottom;
+      return this.options.chart.paddingBottom += legend_height;
+    }
+  };
+
+  JchartCoordinate.prototype.drawGraph = function() {
+    var line, _i, _len, _ref;
+    this.ctx.strokeStyle = this.options.chart.color;
+    if (this.options.graph.border) {
+      this.ctx.lineWidth = this.options.chart.lineWidth;
+      this.ctx.moveTo(this.pl + this.options.graph.marginLeft, this.pt);
+      this.ctx.lineTo(this.pl + this.options.graph.marginLeft, this.pt + this.graph_height - this.options.graph.marginBottom);
+      this.ctx.lineTo(this.pl + this.graph_width, this.pt + this.graph_height - this.options.graph.marginBottom);
+      this.ctx.stroke();
+    }
+    this.horizontal_line();
+    this.vertical_line();
+    _ref = this.data;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      line = _ref[_i];
+      this.addLine(line);
+    }
+    if (this.ipo != null) {
+      this.addFlag(this.ipo, "IPO\nDATE");
+    }
+    if (this.options.legend.enable) {
+      return this.process_legend();
+    }
+  };
+
+  JchartCoordinate.prototype.horizontal_line = function() {
+    var height, i, interval, lines, start_position, value, y, _i, _ref;
+    interval = this.max_data - this.min_data;
+    lines = this.options.yAxis.breaks;
+    this.ctx.beginPath();
+    height = this.graph_height - (this.options.graph.marginTop + this.options.graph.marginBottom);
+    for (i = _i = 0, _ref = this.options.yAxis.breaks; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+      value = this.min_data + interval / lines * i;
+      y = height - height / lines * i + this.options.graph.marginTop;
+      if (this.options.graph.background_stripe) {
+        if (i % 2 === 0) {
+          this.ctx.fillStyle = this.options.graph.background_stripe;
+          this.ctx.fillRect(this.pl + this.options.graph.marginLeft + this.options.chart.lineWidth, this.pt + y - height / lines - this.options.chart.lineWidth - 1, this.pl + this.graph_width, this.pt + height / lines - this.options.chart.lineWidth - 1);
+        }
+      }
+      if (this.options.yAxis.grid.enable) {
+        this.ctx.strokeStyle = this.options.chart.color;
+        this.dashedLine(this.ctx, this.pl + this.options.graph.marginLeft, this.pt + y, this.pl + this.graph_width, this.pt + y, 2);
+      }
+      if (this.options.yAxis.label.enable) {
+        this.ctx.fillStyle = this.options.yAxis.label.color || this.options.chart.label.color;
+        this.ctx.font = this.font_format(this.options.yAxis.label.font);
+        if (this.options.yAxis.label.align === 'left') {
+          this.ctx.textAlign = 'right';
+          this.ctx.textBaseline = 'middle';
+          start_position = this.pl + this.options.graph.marginLeft - 10;
+          if (this.options.yAxis.tick.enable) {
+            start_position -= this.options.yAxis.tick.size;
+          }
+        } else {
+          this.ctx.textAlign = 'left';
+          this.ctx.textBaseline = 'bottom';
+          start_position = this.pl + this.options.graph.marginLeft;
+        }
+        this.ctx.fillText(this.auto_format(value), start_position, this.pt + y);
+      }
+      if (this.options.yAxis.tick.enable) {
+        this.ctx.beginPath();
+        this.ctx.strokeStyle = this.options.chart.color;
+        this.ctx.moveTo(this.pl + this.options.graph.marginLeft - this.options.chart.lineWidth + 1, this.pt + y);
+        this.ctx.lineTo(this.pl + this.options.graph.marginLeft - this.options.chart.lineWidth - this.options.yAxis.tick.size + 1, this.pt + y);
+        this.ctx.stroke();
+        this.ctx.closePath();
+      }
+    }
+    this.ctx.stroke();
+    return this.ctx.closePath();
+  };
+
+  JchartCoordinate.prototype.vertical_line = function() {
+    var barWidth, value, width, x, y, _i, _len, _ref, _x, _y;
+    width = this.graph_width - (this.options.graph.marginLeft + this.options.graph.marginRight);
+    this.ctx.beginPath();
+    this.ctx.textAlign = 'center';
+    this.ctx.fillStyle = this.options.xAxis.color || this.options.chart.color;
+    this.ctx.strokeStyle = this.options.xAxis.color || this.options.chart.color;
+    if ((this.options.xAxis.data != null) && this.options.xAxis.data.length > 0) {
+      barWidth = width / this.options.xAxis.data.length;
+      _ref = this.options.xAxis.data;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        value = _ref[_i];
+        x = (_i + 1) * barWidth + this.options.graph.marginLeft;
+        y = this.graph_height - this.options.graph.marginBottom;
+        if (this.options.xAxis.label.enable) {
+          this.ctx.fillStyle = this.options.xAxis.label.color || this.options.chart.label.color;
+          this.ctx.font = this.font_format(this.options.xAxis.label.font);
+          _x = x;
+          if (this.options.xAxis.label.align === 'center') {
+            _x = x - barWidth / 2;
+          }
+          _y = y + this.options.xAxis.tick.size;
+          this.ctx.textBaseline = 'top';
+          this.ctx.fillText(value, this.pl + _x, this.pt + _y);
+        }
+        if (this.options.xAxis.grid.enable) {
+          if (this.options.xAxis.grid.align === 'center') {
+            _x = x - barWidth / 2;
+          } else {
+            _x = x;
+          }
+          this.ctx.lineWidth = 0.5;
+          this.dashedLine(this.ctx, this.pl + _x, this.pt, this.pl + _x, this.pt + y, 2);
+        }
+        if (this.options.xAxis.tick.enable) {
+          if (this.options.xAxis.tick.align === 'center') {
+            _x = x - barWidth / 2;
+          } else {
+            _x = x;
+          }
+          this.ctx.beginPath();
+          this.ctx.lineWidth = this.options.chart.lineWidth;
+          this.ctx.moveTo(this.pl + _x, this.pt + y);
+          this.ctx.lineTo(this.pl + _x, this.pt + y + this.options.xAxis.tick.size);
+          this.ctx.stroke();
+        }
+      }
+    }
+    return this.ctx.closePath();
+  };
+
+  JchartCoordinate.prototype.shade = function() {
+    var a, above, above_color, b, barWidth, before_above, below_color, change, i, index, last_change, start, x, y, y1, y2, _i, _j, _k, _ref, _ref1, _results;
+    before_above = null;
+    above_color = 'rgba(253, 115, 109, 0.4)';
+    below_color = 'rgba(0, 183, 151, 0.4)';
+    this.ctx.fillStyle = above_color;
+    last_change = 0;
+    start = false;
+    _results = [];
+    for (i = _i = 0, _ref = this.data[0].plot.length; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+      if (((this.data[0].plot[i] == null) || (this.data[1].plot[i] == null)) && !start) {
+        _results.push(last_change = i + 1);
+      } else if (((this.data[0].plot[i] == null) || (this.data[1].plot[i] == null)) && start) {
+        for (index = _j = _ref1 = i - 1; _ref1 <= last_change ? _j <= last_change : _j >= last_change; index = _ref1 <= last_change ? ++_j : --_j) {
+          this.ctx.lineTo(this.data[1].plot[index].x, this.data[1].plot[index].y);
+        }
+        this.ctx.closePath();
+        this.ctx.fillStyle = before_above ? above_color : below_color;
+        this.ctx.fill();
+        break;
+      } else if ((this.data[0].plot[i] != null) && (this.data[1].plot[i] != null) && !start) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(this.data[0].plot[i].x, this.data[0].plot[i].y);
+        _results.push(start = true);
+      } else {
+        above = this.data[0].plot[i].y < this.data[1].plot[i].y ? true : false;
+        change = (before_above != null) && before_above !== above ? true : false;
+        if (!change) {
+          this.ctx.lineTo(this.data[0].plot[i].x, this.data[0].plot[i].y);
+        } else {
+          if ((this.data[0].plot[i - 1] != null) && (this.data[1].plot[i - 1] != null)) {
+            y1 = this.data[0].plot[i - 1].y;
+            y2 = this.data[0].plot[i].y;
+            a = y1 - _min([y1, y2]);
+            b = y2 - _min([y1, y2]);
+            barWidth = this.data[0].plot[i].x - this.data[0].plot[i - 1].x;
+            x = this.data[0].plot[i - 1].x + (a * barWidth / (a + b));
+            y = _min([y1, y2]) + (a * b) / (a + b);
+            this.ctx.lineTo(x, y);
+            for (index = _k = i; i <= last_change ? _k <= last_change : _k >= last_change; index = i <= last_change ? ++_k : --_k) {
+              this.ctx.lineTo(this.data[1].plot[index].x, this.data[1].plot[index].y);
+            }
+            this.ctx.closePath();
+            this.ctx.fillStyle = above ? below_color : above_color;
+            this.ctx.fill();
+            this.ctx.beginPath();
+            this.ctx.moveTo(this.data[0].plot[i - 1].x, this.data[0].plot[i - 1].y);
+            this.ctx.lineTo(x, y);
+            this.ctx.lineTo(this.data[0].plot[i].x, this.data[0].plot[i].y);
+            last_change = i;
+          }
+        }
+        _results.push(before_above = above);
+      }
+    }
+    return _results;
+  };
+
+  return JchartCoordinate;
+
+})(Jchart);
+
+var JchartLine,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+JchartLine = (function(_super) {
+  __extends(JchartLine, _super);
+
+  function JchartLine(canvas, data, options, ipo) {
+    this.canvas = canvas;
+    this.data = data;
+    this.options = options != null ? options : null;
+    this.ipo = ipo;
+    JchartLine.__super__.constructor.call(this, this.canvas, this.data, this.options, this.ipo);
+    this.draw();
+  }
+
+  JchartLine.prototype.draw = function() {
+    this.preprocess_style();
+    this.preprocess_data();
+    return this.drawGraph();
+  };
+
+  JchartLine.prototype.addLine = function(data) {
+    return this.draw_line_graph(data);
+  };
+
+  JchartLine.prototype.draw_line_graph = function(data) {
+    var before, last_data, null_count, plot, _i, _len, _ref;
+    this.ctx.beginPath();
+    this.ctx.lineWidth = data.style.lineWidth || 2;
+    this.ctx.strokeStyle = data.style.color || '#000';
+    this.ctx.fillStyle = data.style.color || '#000';
+    null_count = 0;
+    before = data.plot[0];
+    _ref = data.plot;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      plot = _ref[_i];
+      if ((plot != null) && (before != null)) {
+        null_count = 0;
+        if (data.style.line === 'dashed' && _i !== 0) {
+          this.dashedLine(this.ctx, before.x, before.y, plot.x, plot.y);
+        } else if (data.style.line === 'point') {
+          this.ctx.fillRect(plot.x, plot.y, 3, 3);
+        } else {
+          this.ctx.lineTo(plot.x, plot.y);
+        }
+        last_data = plot;
+      } else {
+        if ((plot != null) && null_count > 12) {
+          this.ctx.moveTo(plot.x, plot.y);
+        } else if ((plot != null) && (last_data != null) && null_count < 12) {
+          if (data.style.line === 'dashed') {
+            this.dashedLine(this.ctx, last_data.x, last_data.y, plot.x, plot.y);
+          } else if (data.style.line === 'point') {
+            this.ctx.fillRect(plot.x, plot.y, 1, 1);
+          } else {
+            this.ctx.lineTo(plot.x, plot.y);
+          }
+        }
+      }
+      if (plot == null) {
+        null_count++;
+      }
+      before = plot;
+    }
+    this.ctx.stroke();
+    return this.ctx.closePath();
+  };
+
+  JchartLine.prototype.addFlag = function(index, text) {
+    var barWidth, diff, overlap, width, x, y, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
+    width = this.graph_width - (this.options.graph.marginLeft + this.options.graph.marginRight);
+    barWidth = width / _.size(this.data[0].data);
+    x = index * barWidth + this.options.chart.paddingLeft + this.options.graph.marginLeft;
+    y = this.graph_height - this.options.graph.marginBottom;
+    this.ctx.lineWidth = 1;
+    this.ctx.strokeStyle = this.data[0].style.color;
+    this.dashedLine(this.ctx, x, this.options.chart.paddingTop, x, this.options.chart.paddingTop + y);
+    overlap = 0;
+    if (((_ref = this.data[0]) != null ? (_ref1 = _ref.plot[index]) != null ? _ref1.y : void 0 : void 0) != null) {
+      if (((_ref2 = this.data[1]) != null ? (_ref3 = _ref2.plot[index]) != null ? _ref3.y : void 0 : void 0) != null) {
+        diff = Math.abs((this.data[1].plot[index].y - this.data[0].plot[index].y) / this.data[0].plot[index].y * 100);
+        if (diff < 15) {
+          if (((_ref4 = this.data[1].plot[index - 1]) != null ? _ref4.y : void 0) > ((_ref5 = this.data[1]) != null ? _ref5.plot[index].y : void 0)) {
+            overlap = -20;
+          } else {
+            overlap = 20;
+          }
+        }
+      }
+      if ((this.data[0].plot[index].y - this.pt) / this.inner_height * 100 > 92) {
+        overlap -= 15;
+      }
+      if ((this.data[0].plot[index].y - this.pt) / this.inner_height * 100 < 8) {
+        overlap += 15;
+      }
+      this.options.chart.font.weight = 'normal';
+      this.options.chart.font.size = '13px';
+      this.ctx.font = this.font_format(this.options.chart.font);
+      this.ctx.fillStyle = this.data[0].style.color;
+      this.ctx.textBaseline = 'bottom';
+      this.ctx.textAlign = 'center';
+      return this.multiLine(this.ctx, text, x - 3 * barWidth, this.data[0].plot[index].y + overlap);
+    }
+  };
+
+  JchartLine.prototype.multiLine = function(ctx, text, x, y) {
+    var lineHeight, t, texts, _i, _len, _results;
+    texts = text.split('\n');
+    lineHeight = this.options.chart.font.size.replace('px', '');
+    _results = [];
+    for (_i = 0, _len = texts.length; _i < _len; _i++) {
+      t = texts[_i];
+      _results.push(ctx.fillText(t, x, y + _i * lineHeight));
+    }
+    return _results;
+  };
+
+  return JchartLine;
+
+})(JchartCoordinate);
+
+Jchart.line = JchartLine;
+
+var JchartBar,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+JchartBar = (function(_super) {
+  __extends(JchartBar, _super);
+
+  function JchartBar(canvas, data, options, ipo) {
+    this.canvas = canvas;
+    this.data = data;
+    this.options = options != null ? options : null;
+    this.ipo = ipo;
+    JchartBar.__super__.constructor.call(this, this.canvas, this.data, this.options, this.ipo);
+    this.draw();
+  }
+
+  JchartBar.prototype.draw = function() {
+    this.preprocess_style();
+    this.preprocess_data();
+    return this.drawGraph();
+  };
+
+  JchartBar.prototype.addLine = function(data) {
+    return this.draw_column_graph(data);
+  };
+
+  JchartBar.prototype.draw_column_graph = function(data) {
+    var barWidth, columnWidth, value, x, y, _i, _len, _ref, _results;
+    barWidth = this.inner_width / _.size(data.data);
+    columnWidth = barWidth / 2;
+    this.ctx.textBaseline = 'bottom';
+    _ref = data.data;
+    _results = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      value = _ref[_i];
+      if (value != null) {
+        x = (_i + 1) * barWidth + this.options.graph.marginLeft;
+        if (this.options.xAxis.label.align === 'center' || this.options.xAxis.tick.align === 'center') {
+          x -= barWidth / 2;
+        }
+        y = this.inner_height - (value - this.min_data) / this.interval * this.inner_height + this.options.graph.marginTop;
+        this.ctx.fillStyle = data.style.color;
+        this.ctx.fillRect(this.pl + x - columnWidth / 2, this.pt + y, columnWidth, (value - this.min_data) / this.interval * this.inner_height - this.options.chart.lineWidth + 1);
+        if (data.caption) {
+          this.ctx.fillStyle = this.options.chart.color;
+          _results.push(this.ctx.fillText(value.format(2), this.pl + x, this.pt + y));
+        } else {
+          _results.push(void 0);
+        }
+      } else {
+        _results.push(void 0);
+      }
+    }
+    return _results;
+  };
+
+  return JchartBar;
+
+})(JchartCoordinate);
+
+Jchart.bar = JchartBar;
 }.call(this));

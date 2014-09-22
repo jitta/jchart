@@ -64,7 +64,7 @@ describe('Line Chart', function(){
       yAxis: { min: 0, label: { align: 'left' } },
       legend: { enable: false } };
 
-    new Jchart(line_canvas, line_data.data, line_options, line_data.ipo_index);
+    new Jchart.line(line_canvas, line_data.data, line_options, line_data.ipo_index);
     done();
   });
 
@@ -102,7 +102,7 @@ describe('Bar Chart', function(){
     legend: { enable: true } };
 
     bar_canvas = new Canvas(score_options.chart.width, score_options.chart.height);
-    var jittaScoreChart = new Jchart(bar_canvas, score_data.data, score_options);
+    var jittaScoreChart = new Jchart.bar(bar_canvas, score_data.data, score_options);
     done();
   });
 

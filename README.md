@@ -38,6 +38,13 @@ npm install jchart
 ```javascript
 var Jchart = require('jchart');
 var canvas = require('canvas');
-canvas = new canvas(width, height);
-new Jchart(canvas, data, options, ipo);
+canvas = new canvas(width, height); 
+
+// Chart Types
+
+// Line Chart
+new Jchart.line(canvas, data, options, ipo);
+
+// Bar Chart
+new Jchart.bar(canvas, data, options, ipo);
 ```

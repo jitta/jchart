@@ -38,9 +38,10 @@ describe('API', function(){
 
   it('For Node.js', function(done){
     Jchart.should.be.Function;
-    Jchart.prototype.preprocess_data.should.be.Function;
-    Jchart.prototype.preprocess_style.should.be.Function;
-    Jchart.prototype.drawGraph.should.be.Function;
+    Jchart.line.should.be.Function;
+    Jchart.bar.should.be.Function;
+    Jchart.prototype.scaleRatio.should.be.Function;
+    Jchart.prototype.httpOut.should.be.Function;
     // build chart
     var canvas = new Canvas(1, 1);
     var jittaScoreChart = new Jchart(canvas, {}, {});

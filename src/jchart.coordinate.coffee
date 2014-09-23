@@ -39,6 +39,8 @@ class JchartCoordinate extends Jchart
       xAxis:
         data: []
         title: ''
+        border:
+          enable: true
         grid: 
           enable: true
           align: 'margin' # or center
@@ -57,6 +59,8 @@ class JchartCoordinate extends Jchart
       yAxis:
         data: []
         title: ''
+        border:
+          enable: true
         grid: 
           enable: false
           align: 'margin' # or center
@@ -122,6 +126,8 @@ class JchartCoordinate extends Jchart
         else
           item.plot.push null
 
+    @xAxiz_zero_position = @pt + @inner_height - (0-@min_data) / @interval * @inner_height + @options.graph.marginTop
+
   preprocess_style: ->
     @ctx.font = @font_format(@options.chart.font)
 
@@ -131,13 +137,6 @@ class JchartCoordinate extends Jchart
 
   drawGraph: ->
     @ctx.strokeStyle = @options.chart.color
-    if @options.graph.border
-      @ctx.lineWidth = @options.chart.lineWidth
-      @ctx.moveTo @pl + @options.graph.marginLeft, @pt
-      @ctx.lineTo @pl + @options.graph.marginLeft, @pt + @graph_height - @options.graph.marginBottom
-      @ctx.lineTo @pl + @graph_width, @pt + @graph_height - @options.graph.marginBottom
-      @ctx.stroke()
-
     @horizontal_line()
     @vertical_line()
 
@@ -198,6 +197,14 @@ class JchartCoordinate extends Jchart
         @ctx.closePath()
 
     @ctx.stroke()
+
+    if @options.xAxis.border.enable
+      @ctx.strokeStyle = @options.chart.color
+      @ctx.lineWidth = @options.chart.lineWidth
+      @ctx.moveTo @pl + @options.graph.marginLeft, @xAxiz_zero_position
+      @ctx.lineTo @pl + @graph_width, @xAxiz_zero_position
+      @ctx.stroke()
+
     @ctx.closePath()
 
   vertical_line: () ->
@@ -247,6 +254,13 @@ class JchartCoordinate extends Jchart
           @ctx.moveTo @pl + _x, @pt + y
           @ctx.lineTo @pl + _x, @pt + y + @options.xAxis.tick.size
           @ctx.stroke()
+
+    if @options.yAxis.border.enable
+      @ctx.strokeStyle = @options.chart.color
+      @ctx.lineWidth = @options.chart.lineWidth
+      @ctx.moveTo @pl + @options.graph.marginLeft, @pt
+      @ctx.lineTo @pl + @options.graph.marginLeft, @pt + @graph_height - @options.graph.marginBottom
+      @ctx.stroke()
 
     @ctx.closePath()
 

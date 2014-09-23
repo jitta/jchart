@@ -2417,7 +2417,9 @@ JchartCoordinate = (function(_super) {
           enable: true,
           align: 'margin',
           font: {},
-          color: '#000'
+          color: '#000',
+          prefix: '',
+          suffix: ''
         },
         min: null,
         max: null,
@@ -2441,7 +2443,9 @@ JchartCoordinate = (function(_super) {
           enable: true,
           align: 'left',
           font: {},
-          color: '#000'
+          color: '#000',
+          prefix: '',
+          suffix: ''
         },
         min: null,
         max: null,
@@ -2481,7 +2485,7 @@ JchartCoordinate = (function(_super) {
       }
     }
     if (this.options.graph.marginLeft === 'auto') {
-      max_text = this.auto_format(this.max_data);
+      max_text = this.options.yAxis.label.prefix + this.auto_format(this.max_data) + this.options.yAxis.label.suffix;
       digit = max_text.length;
       this.options.graph.marginLeft = 10 + digit * 8 + this.options.yAxis.tick.size;
     }
@@ -2574,7 +2578,7 @@ JchartCoordinate = (function(_super) {
           this.ctx.textBaseline = 'bottom';
           start_position = this.pl + this.options.graph.marginLeft;
         }
-        this.ctx.fillText(this.auto_format(value), start_position, this.pt + y);
+        this.ctx.fillText(this.options.yAxis.label.prefix + this.auto_format(value) + this.options.yAxis.label.suffix, start_position, this.pt + y);
       }
       if (this.options.yAxis.tick.enable) {
         this.ctx.beginPath();
@@ -2619,7 +2623,7 @@ JchartCoordinate = (function(_super) {
           }
           _y = y + this.options.xAxis.tick.size;
           this.ctx.textBaseline = 'top';
-          this.ctx.fillText(value, this.pl + _x, this.pt + _y);
+          this.ctx.fillText(this.options.xAxis.label.prefix + value + this.options.xAxis.label.suffix, this.pl + _x, this.pt + _y);
         }
         if (this.options.xAxis.grid.enable) {
           if (this.options.xAxis.grid.align === 'center') {

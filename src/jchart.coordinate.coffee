@@ -53,6 +53,8 @@ class JchartCoordinate extends Jchart
           align: 'margin'
           font : {}
           color: '#000'
+          prefix: ''
+          suffix: ''
         min: null
         max: null
         breaks: 5
@@ -72,6 +74,8 @@ class JchartCoordinate extends Jchart
           align: 'left' # or right
           font : {}
           color: '#000'
+          prefix: ''
+          suffix: ''
         min: null
         max: null
         breaks: 5
@@ -99,7 +103,7 @@ class JchartCoordinate extends Jchart
 
     # auto calculate margin left from max text length
     if @options.graph.marginLeft is 'auto' # ~40
-      max_text = @auto_format @max_data
+      max_text = @options.yAxis.label.prefix + @auto_format(@max_data) + @options.yAxis.label.suffix
       digit = max_text.length
       @options.graph.marginLeft = 10 + digit*8 + @options.yAxis.tick.size
 
@@ -185,7 +189,7 @@ class JchartCoordinate extends Jchart
           @ctx.textAlign = 'left'
           @ctx.textBaseline = 'bottom'
           start_position = @pl + @options.graph.marginLeft
-        @ctx.fillText @auto_format(value), start_position, @pt + y
+        @ctx.fillText @options.yAxis.label.prefix + @auto_format(value) + @options.yAxis.label.suffix, start_position, @pt + y
 
       # draw tick
       if @options.yAxis.tick.enable
@@ -232,7 +236,7 @@ class JchartCoordinate extends Jchart
           _y = y + @options.xAxis.tick.size
 
           @ctx.textBaseline = 'top'
-          @ctx.fillText value, @pl + _x, @pt + _y
+          @ctx.fillText @options.xAxis.label.prefix + value + @options.xAxis.label.suffix, @pl + _x, @pt + _y
 
         # gird
         if @options.xAxis.grid.enable

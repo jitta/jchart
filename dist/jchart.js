@@ -2402,7 +2402,8 @@ JchartCoordinate = (function(_super) {
         data: [],
         title: '',
         border: {
-          enable: true
+          enable: true,
+          color: "#888"
         },
         grid: {
           enable: true,
@@ -2429,7 +2430,8 @@ JchartCoordinate = (function(_super) {
         data: [],
         title: '',
         border: {
-          enable: true
+          enable: true,
+          color: "#888"
         },
         grid: {
           enable: false,
@@ -2591,7 +2593,7 @@ JchartCoordinate = (function(_super) {
     }
     this.ctx.stroke();
     if (this.options.xAxis.border.enable) {
-      this.ctx.strokeStyle = this.options.chart.color;
+      this.ctx.strokeStyle = this.options.xAxis.border.color;
       this.ctx.lineWidth = this.options.chart.lineWidth;
       this.ctx.moveTo(this.pl + this.options.graph.marginLeft, this.xAxiz_zero_position);
       this.ctx.lineTo(this.pl + this.graph_width, this.xAxiz_zero_position);
@@ -2649,7 +2651,7 @@ JchartCoordinate = (function(_super) {
       }
     }
     if (this.options.yAxis.border.enable) {
-      this.ctx.strokeStyle = this.options.chart.color;
+      this.ctx.strokeStyle = this.options.yAxis.border.color;
       this.ctx.lineWidth = this.options.chart.lineWidth;
       this.ctx.moveTo(this.pl + this.options.graph.marginLeft, this.pt);
       this.ctx.lineTo(this.pl + this.options.graph.marginLeft, this.pt + this.graph_height - this.options.graph.marginBottom);

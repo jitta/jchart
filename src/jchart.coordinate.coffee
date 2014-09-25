@@ -41,6 +41,7 @@ class JchartCoordinate extends Jchart
         title: ''
         border:
           enable: true
+          color: "#888"
         grid: 
           enable: true
           align: 'margin' # or center
@@ -63,6 +64,7 @@ class JchartCoordinate extends Jchart
         title: ''
         border:
           enable: true
+          color: "#888"
         grid: 
           enable: false
           align: 'margin' # or center
@@ -203,7 +205,7 @@ class JchartCoordinate extends Jchart
     @ctx.stroke()
 
     if @options.xAxis.border.enable
-      @ctx.strokeStyle = @options.chart.color
+      @ctx.strokeStyle = @options.xAxis.border.color
       @ctx.lineWidth = @options.chart.lineWidth
       @ctx.moveTo @pl + @options.graph.marginLeft, @xAxiz_zero_position
       @ctx.lineTo @pl + @graph_width, @xAxiz_zero_position
@@ -260,7 +262,7 @@ class JchartCoordinate extends Jchart
           @ctx.stroke()
 
     if @options.yAxis.border.enable
-      @ctx.strokeStyle = @options.chart.color
+      @ctx.strokeStyle = @options.yAxis.border.color
       @ctx.lineWidth = @options.chart.lineWidth
       @ctx.moveTo @pl + @options.graph.marginLeft, @pt
       @ctx.lineTo @pl + @options.graph.marginLeft, @pt + @graph_height - @options.graph.marginBottom

@@ -24,10 +24,10 @@ git push origin v0.0.4
 bower install jchart
 ```
 
-### Preview (frontend)
-## Line Chart
+## Preview (frontend)
+### Line Chart
 ![alt text](https://raw.githubusercontent.com/jitta/jchart/master/docs/line.png "Line Chart")
-## Bar Chart
+### Bar Chart
 ![alt text](https://raw.githubusercontent.com/jitta/jchart/master/docs/bar.png "Bar Chart")
 
 

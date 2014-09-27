@@ -25,7 +25,11 @@ bower install jchart
 ```
 
 ### Preview (frontend)
-- Open docs/index.html in browser.
+## Line Chart
+![alt text](https://raw.githubusercontent.com/jitta/jchart/master/docs/line.png "Line Chart")
+## Bar Chart
+![alt text](https://raw.githubusercontent.com/jitta/jchart/master/docs/bar.png "Bar Chart")
+
 
 ## Node.js usage
 ### Installation

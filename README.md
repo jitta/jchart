@@ -1,6 +1,14 @@
 # JChart
 Light-weight Javscript chart render on Server/Client by canvas
 
+
+## Preview
+### Line Chart
+![alt text](https://raw.githubusercontent.com/jitta/jchart/master/docs/line.png "Line Chart")
+### Bar Chart
+![alt text](https://raw.githubusercontent.com/jitta/jchart/master/docs/bar.png "Bar Chart")
+
+
 ## Development
 ```
 nvm use 0.10
@@ -24,11 +32,8 @@ git push origin v0.0.4
 bower install jchart
 ```
 
-## Preview (frontend)
-### Line Chart
-![alt text](https://raw.githubusercontent.com/jitta/jchart/master/docs/line.png "Line Chart")
-### Bar Chart
-![alt text](https://raw.githubusercontent.com/jitta/jchart/master/docs/bar.png "Bar Chart")
+## Frontend usage
+### See code in docs/app.js
 
 
 ## Node.js usage

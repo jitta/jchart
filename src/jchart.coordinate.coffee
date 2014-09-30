@@ -16,7 +16,7 @@ class JchartCoordinate extends Jchart
           style: 'normal'
           weight: 'normal'
           size: '13px'
-          family: 'Arial'
+          family: 'Arial,sans-serif'
         color: '#888'
         background: '#ffffff'
       graph:

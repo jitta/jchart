@@ -5,8 +5,8 @@ var gulp = require('gulp'),
     concat = require('gulp-concat-util'),
     uglify = require('gulp-uglify'),
 
-    header = ";(function() {",
-    footer = "}.call(this));";
+    header = ";(function() { //Protect scope \n\n",
+    footer = "\n\n}.call(this)); //Protect scope";
 
 gulp.task('dist', function() {
   gulp.src(['./src/helper.coffee','./src/lodash.custom.js','./src/jchart.coffee','./src/jchart.coordinate.coffee','./src/jchart.line.coffee','./src/jchart.bar.coffee'])

@@ -4,29 +4,6 @@ class JchartCoordinate extends Jchart
   constructor: (@canvas, @data, @options=null, @ipo) ->
 
     @options = _.merge
-      chart:
-        width: 1060
-        height: 480
-        paddingLeft: 5
-        paddingTop: 5
-        paddingRight: 5
-        paddingBottom: 5
-        lineWidth: 2
-        font:
-          style: 'normal'
-          weight: 'normal'
-          size: '13px'
-          family: 'Arial,sans-serif'
-        color: '#888'
-        background: '#ffffff'
-      graph:
-        border: true
-        marginLeft: 'auto'
-        marginBottom: 30
-        marginTop: 5
-        marginRight: 20
-        background: '#ffffff'
-        background_stripe: '#FCFCFC'
       legend:
         font: 
           style: 'italic'

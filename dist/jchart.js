@@ -1,4 +1,6 @@
-;(function() {
+;(function() { //Protect scope 
+
+
 /**
  * Find minimum value of an object or array
  * ============================================================
@@ -2127,6 +2129,34 @@ Jchart = (function() {
     this.data = data;
     this.options = options != null ? options : null;
     this.ipo = ipo;
+    this.options = _.merge({
+      chart: {
+        width: 1060,
+        height: 480,
+        paddingLeft: 5,
+        paddingTop: 5,
+        paddingRight: 5,
+        paddingBottom: 5,
+        lineWidth: 2,
+        font: {
+          style: 'normal',
+          weight: 'normal',
+          size: '13px',
+          family: 'Arial,sans-serif'
+        },
+        color: '#888',
+        background: '#ffffff'
+      },
+      graph: {
+        border: true,
+        marginLeft: 'auto',
+        marginBottom: 30,
+        marginTop: 5,
+        marginRight: 20,
+        background: '#ffffff',
+        background_stripe: '#FCFCFC'
+      }
+    }, this.options);
     if (this.options == null) {
       this.options = {};
     }
@@ -2361,32 +2391,6 @@ JchartCoordinate = (function(_super) {
     this.options = options != null ? options : null;
     this.ipo = ipo;
     this.options = _.merge({
-      chart: {
-        width: 1060,
-        height: 480,
-        paddingLeft: 5,
-        paddingTop: 5,
-        paddingRight: 5,
-        paddingBottom: 5,
-        lineWidth: 2,
-        font: {
-          style: 'normal',
-          weight: 'normal',
-          size: '13px',
-          family: 'Arial,sans-serif'
-        },
-        color: '#888',
-        background: '#ffffff'
-      },
-      graph: {
-        border: true,
-        marginLeft: 'auto',
-        marginBottom: 30,
-        marginTop: 5,
-        marginRight: 20,
-        background: '#ffffff',
-        background_stripe: '#FCFCFC'
-      },
       legend: {
         font: {
           style: 'italic',
@@ -2907,4 +2911,6 @@ JchartBar = (function(_super) {
 })(JchartCoordinate);
 
 Jchart.bar = JchartBar;
-}.call(this));
+
+
+}.call(this)); //Protect scope

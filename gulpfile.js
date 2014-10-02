@@ -1,5 +1,6 @@
 var gulp = require('gulp'),
     gulpif = require('gulp-if'),
+    plumber = require('gulp-plumber'),
     rename = require('gulp-rename'),
     coffee = require('gulp-coffee'),
     concat = require('gulp-concat-util'),
@@ -9,7 +10,8 @@ var gulp = require('gulp'),
     footer = "\n\n}.call(this)); //Protect scope";
 
 gulp.task('dist', function() {
-  gulp.src(['./src/helper.coffee','./src/lodash.custom.js','./src/jchart.coffee','./src/jchart.coordinate.coffee','./src/jchart.line.coffee','./src/jchart.bar.coffee'])
+  gulp.src(['./src/helper.coffee','./src/lodash.custom.js','./src/jchart.coffee','./src/jchart.coordinate.coffee','./src/jchart.line.coffee','./src/jchart.bar.coffee','./src/jchart.pie.js'])
+      .pipe(plumber())
       .pipe(gulpif(/[.]coffee$/, coffee({bare: true})))
       .pipe(concat('jchart.js'))
       .pipe(concat.header(header))

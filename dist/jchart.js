@@ -8,7 +8,7 @@
  * @param {Object} or [Array]
  * @return min_value
  */
-var format, _max, _min;
+var format, hexToRgb, rgbToHex, _max, _min;
 
 _min = function(obj) {
   var min, value, _i, _len;
@@ -96,6 +96,36 @@ Number.prototype.format = format = function(decimals, dec, sep) {
     s[1] += new Array(prec - s[1].length + 1).join('0');
   }
   return s.join(dec);
+};
+
+
+/**
+ * RGB to HEX color converter
+ * ============================================================
+ */
+
+rgbToHex = function(r, g, b) {
+  return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+};
+
+
+/**
+ * HEX to RGB color converter
+ * ============================================================
+ */
+
+hexToRgb = function(hex) {
+  var result;
+  result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  if (result) {
+    return {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    };
+  } else {
+    return null;
+  }
 };
 
 
@@ -2664,64 +2694,6 @@ JchartCoordinate = (function(_super) {
     return this.ctx.closePath();
   };
 
-  JchartCoordinate.prototype.shade = function() {
-    var a, above, above_color, b, barWidth, before_above, below_color, change, i, index, last_change, start, x, y, y1, y2, _i, _j, _k, _ref, _ref1, _results;
-    before_above = null;
-    above_color = 'rgba(253, 115, 109, 0.4)';
-    below_color = 'rgba(0, 183, 151, 0.4)';
-    this.ctx.fillStyle = above_color;
-    last_change = 0;
-    start = false;
-    _results = [];
-    for (i = _i = 0, _ref = this.data[0].plot.length; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-      if (((this.data[0].plot[i] == null) || (this.data[1].plot[i] == null)) && !start) {
-        _results.push(last_change = i + 1);
-      } else if (((this.data[0].plot[i] == null) || (this.data[1].plot[i] == null)) && start) {
-        for (index = _j = _ref1 = i - 1; _ref1 <= last_change ? _j <= last_change : _j >= last_change; index = _ref1 <= last_change ? ++_j : --_j) {
-          this.ctx.lineTo(this.data[1].plot[index].x, this.data[1].plot[index].y);
-        }
-        this.ctx.closePath();
-        this.ctx.fillStyle = before_above ? above_color : below_color;
-        this.ctx.fill();
-        break;
-      } else if ((this.data[0].plot[i] != null) && (this.data[1].plot[i] != null) && !start) {
-        this.ctx.beginPath();
-        this.ctx.moveTo(this.data[0].plot[i].x, this.data[0].plot[i].y);
-        _results.push(start = true);
-      } else {
-        above = this.data[0].plot[i].y < this.data[1].plot[i].y ? true : false;
-        change = (before_above != null) && before_above !== above ? true : false;
-        if (!change) {
-          this.ctx.lineTo(this.data[0].plot[i].x, this.data[0].plot[i].y);
-        } else {
-          if ((this.data[0].plot[i - 1] != null) && (this.data[1].plot[i - 1] != null)) {
-            y1 = this.data[0].plot[i - 1].y;
-            y2 = this.data[0].plot[i].y;
-            a = y1 - _min([y1, y2]);
-            b = y2 - _min([y1, y2]);
-            barWidth = this.data[0].plot[i].x - this.data[0].plot[i - 1].x;
-            x = this.data[0].plot[i - 1].x + (a * barWidth / (a + b));
-            y = _min([y1, y2]) + (a * b) / (a + b);
-            this.ctx.lineTo(x, y);
-            for (index = _k = i; i <= last_change ? _k <= last_change : _k >= last_change; index = i <= last_change ? ++_k : --_k) {
-              this.ctx.lineTo(this.data[1].plot[index].x, this.data[1].plot[index].y);
-            }
-            this.ctx.closePath();
-            this.ctx.fillStyle = above ? below_color : above_color;
-            this.ctx.fill();
-            this.ctx.beginPath();
-            this.ctx.moveTo(this.data[0].plot[i - 1].x, this.data[0].plot[i - 1].y);
-            this.ctx.lineTo(x, y);
-            this.ctx.lineTo(this.data[0].plot[i].x, this.data[0].plot[i].y);
-            last_change = i;
-          }
-        }
-        _results.push(before_above = above);
-      }
-    }
-    return _results;
-  };
-
   return JchartCoordinate;
 
 })(Jchart);
@@ -2749,7 +2721,10 @@ JchartLine = (function(_super) {
   };
 
   JchartLine.prototype.addLine = function(data) {
-    return this.draw_line_graph(data);
+    this.draw_line_graph(data);
+    if (data.style.fill_area) {
+      return this.fillArea(data);
+    }
   };
 
   JchartLine.prototype.draw_line_graph = function(data) {
@@ -2844,6 +2819,92 @@ JchartLine = (function(_super) {
     return _results;
   };
 
+  JchartLine.prototype.shade = function() {
+    var a, above, above_color, b, barWidth, before_above, below_color, change, i, index, last_change, start, x, y, y1, y2, _i, _j, _k, _ref, _ref1, _results;
+    before_above = null;
+    above_color = 'rgba(253, 115, 109, 0.4)';
+    below_color = 'rgba(0, 183, 151, 0.4)';
+    this.ctx.fillStyle = above_color;
+    last_change = 0;
+    start = false;
+    _results = [];
+    for (i = _i = 0, _ref = this.data[0].plot.length; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+      if (((this.data[0].plot[i] == null) || (this.data[1].plot[i] == null)) && !start) {
+        _results.push(last_change = i + 1);
+      } else if (((this.data[0].plot[i] == null) || (this.data[1].plot[i] == null)) && start) {
+        for (index = _j = _ref1 = i - 1; _ref1 <= last_change ? _j <= last_change : _j >= last_change; index = _ref1 <= last_change ? ++_j : --_j) {
+          this.ctx.lineTo(this.data[1].plot[index].x, this.data[1].plot[index].y);
+        }
+        this.ctx.closePath();
+        this.ctx.fillStyle = before_above ? above_color : below_color;
+        this.ctx.fill();
+        break;
+      } else if ((this.data[0].plot[i] != null) && (this.data[1].plot[i] != null) && !start) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(this.data[0].plot[i].x, this.data[0].plot[i].y);
+        _results.push(start = true);
+      } else {
+        above = this.data[0].plot[i].y < this.data[1].plot[i].y ? true : false;
+        change = (before_above != null) && before_above !== above ? true : false;
+        if (!change) {
+          this.ctx.lineTo(this.data[0].plot[i].x, this.data[0].plot[i].y);
+        } else {
+          if ((this.data[0].plot[i - 1] != null) && (this.data[1].plot[i - 1] != null)) {
+            y1 = this.data[0].plot[i - 1].y;
+            y2 = this.data[0].plot[i].y;
+            a = y1 - _min([y1, y2]);
+            b = y2 - _min([y1, y2]);
+            barWidth = this.data[0].plot[i].x - this.data[0].plot[i - 1].x;
+            x = this.data[0].plot[i - 1].x + (a * barWidth / (a + b));
+            y = _min([y1, y2]) + (a * b) / (a + b);
+            this.ctx.lineTo(x, y);
+            for (index = _k = i; i <= last_change ? _k <= last_change : _k >= last_change; index = i <= last_change ? ++_k : --_k) {
+              this.ctx.lineTo(this.data[1].plot[index].x, this.data[1].plot[index].y);
+            }
+            this.ctx.closePath();
+            this.ctx.fillStyle = above ? below_color : above_color;
+            this.ctx.fill();
+            this.ctx.beginPath();
+            this.ctx.moveTo(this.data[0].plot[i - 1].x, this.data[0].plot[i - 1].y);
+            this.ctx.lineTo(x, y);
+            this.ctx.lineTo(this.data[0].plot[i].x, this.data[0].plot[i].y);
+            last_change = i;
+          }
+        }
+        _results.push(before_above = above);
+      }
+    }
+    return _results;
+  };
+
+  JchartLine.prototype.fillArea = function(data) {
+    var color, ctx, dataToFill;
+    ctx = this.ctx;
+    if (hexToRgb(data.style.color)) {
+      color = hexToRgb(data.style.color);
+    } else {
+      color = data.style.color;
+    }
+    ctx.fillStyle = 'rgba(' + color.r + ', ' + color.g + ', ' + color.b + ', 0.2)';
+    ctx.beginPath();
+    dataToFill = [];
+    data.plot.forEach(function(item) {
+      if (item) {
+        return dataToFill.push(item);
+      }
+    });
+    if (dataToFill.length) {
+      ctx.beginPath();
+      ctx.moveTo(dataToFill[0].x, this.options.chart.height - (this.options.chart.paddingBottom + this.options.graph.marginBottom));
+      dataToFill.forEach(function(item) {
+        return ctx.lineTo(item.x, item.y);
+      });
+      ctx.lineTo(dataToFill[dataToFill.length - 1].x, this.options.chart.height - (this.options.chart.paddingBottom + this.options.graph.marginBottom));
+      ctx.closePath();
+      return ctx.fill();
+    }
+  };
+
   return JchartLine;
 
 })(JchartCoordinate);
@@ -2912,5 +2973,126 @@ JchartBar = (function(_super) {
 
 Jchart.bar = JchartBar;
 
+var JchartPie,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+JchartPie = (function(_super) {
+
+  __extends(JchartPie, _super);
+
+  function JchartPie(canvas, data, options) {
+  
+    this.canvas = canvas;
+    this.data = data;
+    this.options = options != null ? options : null;
+    JchartPie.__super__.constructor.call(this, this.canvas, this.data, this.options);
+    this.build();
+  
+  }
+
+  JchartPie.prototype.build = function () {
+  
+    this.process();
+    this.draw();
+    this.events();
+  
+  };
+
+  JchartPie.prototype.process = function () {
+   
+    var data = this.data;
+    var all = 0;
+    
+    data.forEach(function(item) {
+      all += item.value;
+    });
+    
+    data.all = all;
+    
+    data.forEach(function(item, i) {
+
+      var percent = (item.value * 100) / all;
+      var degress = (percent * 360) / 100;
+      data[i].percent = percent;
+      data[i].degrees = degress;
+
+      if(!data[i].rgb) {
+        var color = hexToRgb(item.color);
+        data[i].rgb = 'rgba('+color.r+', '+color.g+', '+color.b+', 0.8)';
+      }
+    
+    });
+    
+    this.data = data;
+    
+    console.log(this.data);
+  
+  };
+
+  JchartPie.prototype.draw = function () {
+    
+    var ctx = this.ctx;
+    var data = this.data;
+    var options = this.options;
+    var last = {
+      degrees: 0,
+      radians: 0
+    };
+    var radius = options.chart.width/2 - ( options.chart.paddingLeft + options.chart.paddingRight );
+
+    data.forEach(function(item, i) {
+      
+      var degrees = item.degrees + last.degrees;
+      //var xPoint = radius * Math.sin(0);
+      //var yPoint = radius * Math.cos(0);
+      var radians = (Math.PI / 180) * degrees;
+
+      //console.log(degrees);
+
+      ctx.strokeStyle = '#FFFFFF';
+      ctx.fillStyle = item.rgb;
+      ctx.lineWidth = 3;
+      //console.log('last.radians: '+last.radians+' radians: '+radians);
+      
+      ctx.beginPath();
+
+      ctx.arc(options.chart.width/2, options.chart.height/2, radius, last.radians, radians);
+      //ctx.fill();
+      ctx.stroke();
+
+      ctx.lineTo(options.chart.width/2, options.chart.height/2);
+      //this.ctx.lineTo(xPoint, yPoint);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.fill();
+
+      last.degrees = degrees;
+      last.radians = radians;
+
+    });
+  
+  };
+
+  JchartPie.prototype.events = function () {
+
+
+    var ctx = this.ctx;
+    var process = this.process;
+    var draw = this.draw;
+
+
+    this.canvas.addEventListener('mousemove', function (e) {
+      var pixel = ctx.getImageData(e.x, e.y, 1,1).data;
+      console.log(rgbToHex(pixel[0], pixel[1], pixel[2]));
+    });
+  
+  };
+
+  return JchartPie;
+
+})(Jchart);
+
+Jchart.pie = JchartPie;
 
 }.call(this)); //Protect scope

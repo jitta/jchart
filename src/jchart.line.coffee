@@ -14,6 +14,8 @@ class JchartLine extends JchartCoordinate
 
   addLine: (data) ->
     @draw_line_graph data
+    if data.style.fill_area
+      @fillArea data
 
   draw_line_graph: (data) ->
     @ctx.beginPath()
@@ -89,5 +91,87 @@ class JchartLine extends JchartCoordinate
     lineHeight = @options.chart.font.size.replace 'px', ''
     for t in texts
       ctx.fillText t, x, y + _i*lineHeight
+
+  shade: () ->
+    before_above = null
+    above_color = 'rgba(253, 115, 109, 0.4)' # '#fd726d'
+    below_color = 'rgba(0, 183, 151, 0.4)'  # '#00bd9c'
+    @ctx.fillStyle = above_color
+    last_change = 0
+    start = false
+    for i in [0..@data[0].plot.length]
+      if (!@data[0].plot[i]? or !@data[1].plot[i]?) and !start
+        last_change = i + 1
+
+      else if (!@data[0].plot[i]? or !@data[1].plot[i]?) and start
+        for index in [i-1..last_change]
+          @ctx.lineTo @data[1].plot[index].x, @data[1].plot[index].y
+        @ctx.closePath()
+        @ctx.fillStyle = if before_above then above_color else below_color
+        @ctx.fill()
+        break
+
+      else if @data[0].plot[i]? and @data[1].plot[i]? and !start
+        @ctx.beginPath()
+        @ctx.moveTo @data[0].plot[i].x, @data[0].plot[i].y
+        start = true
+
+      else
+        above = if @data[0].plot[i].y < @data[1].plot[i].y then true else false
+        change = if before_above? and before_above != above then true else false
+
+        if !change
+          @ctx.lineTo @data[0].plot[i].x, @data[0].plot[i].y
+        else
+          if @data[0].plot[i-1]? and @data[1].plot[i-1]?
+            y1 = @data[0].plot[i-1].y
+            y2 = @data[0].plot[i].y
+            a = y1 - _min([y1, y2])
+            b = y2 - _min([y1, y2])
+            barWidth = @data[0].plot[i].x - @data[0].plot[i-1].x
+            x = @data[0].plot[i-1].x + (a * barWidth / (a + b))
+            y = _min([y1, y2]) + (a*b) / (a+b)
+            @ctx.lineTo x, y
+            @ctx.lineTo @data[1].plot[index].x, @data[1].plot[index].y for index in [i..last_change]
+            @ctx.closePath()
+            @ctx.fillStyle = if above then below_color else above_color
+            @ctx.fill()
+
+            @ctx.beginPath()
+            @ctx.moveTo @data[0].plot[i-1].x, @data[0].plot[i-1].y
+            @ctx.lineTo x, y
+            @ctx.lineTo @data[0].plot[i].x, @data[0].plot[i].y
+
+            last_change = i
+
+        before_above = above
+
+  fillArea: (data) ->
+    ctx = @ctx
+
+    if hexToRgb data.style.color
+      color = hexToRgb data.style.color
+    else
+      color = data.style.color
+
+    ctx.fillStyle = 'rgba('+color.r+', '+color.g+', '+color.b+', 0.2)' # '#EAF8FC'
+    ctx.beginPath()
+
+    dataToFill = []
+    data.plot.forEach (item) ->
+      if item
+        dataToFill.push item
+
+    if dataToFill.length
+      ctx.beginPath()
+      ctx.moveTo dataToFill[0].x, @options.chart.height - ( @options.chart.paddingBottom + @options.graph.marginBottom )
+
+      dataToFill.forEach (item) ->
+        ctx.lineTo item.x, item.y
+
+      ctx.lineTo dataToFill[dataToFill.length-1].x, @options.chart.height - ( @options.chart.paddingBottom + @options.graph.marginBottom )
+
+      ctx.closePath()
+      ctx.fill()
 
 Jchart.line = JchartLine

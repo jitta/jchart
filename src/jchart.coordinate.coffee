@@ -217,7 +217,7 @@ class JchartCoordinate extends Jchart
           @ctx.textBaseline = 'top'
           @ctx.fillText @options.xAxis.label.prefix + value + @options.xAxis.label.suffix, @pl + _x, @pt + _y
 
-        # gird
+        # grid
         if @options.xAxis.grid.enable
           if @options.xAxis.grid.align is 'center'
             _x = x - barWidth/2

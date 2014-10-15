@@ -8,7 +8,7 @@
  * @param {Object} or [Array]
  * @return min_value
  */
-var format, hexToRgb, rgbToHex, _max, _min;
+var color_meter, format, hexToRgb, rgbToHex, _max, _min;
 
 _min = function(obj) {
   var min, value, _i, _len;
@@ -126,6 +126,36 @@ hexToRgb = function(hex) {
   } else {
     return null;
   }
+};
+
+
+/**
+ * HEX color difference
+ * ============================================================
+ */
+
+color_meter = function(cwith, ccolor) {
+  var p1, p2, p3, perc1, perc2, __b, __g, __r, _b, _ccolor, _cwith, _g, _r;
+  if (!cwith && !ccolor) {
+    return;
+  }
+  _cwith = (cwith.charAt(0) === "#" ? cwith.substring(1, 7) : cwith);
+  _ccolor = (ccolor.charAt(0) === "#" ? ccolor.substring(1, 7) : ccolor);
+  _r = parseInt(_cwith.substring(0, 2), 16);
+  _g = parseInt(_cwith.substring(2, 4), 16);
+  _b = parseInt(_cwith.substring(4, 6), 16);
+  __r = parseInt(_ccolor.substring(0, 2), 16);
+  __g = parseInt(_ccolor.substring(2, 4), 16);
+  __b = parseInt(_ccolor.substring(4, 6), 16);
+  p1 = (_r / 255) * 100;
+  p2 = (_g / 255) * 100;
+  p3 = (_b / 255) * 100;
+  perc1 = Math.round((p1 + p2 + p3) / 3);
+  p1 = (__r / 255) * 100;
+  p2 = (__g / 255) * 100;
+  p3 = (__b / 255) * 100;
+  perc2 = Math.round((p1 + p2 + p3) / 3);
+  return Math.abs(perc1 - perc2);
 };
 
 
@@ -2999,8 +3029,8 @@ JchartPie = (function(_super) {
   
   };
 
-  JchartPie.prototype.process = function () {
-   
+  JchartPie.prototype.process = function (highlight) {
+    
     var data = this.data;
     var all = 0;
     
@@ -3017,16 +3047,19 @@ JchartPie = (function(_super) {
       data[i].percent = percent;
       data[i].degrees = degress;
 
-      if(!data[i].rgb) {
-        var color = hexToRgb(item.color);
-        data[i].rgb = 'rgba('+color.r+', '+color.g+', '+color.b+', 0.8)';
+      var color = hexToRgb(item.color);
+      if ( highlight && color_meter(item.color.toLowerCase(), rgbToHex(highlight[0], highlight[1], highlight[2]).toLowerCase()) == 0) {
+        data[i].rgb = 'rgba('+color.r+', '+color.g+', '+color.b+', 1.0)';
+      }
+      else {
+        data[i].rgb = 'rgba('+color.r+', '+color.g+', '+color.b+', 0.7)';
       }
     
     });
     
     this.data = data;
     
-    console.log(this.data);
+    //console.log(this.data);
   
   };
 
@@ -3075,17 +3108,17 @@ JchartPie = (function(_super) {
   };
 
   JchartPie.prototype.events = function () {
-
-
-    var ctx = this.ctx;
-    var process = this.process;
-    var draw = this.draw;
-
-
-    this.canvas.addEventListener('mousemove', function (e) {
-      var pixel = ctx.getImageData(e.x, e.y, 1,1).data;
-      console.log(rgbToHex(pixel[0], pixel[1], pixel[2]));
-    });
+    var lastPixel;
+    this.canvas.addEventListener('mousemove', (function (e) {
+      var pixel = this.ctx.getImageData(e.x, e.y, 1,1).data;
+      //console.log(rgbToHex(pixel[0], pixel[1], pixel[2]));
+      if ( lastPixel == undefined || rgbToHex(pixel[0], pixel[1], pixel[2]) != rgbToHex(lastPixel[0], lastPixel[1], lastPixel[2])) {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.process(pixel);
+        this.draw();
+      }
+      lastPixel = pixel
+    }).bind(this));
   
   };
 

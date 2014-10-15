@@ -24,8 +24,8 @@ JchartPie = (function(_super) {
   
   };
 
-  JchartPie.prototype.process = function () {
-   
+  JchartPie.prototype.process = function (highlight) {
+    
     var data = this.data;
     var all = 0;
     
@@ -42,16 +42,19 @@ JchartPie = (function(_super) {
       data[i].percent = percent;
       data[i].degrees = degress;
 
-      if(!data[i].rgb) {
-        var color = hexToRgb(item.color);
-        data[i].rgb = 'rgba('+color.r+', '+color.g+', '+color.b+', 0.8)';
+      var color = hexToRgb(item.color);
+      if ( highlight && color_meter(item.color.toLowerCase(), rgbToHex(highlight[0], highlight[1], highlight[2]).toLowerCase()) == 0) {
+        data[i].rgb = 'rgba('+color.r+', '+color.g+', '+color.b+', 1.0)';
+      }
+      else {
+        data[i].rgb = 'rgba('+color.r+', '+color.g+', '+color.b+', 0.7)';
       }
     
     });
     
     this.data = data;
     
-    console.log(this.data);
+    //console.log(this.data);
   
   };
 
@@ -100,17 +103,17 @@ JchartPie = (function(_super) {
   };
 
   JchartPie.prototype.events = function () {
-
-
-    var ctx = this.ctx;
-    var process = this.process;
-    var draw = this.draw;
-
-
-    this.canvas.addEventListener('mousemove', function (e) {
-      var pixel = ctx.getImageData(e.x, e.y, 1,1).data;
-      console.log(rgbToHex(pixel[0], pixel[1], pixel[2]));
-    });
+    var lastPixel;
+    this.canvas.addEventListener('mousemove', (function (e) {
+      var pixel = this.ctx.getImageData(e.x, e.y, 1,1).data;
+      //console.log(rgbToHex(pixel[0], pixel[1], pixel[2]));
+      if ( lastPixel == undefined || rgbToHex(pixel[0], pixel[1], pixel[2]) != rgbToHex(lastPixel[0], lastPixel[1], lastPixel[2])) {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.process(pixel);
+        this.draw();
+      }
+      lastPixel = pixel
+    }).bind(this));
   
   };
 

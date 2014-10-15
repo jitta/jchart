@@ -79,6 +79,7 @@ rgbToHex = (r, g, b) ->
  * HEX to RGB color converter
  * ============================================================
 ###
+
 hexToRgb = (hex) ->
   result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
   (if result
@@ -86,3 +87,28 @@ hexToRgb = (hex) ->
     g: parseInt(result[2], 16)
     b: parseInt(result[3], 16)
   else null)
+
+###*
+ * HEX color difference
+ * ============================================================
+###
+
+color_meter = (cwith, ccolor) ->
+  return  if not cwith and not ccolor
+  _cwith = (if (cwith.charAt(0) is "#") then cwith.substring(1, 7) else cwith)
+  _ccolor = (if (ccolor.charAt(0) is "#") then ccolor.substring(1, 7) else ccolor)
+  _r = parseInt(_cwith.substring(0, 2), 16)
+  _g = parseInt(_cwith.substring(2, 4), 16)
+  _b = parseInt(_cwith.substring(4, 6), 16)
+  __r = parseInt(_ccolor.substring(0, 2), 16)
+  __g = parseInt(_ccolor.substring(2, 4), 16)
+  __b = parseInt(_ccolor.substring(4, 6), 16)
+  p1 = (_r / 255) * 100
+  p2 = (_g / 255) * 100
+  p3 = (_b / 255) * 100
+  perc1 = Math.round((p1 + p2 + p3) / 3)
+  p1 = (__r / 255) * 100
+  p2 = (__g / 255) * 100
+  p3 = (__b / 255) * 100
+  perc2 = Math.round((p1 + p2 + p3) / 3)
+  Math.abs perc1 - perc2

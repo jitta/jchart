@@ -63,10 +63,10 @@ class JchartCoordinate extends Jchart
     super @canvas, @data, @options, @ipo
 
   normalize_data: ->
-    make_equal = []
+    raw_data = []
     for data_item in @data
-      make_equal.push data_item.data
-    same_length_array(make_equal)
+      raw_data.push data_item.data
+    roundValues raw_data
 
   preprocess_data: ->
 

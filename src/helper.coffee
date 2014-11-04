@@ -113,17 +113,13 @@ color_meter = (cwith, ccolor) ->
   perc2 = Math.round((p1 + p2 + p3) / 3)
   Math.abs perc1 - perc2
 
-same_length_array = (arrays) ->
-  length_of_arrays = []
-  arrays.forEach (item) ->
-    length_of_arrays.push item.length
-  desired_length = _max length_of_arrays
-  #console.log length_of_arrays
+###*
+ * Round data values
+ * ============================================================
+###
 
+roundValues = (arrays) ->
   arrays.forEach (item) ->
-    i = item.length
-    while i < desired_length
-      item.push null
-      i++
-
-  #console.log arrays
+    item.forEach (value, i) ->
+      if (value != null)
+        item[i] = parseFloat(value.toFixed(2))

@@ -4,6 +4,7 @@ class JchartLine extends JchartCoordinate
   constructor: (@canvas, @data, @options=null, @ipo) ->
 
     super @canvas, @data, @options, @ipo
+    @normalize_data()
     @draw()
 
   draw: ->

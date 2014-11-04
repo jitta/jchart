@@ -8,7 +8,7 @@
  * @param {Object} or [Array]
  * @return min_value
  */
-var color_meter, format, hexToRgb, rgbToHex, _max, _min;
+var color_meter, format, hexToRgb, rgbToHex, same_length_array, _max, _min;
 
 _min = function(obj) {
   var min, value, _i, _len;
@@ -156,6 +156,25 @@ color_meter = function(cwith, ccolor) {
   p3 = (__b / 255) * 100;
   perc2 = Math.round((p1 + p2 + p3) / 3);
   return Math.abs(perc1 - perc2);
+};
+
+same_length_array = function(arrays) {
+  var desired_length, length_of_arrays;
+  length_of_arrays = [];
+  arrays.forEach(function(item) {
+    return length_of_arrays.push(item.length);
+  });
+  desired_length = _max(length_of_arrays);
+  return arrays.forEach(function(item) {
+    var i, _results;
+    i = item.length;
+    _results = [];
+    while (i < desired_length) {
+      item.push(null);
+      _results.push(i++);
+    }
+    return _results;
+  });
 };
 
 
@@ -2521,6 +2540,17 @@ JchartCoordinate = (function(_super) {
     JchartCoordinate.__super__.constructor.call(this, this.canvas, this.data, this.options, this.ipo);
   }
 
+  JchartCoordinate.prototype.normalize_data = function() {
+    var data_item, make_equal, _i, _len, _ref;
+    make_equal = [];
+    _ref = this.data;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      data_item = _ref[_i];
+      make_equal.push(data_item.data);
+    }
+    return same_length_array(make_equal);
+  };
+
   JchartCoordinate.prototype.preprocess_data = function() {
     var barWidth, digit, item, max, max_obj, max_text, min, min_obj, pad, value, _i, _j, _len, _len1, _ref, _ref1;
     if (this.options.yAxis.min != null) {
@@ -2741,6 +2771,7 @@ JchartLine = (function(_super) {
     this.options = options != null ? options : null;
     this.ipo = ipo;
     JchartLine.__super__.constructor.call(this, this.canvas, this.data, this.options, this.ipo);
+    this.normalize_data();
     this.draw();
   }
 

@@ -5,9 +5,11 @@ class JchartCoordinate extends Jchart
 
     @options = _.merge
       legend:
+        width: 80
         font: 
           style: 'italic'
-          size: '13px'
+          weight: '400'
+          size: '11px'
         color: 'rgba(0,0,0,0.3)'
         enable: true
         layout: 'horizontal'

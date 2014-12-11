@@ -2216,7 +2216,7 @@ Jchart = (function() {
         lineWidth: 2,
         font: {
           style: 'normal',
-          weight: 'normal',
+          weight: '400',
           size: '13px',
           family: 'Arial,sans-serif'
         },
@@ -2226,7 +2226,7 @@ Jchart = (function() {
       graph: {
         border: true,
         marginLeft: 'auto',
-        marginBottom: 30,
+        marginBottom: 25,
         marginTop: 5,
         marginRight: 20,
         background: '#ffffff',
@@ -2263,7 +2263,7 @@ Jchart = (function() {
 
   Jchart.prototype.process_legend = function() {
     var data_legend, item, legend_width, text_height, x, y, _i, _len, _results;
-    legend_width = 150;
+    legend_width = this.options.legend.width;
     text_height = parseInt(this.options.legend.font.size.replace('px', '')) * 2;
     data_legend = _.filter(this.data, function(item) {
       return item.legend !== false;
@@ -2275,6 +2275,7 @@ Jchart = (function() {
       y = this.options.chart.height - this.options.chart.paddingBottom + this.options.legend.marginTop;
       this.ctx.fillStyle = this.options.legend.color || this.options.chart.color;
       this.ctx.font = this.font_format(this.options.legend.font);
+      console.log(this.font_format(this.options.legend.font));
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'top';
       this.ctx.fillText(item.name, x, y);
@@ -2468,9 +2469,11 @@ JchartCoordinate = (function(_super) {
     this.ipo = ipo;
     this.options = _.merge({
       legend: {
+        width: 80,
         font: {
           style: 'italic',
-          size: '13px'
+          weight: '400',
+          size: '11px'
         },
         color: 'rgba(0,0,0,0.3)',
         enable: true,

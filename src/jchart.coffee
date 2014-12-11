@@ -17,7 +17,7 @@ class Jchart
         lineWidth: 2
         font:
           style: 'normal'
-          weight: 'normal'
+          weight: '400'
           size: '13px'
           family: 'Arial,sans-serif'
         color: '#888'
@@ -25,7 +25,7 @@ class Jchart
       graph:
         border: true
         marginLeft: 'auto'
-        marginBottom: 30
+        marginBottom: 25
         marginTop: 5
         marginRight: 20
         background: '#ffffff'
@@ -60,7 +60,7 @@ class Jchart
     ratio
 
   process_legend: () ->
-    legend_width = 150
+    legend_width = @options.legend.width
     text_height = parseInt(@options.legend.font.size.replace('px',''))*2
     data_legend = _.filter @data, (item) -> item.legend isnt false
     for item in data_legend
@@ -69,6 +69,7 @@ class Jchart
       # fill text legend
       @ctx.fillStyle = @options.legend.color or @options.chart.color
       @ctx.font = @font_format(@options.legend.font)
+      console.log @font_format(@options.legend.font)
       @ctx.textAlign = 'center'
       @ctx.textBaseline = 'top'
       @ctx.fillText item.name, x, y

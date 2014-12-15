@@ -69,7 +69,6 @@ class Jchart
       # fill text legend
       @ctx.fillStyle = @options.legend.color or @options.chart.color
       @ctx.font = @font_format(@options.legend.font)
-      console.log @font_format(@options.legend.font)
       @ctx.textAlign = 'center'
       @ctx.textBaseline = 'top'
       @ctx.fillText item.name, x, y

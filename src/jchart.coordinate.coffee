@@ -91,7 +91,7 @@ class JchartCoordinate extends Jchart
 
     # auto calculate margin left from max text length
     if @options.graph.marginLeft is 'auto' # ~40
-      max_text = @options.yAxis.label.prefix + @max_data + @options.yAxis.label.suffix
+      max_text = @options.yAxis.label.prefix + Math.round(@max_data) + @options.yAxis.label.suffix
       digit = max_text.length
       @options.graph.marginLeft = 10 + digit*8 + @options.yAxis.tick.size
 

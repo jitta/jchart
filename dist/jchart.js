@@ -2275,7 +2275,6 @@ Jchart = (function() {
       y = this.options.chart.height - this.options.chart.paddingBottom + this.options.legend.marginTop;
       this.ctx.fillStyle = this.options.legend.color || this.options.chart.color;
       this.ctx.font = this.font_format(this.options.legend.font);
-      console.log(this.font_format(this.options.legend.font));
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'top';
       this.ctx.fillText(item.name, x, y);
@@ -2581,7 +2580,7 @@ JchartCoordinate = (function(_super) {
       }
     }
     if (this.options.graph.marginLeft === 'auto') {
-      max_text = this.options.yAxis.label.prefix + this.max_data + this.options.yAxis.label.suffix;
+      max_text = this.options.yAxis.label.prefix + Math.round(this.max_data) + this.options.yAxis.label.suffix;
       digit = max_text.length;
       this.options.graph.marginLeft = 10 + digit * 8 + this.options.yAxis.tick.size;
     }

@@ -2581,10 +2581,10 @@ JchartCoordinate = (function(_super) {
     }
     if (this.options.graph.marginLeft === 'auto') {
       if (this.max_data > 10) {
-        Math.round(this.max_data);
+        this.max_data = Math.round(this.max_data);
       }
-      max_text = this.options.yAxis.label.prefix + Math.round(this.max_data) + this.options.yAxis.label.suffix;
-      digit = max_text.length;
+      max_text = this.options.yAxis.label.prefix + this.max_data + this.options.yAxis.label.suffix;
+      digit = max_text.replace('.', '').length;
       this.options.graph.marginLeft = 10 + digit * 8 + this.options.yAxis.tick.size;
     }
     this.graph_width = this.options.chart.width - this.options.chart.paddingLeft - this.options.chart.paddingRight;

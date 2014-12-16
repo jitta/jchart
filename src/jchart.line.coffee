@@ -28,7 +28,7 @@ class JchartLine extends JchartCoordinate
     @ctx.strokeStyle = data.style.color or '#000'
     @ctx.fillStyle = data.style.color or '#000'
     null_count = 0
-    before = data.plot[0]
+    #before = data.plot[0]
     for plot in data.plot
 
       if data.style.line is 'dashed'
@@ -36,30 +36,18 @@ class JchartLine extends JchartCoordinate
       else
         @ctx.setLineDash([0]);
 
-      if plot? and before?
+      if plot?
         null_count = 0
-        if data.style.line is 'dashed' and _i != 0
-          @ctx.moveTo before.x, before.y
-          @ctx.lineTo plot.x, plot.y
-        else if data.style.line is 'point'
+        if data.style.line is 'point'
           @ctx.fillRect plot.x, plot.y, 3, 3
         else
           @ctx.lineTo plot.x, plot.y
         last_data = plot
       else ## start point
-        if plot? and null_count > 12
+        if plot?
           @ctx.moveTo plot.x, plot.y
-        else if plot? and last_data? and null_count < 12
-          if data.style.line is 'dashed'
-            @ctx.moveTo last_data.x, last_data.y
-            @ctx.lineTo plot.x, plot.y
-          else if data.style.line is 'point'
-            @ctx.fillRect plot.x, plot.y, 1, 1
-          else
-            @ctx.lineTo plot.x, plot.y
 
       null_count++ if !plot?
-      before = plot
 
     @ctx.stroke()
     @ctx.closePath()

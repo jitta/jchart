@@ -2774,13 +2774,12 @@ JchartLine = (function(_super) {
   };
 
   JchartLine.prototype.draw_line_graph = function(data) {
-    var before, last_data, null_count, plot, _i, _len, _ref;
+    var last_data, null_count, plot, _i, _len, _ref;
     this.ctx.beginPath();
     this.ctx.lineWidth = data.style.lineWidth || 2;
     this.ctx.strokeStyle = data.style.color || '#000';
     this.ctx.fillStyle = data.style.color || '#000';
     null_count = 0;
-    before = data.plot[0];
     _ref = data.plot;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       plot = _ref[_i];
@@ -2789,35 +2788,22 @@ JchartLine = (function(_super) {
       } else {
         this.ctx.setLineDash([0]);
       }
-      if ((plot != null) && (before != null)) {
+      if (plot != null) {
         null_count = 0;
-        if (data.style.line === 'dashed' && _i !== 0) {
-          this.ctx.moveTo(before.x, before.y);
-          this.ctx.lineTo(plot.x, plot.y);
-        } else if (data.style.line === 'point') {
+        if (data.style.line === 'point') {
           this.ctx.fillRect(plot.x, plot.y, 3, 3);
         } else {
           this.ctx.lineTo(plot.x, plot.y);
         }
         last_data = plot;
       } else {
-        if ((plot != null) && null_count > 12) {
+        if (plot != null) {
           this.ctx.moveTo(plot.x, plot.y);
-        } else if ((plot != null) && (last_data != null) && null_count < 12) {
-          if (data.style.line === 'dashed') {
-            this.ctx.moveTo(last_data.x, last_data.y);
-            this.ctx.lineTo(plot.x, plot.y);
-          } else if (data.style.line === 'point') {
-            this.ctx.fillRect(plot.x, plot.y, 1, 1);
-          } else {
-            this.ctx.lineTo(plot.x, plot.y);
-          }
         }
       }
       if (plot == null) {
         null_count++;
       }
-      before = plot;
     }
     this.ctx.stroke();
     return this.ctx.closePath();

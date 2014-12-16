@@ -77,12 +77,12 @@ class Jchart
       @ctx.strokeStyle = item.style.color
       @ctx.lineWidth = @options.chart.lineWidth
       if item.style.line is 'dashed'
-        @dashedLine @ctx, x - legend_width/2.5, y + text_height, x + legend_width/2.5, y + text_height
-      else
-        @ctx.beginPath()
-        @ctx.moveTo x - legend_width/2.5 , y + text_height
-        @ctx.lineTo x + legend_width/2.5 , y + text_height
-        @ctx.stroke()
+        @ctx.setLineDash(@options.line_dash);
+      @ctx.beginPath()
+      @ctx.moveTo x - legend_width/2.5 , y + text_height
+      @ctx.lineTo x + legend_width/2.5 , y + text_height
+      @ctx.stroke()
+      @ctx.setLineDash([0]);
 
   addLabel: (text, option) ->
     option = {} unless option?
@@ -130,37 +130,6 @@ class Jchart
       resp.end()
 
   writeFile: (filename, callback) ->
-
-  #
-  # drawing helper
-  #
-  dashedLine: (ctx, x1, y1, x2, y2, dashLen) ->
-    dashLen = Math.floor @options.chart.width/250 if dashLen is undefined
-    
-    ctx.beginPath()
-    ctx.moveTo(x1, y1)
-    
-    dX = x2 - x1
-    dY = y2 - y1
-    dashes = Math.floor(Math.sqrt(dX * dX + dY * dY) / dashLen)
-    dashX = dX / dashes
-    dashY = dY / dashes
-    
-    q = 0
-    while q++ < dashes
-      x1 += dashX
-      y1 += dashY
-      if q % 2 is 0
-        ctx.moveTo x1, y1
-      else
-        ctx.lineTo x1, y1
-
-    if q % 2 == 0
-      ctx.moveTo x2, y2
-    else
-      ctx.lineTo x2, y2
-    ctx.stroke()
-    ctx.closePath()
 
   rect: (ctx, x, y, width, height, radius=0, fill, stroke) ->
     stroke = true if stroke is undefined

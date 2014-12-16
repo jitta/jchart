@@ -3,6 +3,10 @@ class JchartLine extends JchartCoordinate
 
   constructor: (@canvas, @data, @options=null, @ipo) ->
 
+    @options = _.merge
+      line_dash: [5,2]
+    , @options
+
     super @canvas, @data, @options, @ipo
     @normalize_data()
     @draw()
@@ -26,24 +30,26 @@ class JchartLine extends JchartCoordinate
     null_count = 0
     before = data.plot[0]
     for plot in data.plot
+
+      if data.style.line is 'dashed'
+        @ctx.setLineDash(@options.line_dash);
+      else
+        @ctx.setLineDash([0]);
+
       if plot? and before?
         null_count = 0
-        if data.style.line is 'dashed' and _i != 0
-          @dashedLine @ctx, before.x, before.y, plot.x, plot.y
-        else if data.style.line is 'point'
+        if data.style.line is 'point'
           @ctx.fillRect plot.x, plot.y, 3, 3
-        else # solid line
+        else
           @ctx.lineTo plot.x, plot.y
         last_data = plot
       else ## start point
         if plot? and null_count > 12
           @ctx.moveTo plot.x, plot.y
         else if plot? and last_data? and null_count < 12
-          if data.style.line is 'dashed'
-            @dashedLine @ctx, last_data.x, last_data.y, plot.x, plot.y
-          else if data.style.line is 'point'
+          if data.style.line is 'point'
             @ctx.fillRect plot.x, plot.y, 1, 1
-          else # solid line
+          else
             @ctx.lineTo plot.x, plot.y
 
       null_count++ if !plot?
@@ -62,7 +68,12 @@ class JchartLine extends JchartCoordinate
     # draw
     @ctx.lineWidth = 1
     @ctx.strokeStyle = @data[0].style.color
-    @dashedLine(@ctx, x, @options.chart.paddingTop, x, @options.chart.paddingTop + y)
+    @ctx.setLineDash([3,2]);
+    @ctx.beginPath()
+    @ctx.moveTo x, @options.chart.paddingTop
+    @ctx.lineTo x, @options.chart.paddingTop + y
+    @ctx.stroke()
+    @ctx.setLineDash([0]);
 
     overlap = 0
     if @data[0]?.plot[index]?.y?

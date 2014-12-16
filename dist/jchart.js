@@ -2281,13 +2281,13 @@ Jchart = (function() {
       this.ctx.strokeStyle = item.style.color;
       this.ctx.lineWidth = this.options.chart.lineWidth;
       if (item.style.line === 'dashed') {
-        _results.push(this.dashedLine(this.ctx, x - legend_width / 2.5, y + text_height, x + legend_width / 2.5, y + text_height));
-      } else {
-        this.ctx.beginPath();
-        this.ctx.moveTo(x - legend_width / 2.5, y + text_height);
-        this.ctx.lineTo(x + legend_width / 2.5, y + text_height);
-        _results.push(this.ctx.stroke());
+        this.ctx.setLineDash(this.options.line_dash);
       }
+      this.ctx.beginPath();
+      this.ctx.moveTo(x - legend_width / 2.5, y + text_height);
+      this.ctx.lineTo(x + legend_width / 2.5, y + text_height);
+      this.ctx.stroke();
+      _results.push(this.ctx.setLineDash([0]));
     }
     return _results;
   };
@@ -2359,37 +2359,6 @@ Jchart = (function() {
   };
 
   Jchart.prototype.writeFile = function(filename, callback) {};
-
-  Jchart.prototype.dashedLine = function(ctx, x1, y1, x2, y2, dashLen) {
-    var dX, dY, dashX, dashY, dashes, q;
-    if (dashLen === void 0) {
-      dashLen = Math.floor(this.options.chart.width / 250);
-    }
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    dX = x2 - x1;
-    dY = y2 - y1;
-    dashes = Math.floor(Math.sqrt(dX * dX + dY * dY) / dashLen);
-    dashX = dX / dashes;
-    dashY = dY / dashes;
-    q = 0;
-    while (q++ < dashes) {
-      x1 += dashX;
-      y1 += dashY;
-      if (q % 2 === 0) {
-        ctx.moveTo(x1, y1);
-      } else {
-        ctx.lineTo(x1, y1);
-      }
-    }
-    if (q % 2 === 0) {
-      ctx.moveTo(x2, y2);
-    } else {
-      ctx.lineTo(x2, y2);
-    }
-    ctx.stroke();
-    return ctx.closePath();
-  };
 
   Jchart.prototype.rect = function(ctx, x, y, width, height, radius, fill, stroke) {
     if (radius == null) {
@@ -2468,7 +2437,7 @@ JchartCoordinate = (function(_super) {
     this.ipo = ipo;
     this.options = _.merge({
       legend: {
-        width: 80,
+        width: 75,
         font: {
           style: 'italic',
           weight: '400',
@@ -2659,7 +2628,12 @@ JchartCoordinate = (function(_super) {
       }
       if (this.options.yAxis.grid.enable) {
         this.ctx.strokeStyle = this.options.chart.color;
-        this.dashedLine(this.ctx, this.pl + this.options.graph.marginLeft, this.pt + y, this.pl + this.graph_width, this.pt + y, 2);
+        this.ctx.setLineDash([2, 1]);
+        this.ctx.beginPath();
+        this.ctx.moveTo(this.pl + this.options.graph.marginLeft, this.pt + y);
+        this.ctx.lineTo(this.pl + this.graph_width, this.pt + y, 2);
+        this.ctx.stroke();
+        this.ctx.setLineDash([0]);
       }
       if (this.options.yAxis.label.enable) {
         this.ctx.fillStyle = this.options.yAxis.label.color || this.options.chart.label.color;
@@ -2730,7 +2704,12 @@ JchartCoordinate = (function(_super) {
             _x = x;
           }
           this.ctx.lineWidth = 0.5;
-          this.dashedLine(this.ctx, this.pl + _x, this.pt, this.pl + _x, this.pt + y, 2);
+          this.ctx.setLineDash([2, 1]);
+          this.ctx.beginPath();
+          this.ctx.moveTo(this.pl + _x, this.pt);
+          this.ctx.lineTo(this.pl + _x, this.pt + y);
+          this.ctx.stroke();
+          this.ctx.setLineDash([0]);
         }
         if (this.options.xAxis.tick.enable) {
           if (this.options.xAxis.tick.align === 'center') {
@@ -2772,6 +2751,9 @@ JchartLine = (function(_super) {
     this.data = data;
     this.options = options != null ? options : null;
     this.ipo = ipo;
+    this.options = _.merge({
+      line_dash: [5, 2]
+    }, this.options);
     JchartLine.__super__.constructor.call(this, this.canvas, this.data, this.options, this.ipo);
     this.normalize_data();
     this.draw();
@@ -2801,11 +2783,14 @@ JchartLine = (function(_super) {
     _ref = data.plot;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       plot = _ref[_i];
+      if (data.style.line === 'dashed') {
+        this.ctx.setLineDash(this.options.line_dash);
+      } else {
+        this.ctx.setLineDash([0]);
+      }
       if ((plot != null) && (before != null)) {
         null_count = 0;
-        if (data.style.line === 'dashed' && _i !== 0) {
-          this.dashedLine(this.ctx, before.x, before.y, plot.x, plot.y);
-        } else if (data.style.line === 'point') {
+        if (data.style.line === 'point') {
           this.ctx.fillRect(plot.x, plot.y, 3, 3);
         } else {
           this.ctx.lineTo(plot.x, plot.y);
@@ -2815,9 +2800,7 @@ JchartLine = (function(_super) {
         if ((plot != null) && null_count > 12) {
           this.ctx.moveTo(plot.x, plot.y);
         } else if ((plot != null) && (last_data != null) && null_count < 12) {
-          if (data.style.line === 'dashed') {
-            this.dashedLine(this.ctx, last_data.x, last_data.y, plot.x, plot.y);
-          } else if (data.style.line === 'point') {
+          if (data.style.line === 'point') {
             this.ctx.fillRect(plot.x, plot.y, 1, 1);
           } else {
             this.ctx.lineTo(plot.x, plot.y);
@@ -2841,7 +2824,12 @@ JchartLine = (function(_super) {
     y = this.graph_height - this.options.graph.marginBottom;
     this.ctx.lineWidth = 1;
     this.ctx.strokeStyle = this.data[0].style.color;
-    this.dashedLine(this.ctx, x, this.options.chart.paddingTop, x, this.options.chart.paddingTop + y);
+    this.ctx.setLineDash([3, 2]);
+    this.ctx.beginPath();
+    this.ctx.moveTo(x, this.options.chart.paddingTop);
+    this.ctx.lineTo(x, this.options.chart.paddingTop + y);
+    this.ctx.stroke();
+    this.ctx.setLineDash([0]);
     overlap = 0;
     if (((_ref = this.data[0]) != null ? (_ref1 = _ref.plot[index]) != null ? _ref1.y : void 0 : void 0) != null) {
       if (((_ref2 = this.data[1]) != null ? (_ref3 = _ref2.plot[index]) != null ? _ref3.y : void 0 : void 0) != null) {

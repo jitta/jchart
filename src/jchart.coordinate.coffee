@@ -5,7 +5,7 @@ class JchartCoordinate extends Jchart
 
     @options = _.merge
       legend:
-        width: 80
+        width: 75
         font: 
           style: 'italic'
           weight: '400'
@@ -163,7 +163,12 @@ class JchartCoordinate extends Jchart
 
       if @options.yAxis.grid.enable
         @ctx.strokeStyle = @options.chart.color
-        @dashedLine @ctx, @pl + @options.graph.marginLeft, @pt + y, @pl + @graph_width, @pt + y, 2
+        @ctx.setLineDash([2,1]);
+        @ctx.beginPath()
+        @ctx.moveTo @pl + @options.graph.marginLeft, @pt + y
+        @ctx.lineTo @pl + @graph_width, @pt + y, 2
+        @ctx.stroke()
+        @ctx.setLineDash([0]);
 
       # fill text label
       if @options.yAxis.label.enable
@@ -234,7 +239,12 @@ class JchartCoordinate extends Jchart
           else
             _x = x
           @ctx.lineWidth = 0.5
-          @dashedLine @ctx, @pl + _x, @pt, @pl + _x, @pt + y, 2
+          @ctx.setLineDash([2,1]);
+          @ctx.beginPath()
+          @ctx.moveTo @pl + _x, @pt
+          @ctx.lineTo @pl + _x, @pt + y
+          @ctx.stroke()
+          @ctx.setLineDash([0]);
 
         # tick
         if @options.xAxis.tick.enable

@@ -4,7 +4,7 @@ class JchartLine extends JchartCoordinate
   constructor: (@canvas, @data, @options=null, @ipo) ->
 
     @options = _.merge
-      line_dash: [5,2]
+      line_dash: [6,2]
     , @options
 
     super @canvas, @data, @options, @ipo
@@ -38,7 +38,10 @@ class JchartLine extends JchartCoordinate
 
       if plot? and before?
         null_count = 0
-        if data.style.line is 'point'
+        if data.style.line is 'dashed' and _i != 0
+          @ctx.moveTo before.x, before.y
+          @ctx.lineTo plot.x, plot.y
+        else if data.style.line is 'point'
           @ctx.fillRect plot.x, plot.y, 3, 3
         else
           @ctx.lineTo plot.x, plot.y
@@ -47,7 +50,10 @@ class JchartLine extends JchartCoordinate
         if plot? and null_count > 12
           @ctx.moveTo plot.x, plot.y
         else if plot? and last_data? and null_count < 12
-          if data.style.line is 'point'
+          if data.style.line is 'dashed'
+            @ctx.moveTo last_data.x, last_data.y
+            @ctx.lineTo plot.x, plot.y
+          else if data.style.line is 'point'
             @ctx.fillRect plot.x, plot.y, 1, 1
           else
             @ctx.lineTo plot.x, plot.y

@@ -2753,7 +2753,7 @@ JchartLine = (function(_super) {
     this.options = options != null ? options : null;
     this.ipo = ipo;
     this.options = _.merge({
-      line_dash: [5, 2]
+      line_dash: [6, 2]
     }, this.options);
     JchartLine.__super__.constructor.call(this, this.canvas, this.data, this.options, this.ipo);
     this.normalize_data();
@@ -2791,7 +2791,10 @@ JchartLine = (function(_super) {
       }
       if ((plot != null) && (before != null)) {
         null_count = 0;
-        if (data.style.line === 'point') {
+        if (data.style.line === 'dashed' && _i !== 0) {
+          this.ctx.moveTo(before.x, before.y);
+          this.ctx.lineTo(plot.x, plot.y);
+        } else if (data.style.line === 'point') {
           this.ctx.fillRect(plot.x, plot.y, 3, 3);
         } else {
           this.ctx.lineTo(plot.x, plot.y);
@@ -2801,7 +2804,10 @@ JchartLine = (function(_super) {
         if ((plot != null) && null_count > 12) {
           this.ctx.moveTo(plot.x, plot.y);
         } else if ((plot != null) && (last_data != null) && null_count < 12) {
-          if (data.style.line === 'point') {
+          if (data.style.line === 'dashed') {
+            this.ctx.moveTo(last_data.x, last_data.y);
+            this.ctx.lineTo(plot.x, plot.y);
+          } else if (data.style.line === 'point') {
             this.ctx.fillRect(plot.x, plot.y, 1, 1);
           } else {
             this.ctx.lineTo(plot.x, plot.y);

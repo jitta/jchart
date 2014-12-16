@@ -79,7 +79,7 @@ class Jchart
       if item.style.line is 'dashed'
         @ctx.setLineDash(@options.line_dash);
       else
-        @ctx.setLineDash([0]);
+        @ctx.setLineDash([]);
       @ctx.beginPath()
       @ctx.moveTo x - legend_width/2.5 , y + text_height
       @ctx.lineTo x + legend_width/2.5 , y + text_height

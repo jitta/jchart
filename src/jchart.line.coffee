@@ -34,7 +34,7 @@ class JchartLine extends JchartCoordinate
       if data.style.line is 'dashed'
         @ctx.setLineDash(@options.line_dash);
       else
-        @ctx.setLineDash([0]);
+        @ctx.setLineDash([]);
 
       if plot?
         null_count = 0
@@ -67,7 +67,7 @@ class JchartLine extends JchartCoordinate
     @ctx.moveTo x, @options.chart.paddingTop
     @ctx.lineTo x, @options.chart.paddingTop + y
     @ctx.stroke()
-    @ctx.setLineDash([0]);
+    @ctx.setLineDash([]);
 
     overlap = 0
     if @data[0]?.plot[index]?.y?

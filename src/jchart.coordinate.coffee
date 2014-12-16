@@ -168,7 +168,7 @@ class JchartCoordinate extends Jchart
         @ctx.moveTo @pl + @options.graph.marginLeft, @pt + y
         @ctx.lineTo @pl + @graph_width, @pt + y, 2
         @ctx.stroke()
-        @ctx.setLineDash([0]);
+        @ctx.setLineDash([]);
 
       # fill text label
       if @options.yAxis.label.enable
@@ -244,7 +244,7 @@ class JchartCoordinate extends Jchart
           @ctx.moveTo @pl + _x, @pt
           @ctx.lineTo @pl + _x, @pt + y
           @ctx.stroke()
-          @ctx.setLineDash([0]);
+          @ctx.setLineDash([]);
 
         # tick
         if @options.xAxis.tick.enable

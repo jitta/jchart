@@ -2283,7 +2283,7 @@ Jchart = (function() {
       if (item.style.line === 'dashed') {
         this.ctx.setLineDash(this.options.line_dash);
       } else {
-        this.ctx.setLineDash([0]);
+        this.ctx.setLineDash([]);
       }
       this.ctx.beginPath();
       this.ctx.moveTo(x - legend_width / 2.5, y + text_height);
@@ -2634,7 +2634,7 @@ JchartCoordinate = (function(_super) {
         this.ctx.moveTo(this.pl + this.options.graph.marginLeft, this.pt + y);
         this.ctx.lineTo(this.pl + this.graph_width, this.pt + y, 2);
         this.ctx.stroke();
-        this.ctx.setLineDash([0]);
+        this.ctx.setLineDash([]);
       }
       if (this.options.yAxis.label.enable) {
         this.ctx.fillStyle = this.options.yAxis.label.color || this.options.chart.label.color;
@@ -2710,7 +2710,7 @@ JchartCoordinate = (function(_super) {
           this.ctx.moveTo(this.pl + _x, this.pt);
           this.ctx.lineTo(this.pl + _x, this.pt + y);
           this.ctx.stroke();
-          this.ctx.setLineDash([0]);
+          this.ctx.setLineDash([]);
         }
         if (this.options.xAxis.tick.enable) {
           if (this.options.xAxis.tick.align === 'center') {
@@ -2786,7 +2786,7 @@ JchartLine = (function(_super) {
       if (data.style.line === 'dashed') {
         this.ctx.setLineDash(this.options.line_dash);
       } else {
-        this.ctx.setLineDash([0]);
+        this.ctx.setLineDash([]);
       }
       if (plot != null) {
         null_count = 0;
@@ -2822,7 +2822,7 @@ JchartLine = (function(_super) {
     this.ctx.moveTo(x, this.options.chart.paddingTop);
     this.ctx.lineTo(x, this.options.chart.paddingTop + y);
     this.ctx.stroke();
-    this.ctx.setLineDash([0]);
+    this.ctx.setLineDash([]);
     overlap = 0;
     if (((_ref = this.data[0]) != null ? (_ref1 = _ref.plot[index]) != null ? _ref1.y : void 0 : void 0) != null) {
       if (((_ref2 = this.data[1]) != null ? (_ref3 = _ref2.plot[index]) != null ? _ref3.y : void 0 : void 0) != null) {

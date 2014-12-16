@@ -2282,12 +2282,13 @@ Jchart = (function() {
       this.ctx.lineWidth = this.options.chart.lineWidth;
       if (item.style.line === 'dashed') {
         this.ctx.setLineDash(this.options.line_dash);
+      } else {
+        this.ctx.setLineDash([0]);
       }
       this.ctx.beginPath();
       this.ctx.moveTo(x - legend_width / 2.5, y + text_height);
       this.ctx.lineTo(x + legend_width / 2.5, y + text_height);
-      this.ctx.stroke();
-      _results.push(this.ctx.setLineDash([0]));
+      _results.push(this.ctx.stroke());
     }
     return _results;
   };

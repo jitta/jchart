@@ -78,11 +78,12 @@ class Jchart
       @ctx.lineWidth = @options.chart.lineWidth
       if item.style.line is 'dashed'
         @ctx.setLineDash(@options.line_dash);
+      else
+        @ctx.setLineDash([0]);
       @ctx.beginPath()
       @ctx.moveTo x - legend_width/2.5 , y + text_height
       @ctx.lineTo x + legend_width/2.5 , y + text_height
       @ctx.stroke()
-      @ctx.setLineDash([0]);
 
   addLabel: (text, option) ->
     option = {} unless option?

@@ -3,6 +3,10 @@ class JchartBar extends JchartCoordinate
 
   constructor: (@canvas, @data, @options=null, @ipo) ->
 
+    @options = _.merge
+      captionMargin: 0
+    , @options
+
     super @canvas, @data, @options, @ipo
     @normalize_data()
     @draw()
@@ -33,6 +37,6 @@ class JchartBar extends JchartCoordinate
         # add caption
         if data.caption
           @ctx.fillStyle = @options.chart.color
-          @ctx.fillText value.format(2), @pl + x , @pt + y
+          @ctx.fillText value.format(2), @pl + x , @pt + y - @options.captionMargin
 
 Jchart.bar = JchartBar

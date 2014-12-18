@@ -25,7 +25,7 @@
      label: { align: 'center' },
      data: [ '2008', '2009', '2010', '2011', '2012', '2013', 'Present' ] },
   yAxis: { min: 0, max: 10 },
-  legend: { enable: true, marginTop: 20} };
+  legend: { enable: true, marginTop: 20}, captionMargin: 4 };
 
   var score_canvas = document.createElement('canvas');
   score_canvas.width = score_options.chart.width;

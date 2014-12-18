@@ -2967,6 +2967,9 @@ JchartBar = (function(_super) {
     this.data = data;
     this.options = options != null ? options : null;
     this.ipo = ipo;
+    this.options = _.merge({
+      captionMargin: 0
+    }, this.options);
     JchartBar.__super__.constructor.call(this, this.canvas, this.data, this.options, this.ipo);
     this.normalize_data();
     this.draw();
@@ -3001,7 +3004,7 @@ JchartBar = (function(_super) {
         this.ctx.fillRect(this.pl + x - columnWidth / 2, this.pt + y, columnWidth, (value - this.min_data) / this.interval * this.inner_height - this.options.chart.lineWidth + 1);
         if (data.caption) {
           this.ctx.fillStyle = this.options.chart.color;
-          _results.push(this.ctx.fillText(value.format(2), this.pl + x, this.pt + y));
+          _results.push(this.ctx.fillText(value.format(2), this.pl + x, this.pt + y - this.options.captionMargin));
         } else {
           _results.push(void 0);
         }

@@ -1,16 +1,15 @@
 {
   "name": "jchart",
   "description": "Light-weight Javscript chart render on Server/Client by canvas",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "author": "Jitta <dev@jitta.com>",
   "contributors": [
     "Yanin <khame@jitta.com>",
+    "Book <book@jitta.com>",
     "Hunt <hunt@jitta.com>"
   ],
-  "dependencies": {
-    "canvas": "^1.1.6"
-  },
   "devDependencies": {
+    "canvas": "^1.1.6",
     "gulp": "^3.8.8",
     "gulp-coffee": "^2.2.0",
     "gulp-concat-util": "^0.4.0",

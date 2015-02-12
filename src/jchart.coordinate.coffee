@@ -6,6 +6,7 @@ class JchartCoordinate extends Jchart
     @options = _.merge
       legend:
         width: 75
+        lineWidth: 2
         font: 
           style: 'italic'
           weight: '400'

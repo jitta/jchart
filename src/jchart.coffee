@@ -75,7 +75,7 @@ class Jchart
 
       # draw line
       @ctx.strokeStyle = item.style.color
-      @ctx.lineWidth = @options.chart.lineWidth
+      @ctx.lineWidth = @options.legend.lineWidth
       if item.style.line is 'dashed'
         @ctx.setLineDash(@options.line_dash);
       else

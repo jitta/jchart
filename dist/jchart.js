@@ -2279,7 +2279,7 @@ Jchart = (function() {
       this.ctx.textBaseline = 'top';
       this.ctx.fillText(item.name, x, y);
       this.ctx.strokeStyle = item.style.color;
-      this.ctx.lineWidth = this.options.chart.lineWidth;
+      this.ctx.lineWidth = this.options.legend.lineWidth;
       if (item.style.line === 'dashed') {
         this.ctx.setLineDash(this.options.line_dash);
       } else {
@@ -2439,6 +2439,7 @@ JchartCoordinate = (function(_super) {
     this.options = _.merge({
       legend: {
         width: 75,
+        lineWidth: 2,
         font: {
           style: 'italic',
           weight: '400',

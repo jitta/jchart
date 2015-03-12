@@ -46,7 +46,7 @@ class Jchart
 
   scaleRatio: (canvas) ->
     context = canvas.getContext("2d")
-    devicePixelRatio = window.devicePixelRatio or 1
+    devicePixelRatio = if window.devicePixelRatio < 1.0 or window.devicePixelRatio == undefined then 1 else window.devicePixelRatio
     backingStoreRatio = context.webkitBackingStorePixelRatio or context.mozBackingStorePixelRatio or context.msBackingStorePixelRatio or context.oBackingStorePixelRatio or context.backingStorePixelRatio or 1
     ratio = devicePixelRatio / backingStoreRatio
     if devicePixelRatio isnt backingStoreRatio

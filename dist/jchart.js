@@ -2247,7 +2247,7 @@ Jchart = (function() {
   Jchart.prototype.scaleRatio = function(canvas) {
     var backingStoreRatio, context, devicePixelRatio, oldHeight, oldWidth, ratio;
     context = canvas.getContext("2d");
-    devicePixelRatio = window.devicePixelRatio || 1;
+    devicePixelRatio = window.devicePixelRatio < 1.0 || window.devicePixelRatio === void 0 ? 1 : window.devicePixelRatio;
     backingStoreRatio = context.webkitBackingStorePixelRatio || context.mozBackingStorePixelRatio || context.msBackingStorePixelRatio || context.oBackingStorePixelRatio || context.backingStorePixelRatio || 1;
     ratio = devicePixelRatio / backingStoreRatio;
     if (devicePixelRatio !== backingStoreRatio) {

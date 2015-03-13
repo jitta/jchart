@@ -43,6 +43,7 @@ class Jchart
     #if window
     #@device_ratio = 1
     @device_ratio = if (typeof window isnt 'undefined') then @scaleRatio(@canvas) else 1
+    @ctx.setLineDash = (->) if @ctx.setLineDash is undefined
 
   scaleRatio: (canvas) ->
     context = canvas.getContext("2d")

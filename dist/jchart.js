@@ -2242,6 +2242,9 @@ Jchart = (function() {
       this.rect(this.ctx, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height, 0);
     }
     this.device_ratio = typeof window !== 'undefined' ? this.scaleRatio(this.canvas) : 1;
+    if (this.ctx.setLineDash === void 0) {
+      this.ctx.setLineDash = (function() {});
+    }
   }
 
   Jchart.prototype.scaleRatio = function(canvas) {

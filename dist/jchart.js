@@ -2226,6 +2226,7 @@ Jchart = (function() {
       },
       graph: {
         border: true,
+        marginLeftIfDecimalPoints: 40,
         marginLeft: 'auto',
         marginBottom: 25,
         marginTop: 5,
@@ -2555,12 +2556,16 @@ JchartCoordinate = (function(_super) {
       }
     }
     if (this.options.graph.marginLeft === 'auto') {
-      if (this.max_data > 10) {
-        this.max_data = Math.round(this.max_data);
+      if (this.auto_format(this.max_data).indexOf(".") > 0) {
+        this.options.graph.marginLeft = this.options.graph.marginLeftIfDecimalPoints;
+      } else {
+        if (this.max_data > 10) {
+          this.max_data = Math.round(this.max_data);
+        }
+        max_text = this.options.yAxis.label.prefix + this.max_data + this.options.yAxis.label.suffix;
+        digit = max_text.replace('.', '').length;
+        this.options.graph.marginLeft = 10 + digit * 8 + this.options.yAxis.tick.size;
       }
-      max_text = this.options.yAxis.label.prefix + this.max_data + this.options.yAxis.label.suffix;
-      digit = max_text.replace('.', '').length;
-      this.options.graph.marginLeft = 10 + digit * 8 + this.options.yAxis.tick.size;
     }
     this.graph_width = this.options.chart.width - this.options.chart.paddingLeft - this.options.chart.paddingRight;
     this.graph_height = this.options.chart.height - this.options.chart.paddingTop - this.options.chart.paddingBottom;

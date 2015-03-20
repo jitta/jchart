@@ -24,6 +24,7 @@ class Jchart
         background: '#ffffff'
       graph:
         border: true
+        marginLeftIfDecimalPoints: 40
         marginLeft: 'auto'
         marginBottom: 25
         marginTop: 5

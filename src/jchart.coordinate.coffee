@@ -69,7 +69,11 @@ class JchartCoordinate extends Jchart
     raw_data = []
     for data_item in @data
       raw_data.push data_item.data
-    roundValues raw_data
+
+    max_obj = _.max @data, (item) -> _max item.data
+    max = _.max max_obj.data
+    if max >= 1.00
+      roundValues raw_data
 
   preprocess_data: ->
 

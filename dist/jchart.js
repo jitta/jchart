@@ -2516,14 +2516,20 @@ JchartCoordinate = (function(_super) {
   }
 
   JchartCoordinate.prototype.normalize_data = function() {
-    var data_item, raw_data, _i, _len, _ref;
+    var data_item, max, max_obj, raw_data, _i, _len, _ref;
     raw_data = [];
     _ref = this.data;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       data_item = _ref[_i];
       raw_data.push(data_item.data);
     }
-    return roundValues(raw_data);
+    max_obj = _.max(this.data, function(item) {
+      return _max(item.data);
+    });
+    max = _.max(max_obj.data);
+    if (max >= 1.00) {
+      return roundValues(raw_data);
+    }
   };
 
   JchartCoordinate.prototype.preprocess_data = function() {

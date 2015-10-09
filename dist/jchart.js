@@ -2230,7 +2230,7 @@ Jchart = (function() {
         marginLeft: 'auto',
         marginBottom: 25,
         marginTop: 5,
-        marginRight: 50,
+        marginRight: 20,
         background: '#ffffff',
         background_stripe: '#FCFCFC'
       }

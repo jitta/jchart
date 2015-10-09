@@ -2230,7 +2230,7 @@ Jchart = (function() {
         marginLeft: 'auto',
         marginBottom: 25,
         marginTop: 5,
-        marginRight: 20,
+        marginRight: 50,
         background: '#ffffff',
         background_stripe: '#FCFCFC'
       }
@@ -2509,7 +2509,8 @@ JchartCoordinate = (function(_super) {
         },
         min: null,
         max: null,
-        breaks: 5
+        breaks: 5,
+        rightAlign: false
       }
     }, this.options);
     JchartCoordinate.__super__.constructor.call(this, this.canvas, this.data, this.options, this.ipo);
@@ -2629,7 +2630,7 @@ JchartCoordinate = (function(_super) {
   };
 
   JchartCoordinate.prototype.horizontal_line = function() {
-    var height, i, interval, lines, start_position, value, y, _i, _ref;
+    var height, i, interval, leftOffset, lines, start_position, value, y, _i, _ref;
     interval = this.max_data - this.min_data;
     lines = this.options.yAxis.breaks;
     this.ctx.beginPath();
@@ -2640,7 +2641,7 @@ JchartCoordinate = (function(_super) {
       if (this.options.graph.background_stripe) {
         if (i % 2 === 0) {
           this.ctx.fillStyle = this.options.graph.background_stripe;
-          this.ctx.fillRect(this.pl + this.options.graph.marginLeft + this.options.chart.lineWidth, this.pt + y - height / lines - this.options.chart.lineWidth - 1, this.pl + this.graph_width, this.pt + height / lines - this.options.chart.lineWidth - 1);
+          this.ctx.fillRect(this.pl + this.options.graph.marginLeft + this.options.chart.lineWidth, this.pt + y - height / lines - this.options.chart.lineWidth - 1, this.pl + this.inner_width - this.options.chart.paddingRight, this.pt + height / lines - this.options.chart.lineWidth - 1);
         }
       }
       if (this.options.yAxis.grid.enable) {
@@ -2655,25 +2656,27 @@ JchartCoordinate = (function(_super) {
       if (this.options.yAxis.label.enable) {
         this.ctx.fillStyle = this.options.yAxis.label.color || this.options.chart.label.color;
         this.ctx.font = this.font_format(this.options.yAxis.label.font);
+        leftOffset = this.options.yAxis.rightAlign ? this.graph_width - this.options.graph.marginRight + this.options.graph.marginLeft + this.options.chart.lineWidth + this.options.yAxis.tick.size : this.options.graph.marginLeft;
         if (this.options.yAxis.label.align === 'left') {
           this.ctx.textAlign = 'right';
           this.ctx.textBaseline = 'middle';
-          start_position = this.pl + this.options.graph.marginLeft - 10;
+          start_position = this.pl + leftOffset - 10;
           if (this.options.yAxis.tick.enable) {
             start_position -= this.options.yAxis.tick.size;
           }
         } else {
           this.ctx.textAlign = 'left';
           this.ctx.textBaseline = 'bottom';
-          start_position = this.pl + this.options.graph.marginLeft;
+          start_position = this.pl + leftOffset;
         }
         this.ctx.fillText(this.options.yAxis.label.prefix + this.auto_format(value) + this.options.yAxis.label.suffix, start_position, this.pt + y);
       }
       if (this.options.yAxis.tick.enable) {
+        leftOffset = this.options.yAxis.rightAlign ? this.graph_width - this.options.graph.marginRight + this.options.yAxis.tick.size : this.options.graph.marginLeft;
         this.ctx.beginPath();
         this.ctx.strokeStyle = this.options.chart.color;
-        this.ctx.moveTo(this.pl + this.options.graph.marginLeft - this.options.chart.lineWidth + 1, this.pt + y);
-        this.ctx.lineTo(this.pl + this.options.graph.marginLeft - this.options.chart.lineWidth - this.options.yAxis.tick.size + 1, this.pt + y);
+        this.ctx.moveTo(this.pl + leftOffset - this.options.chart.lineWidth + 1, this.pt + y);
+        this.ctx.lineTo(this.pl + leftOffset - this.options.chart.lineWidth - this.options.yAxis.tick.size + 1, this.pt + y);
         this.ctx.stroke();
         this.ctx.closePath();
       }
@@ -2683,14 +2686,14 @@ JchartCoordinate = (function(_super) {
       this.ctx.strokeStyle = this.options.xAxis.border.color;
       this.ctx.lineWidth = this.options.chart.lineWidth;
       this.ctx.moveTo(this.pl + this.options.graph.marginLeft, this.xAxiz_zero_position);
-      this.ctx.lineTo(this.pl + this.graph_width, this.xAxiz_zero_position);
+      this.ctx.lineTo(this.pl + this.graph_width - this.options.graph.marginRight, this.xAxiz_zero_position);
       this.ctx.stroke();
     }
     return this.ctx.closePath();
   };
 
   JchartCoordinate.prototype.vertical_line = function() {
-    var barWidth, value, width, x, y, _i, _len, _ref, _x, _y;
+    var barWidth, leftOffset, value, width, x, y, _i, _len, _ref, _x, _y;
     width = this.graph_width - (this.options.graph.marginLeft + this.options.graph.marginRight);
     this.ctx.beginPath();
     this.ctx.textAlign = 'center';
@@ -2738,15 +2741,18 @@ JchartCoordinate = (function(_super) {
           this.ctx.lineWidth = this.options.chart.lineWidth;
           this.ctx.moveTo(this.pl + _x, this.pt + y);
           this.ctx.lineTo(this.pl + _x, this.pt + y + this.options.xAxis.tick.size);
-          this.ctx.stroke();
+          if ((this.graph_width - this.options.graph.marginRight) !== _x) {
+            this.ctx.stroke();
+          }
         }
       }
     }
     if (this.options.yAxis.border.enable) {
+      leftOffset = this.options.yAxis.rightAlign ? this.graph_width - this.options.graph.marginRight : this.options.graph.marginLeft;
       this.ctx.strokeStyle = this.options.yAxis.border.color;
       this.ctx.lineWidth = this.options.chart.lineWidth;
-      this.ctx.moveTo(this.pl + this.options.graph.marginLeft, this.pt);
-      this.ctx.lineTo(this.pl + this.options.graph.marginLeft, this.pt + this.graph_height - this.options.graph.marginBottom);
+      this.ctx.moveTo(this.pl + leftOffset, this.pt);
+      this.ctx.lineTo(this.pl + leftOffset, this.pt + this.graph_height - this.options.graph.marginBottom);
       this.ctx.stroke();
     }
     return this.ctx.closePath();

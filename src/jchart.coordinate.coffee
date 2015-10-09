@@ -61,6 +61,7 @@ class JchartCoordinate extends Jchart
         min: null
         max: null
         breaks: 5
+        rightAlign: false
     , @options
 
     super @canvas, @data, @options, @ipo
@@ -159,12 +160,12 @@ class JchartCoordinate extends Jchart
     for i in [0..@options.yAxis.breaks]
       value = @min_data + interval / lines * i
       y = height - height / lines * i + @options.graph.marginTop
-      
+
       ## fill stripe background
       if @options.graph.background_stripe
         if i % 2 is 0
           @ctx.fillStyle = @options.graph.background_stripe
-          @ctx.fillRect( @pl + @options.graph.marginLeft + @options.chart.lineWidth, @pt + y-height/lines - @options.chart.lineWidth - 1, @pl + @graph_width, @pt + height/lines - @options.chart.lineWidth - 1)
+          @ctx.fillRect( @pl + @options.graph.marginLeft + @options.chart.lineWidth, @pt + y-height/lines - @options.chart.lineWidth - 1, @pl + @.inner_width - @options.chart.paddingRight, @pt + height/lines - @options.chart.lineWidth - 1)
         # else
         #   @ctx.fillStyle = @options.graph.background
         #   @ctx.fillRect( @pl +@options.graph.marginLeft + @options.chart.lineWidth, @pt + y, @pl + @graph_width, @pt + height/lines - @options.chart.lineWidth)
@@ -182,23 +183,25 @@ class JchartCoordinate extends Jchart
       if @options.yAxis.label.enable
         @ctx.fillStyle = @options.yAxis.label.color or @options.chart.label.color
         @ctx.font = @font_format(@options.yAxis.label.font)
+        leftOffset = if @options.yAxis.rightAlign then @graph_width - @options.graph.marginRight + @options.graph.marginLeft + @options.chart.lineWidth + @options.yAxis.tick.size  else @options.graph.marginLeft
         if @options.yAxis.label.align is 'left'
           @ctx.textAlign = 'right'
           @ctx.textBaseline = 'middle'
-          start_position = @pl + @options.graph.marginLeft - 10
+          start_position = @pl + leftOffset - 10
           start_position -= @options.yAxis.tick.size if @options.yAxis.tick.enable
         else
           @ctx.textAlign = 'left'
           @ctx.textBaseline = 'bottom'
-          start_position = @pl + @options.graph.marginLeft
+          start_position = @pl + leftOffset
         @ctx.fillText @options.yAxis.label.prefix + @auto_format(value) + @options.yAxis.label.suffix, start_position, @pt + y
 
       # draw tick
       if @options.yAxis.tick.enable
+        leftOffset = if @options.yAxis.rightAlign then @graph_width - @options.graph.marginRight + @options.yAxis.tick.size else @options.graph.marginLeft
         @ctx.beginPath()
         @ctx.strokeStyle = @options.chart.color
-        @ctx.moveTo @pl + @options.graph.marginLeft - @options.chart.lineWidth + 1, @pt + y
-        @ctx.lineTo @pl + @options.graph.marginLeft - @options.chart.lineWidth - @options.yAxis.tick.size + 1, @pt + y
+        @ctx.moveTo @pl + leftOffset - @options.chart.lineWidth + 1, @pt + y
+        @ctx.lineTo @pl + leftOffset - @options.chart.lineWidth - @options.yAxis.tick.size + 1, @pt + y
         @ctx.stroke()
         @ctx.closePath()
 
@@ -208,7 +211,7 @@ class JchartCoordinate extends Jchart
       @ctx.strokeStyle = @options.xAxis.border.color
       @ctx.lineWidth = @options.chart.lineWidth
       @ctx.moveTo @pl + @options.graph.marginLeft, @xAxiz_zero_position
-      @ctx.lineTo @pl + @graph_width, @xAxiz_zero_position
+      @ctx.lineTo @pl + @graph_width - @options.graph.marginRight, @xAxiz_zero_position
       @ctx.stroke()
 
     @ctx.closePath()
@@ -264,13 +267,14 @@ class JchartCoordinate extends Jchart
           @ctx.lineWidth = @options.chart.lineWidth
           @ctx.moveTo @pl + _x, @pt + y
           @ctx.lineTo @pl + _x, @pt + y + @options.xAxis.tick.size
-          @ctx.stroke()
+          @ctx.stroke() unless (@graph_width - @options.graph.marginRight) == _x
 
     if @options.yAxis.border.enable
+      leftOffset = if @options.yAxis.rightAlign then @graph_width - @options.graph.marginRight else @options.graph.marginLeft
       @ctx.strokeStyle = @options.yAxis.border.color
       @ctx.lineWidth = @options.chart.lineWidth
-      @ctx.moveTo @pl + @options.graph.marginLeft, @pt
-      @ctx.lineTo @pl + @options.graph.marginLeft, @pt + @graph_height - @options.graph.marginBottom
+      @ctx.moveTo @pl + leftOffset, @pt
+      @ctx.lineTo @pl + leftOffset, @pt + @graph_height - @options.graph.marginBottom
       @ctx.stroke()
 
     @ctx.closePath()

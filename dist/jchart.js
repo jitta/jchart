@@ -2516,13 +2516,99 @@ JchartCoordinate = (function(_super) {
     JchartCoordinate.__super__.constructor.call(this, this.canvas, this.data, this.options, this.ipo);
   }
 
-  JchartCoordinate.prototype.normalize_data = function() {
-    var data_item, max, max_obj, raw_data, _i, _len, _ref;
-    raw_data = [];
-    _ref = this.data;
+  JchartCoordinate.prototype.convertToJChartArray = function(data) {
+    var currentValue, key, newValuesArray, num, year, _i, _j, _len, _ref;
+    currentValue = null;
+    newValuesArray = [];
+    _ref = this.options.xAxis.data;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      data_item = _ref[_i];
-      raw_data.push(data_item.data);
+      year = _ref[_i];
+      for (num = _j = 1; _j <= 12; num = ++_j) {
+        key = year + '-' + num;
+        if (data.hasOwnProperty(key)) {
+          currentValue = data[key].value;
+        }
+        newValuesArray.push(currentValue);
+      }
+    }
+    return newValuesArray;
+  };
+
+  JchartCoordinate.prototype.normalize_data = function() {
+    var converted, current, data_item, k, key, keys, max, max_obj, max_pad, min_pad, newPadMax, newPadMin, newXAxis, raw_data, y, years, _i, _j, _k, _len, _len1, _len2, _ref, _ref1;
+    keys = [];
+    years = [];
+    _ref = this.data;
+    for (key = _i = 0, _len = _ref.length; _i < _len; key = ++_i) {
+      data_item = _ref[key];
+      if (!Array.isArray(data_item.data)) {
+        keys = keys.concat(Object.keys(data_item.data));
+      }
+    }
+    for (_j = 0, _len1 = keys.length; _j < _len1; _j++) {
+      k = keys[_j];
+      years.push(parseInt(k.substring(0, k.indexOf('-'))));
+    }
+    this.options.xAxis.hash_min_year = _.min(years);
+    this.options.xAxis.hash_max_year = _.max(years);
+    min_pad = [];
+    max_pad = [];
+    if (this.options.xAxis.hash_min_year < _.min(this.options.xAxis.data)) {
+      y = _.min(this.options.xAxis.data) - this.options.xAxis.hash_min_year;
+      current = this.options.xAxis.hash_min_year;
+      min_pad = Array.apply(null, {
+        length: y
+      }).map(Number.call, function() {
+        return current++;
+      });
+      this.options.xAxis.padMinArraySize = y * 12;
+      this.options.xAxis.padMinArray = true;
+    }
+    if (this.options.xAxis.hash_max_year > _.max(this.options.xAxis.data)) {
+      y = this.options.xAxis.hash_max_year - _.max(this.options.xAxis.data);
+      current = _.max(this.options.xAxis.data);
+      max_pad = Array.apply(null, {
+        length: y
+      }).map(Number.call, function() {
+        return ++current;
+      });
+      this.options.xAxis.padMaxArraySize = y * 12;
+      this.options.xAxis.padMaxArray = true;
+    }
+    newXAxis = min_pad.concat(this.options.xAxis.data, max_pad);
+    this.options.xAxis.data = newXAxis;
+    raw_data = [];
+    _ref1 = this.data;
+    for (key = _k = 0, _len2 = _ref1.length; _k < _len2; key = ++_k) {
+      data_item = _ref1[key];
+      if (Array.isArray(data_item.data)) {
+        if (this.options.xAxis.hasOwnProperty('padMinArray')) {
+          min_pad = Array.apply(null, {
+            length: this.options.xAxis.padMinArraySize
+          }).map(Number.call, function() {
+            return null;
+          });
+          newPadMin = min_pad.concat(data_item.data);
+          this.data[key].data = newPadMin;
+          if (this.ipo !== null) {
+            this.ipo = this.ipo + this.options.xAxis.padMinArraySize / 2;
+          }
+        }
+        if (this.options.xAxis.hasOwnProperty('padMaxArray')) {
+          max_pad = Array.apply(null, {
+            length: this.options.xAxis.padMaxArraySize
+          }).map(Number.call, function() {
+            return null;
+          });
+          newPadMax = data_item.data.concat(max_pad);
+          this.data[key].data = newPadMax;
+        }
+        raw_data.push(data_item.data);
+      } else {
+        converted = this.convertToJChartArray(data_item.data);
+        raw_data.push(converted);
+        this.data[key].data = converted;
+      }
     }
     max_obj = _.max(this.data, function(item) {
       return _max(item.data);

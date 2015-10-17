@@ -1,3 +1,4 @@
+
 var score_data = {
   "data": [{
     "name": "Jitta Score 2008 - Present",

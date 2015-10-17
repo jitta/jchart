@@ -1,3 +1,4 @@
+
 var line_data = {
   "data": [{
     "name": "QC7 Price",

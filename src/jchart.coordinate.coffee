@@ -66,10 +66,72 @@ class JchartCoordinate extends Jchart
 
     super @canvas, @data, @options, @ipo
 
+  convertToJChartArray: (data) ->
+    currentValue = null
+    newValuesArray = []
+    for year in @options.xAxis.data
+      for num in [1..12]
+        key = year + '-' + num
+        if data.hasOwnProperty(key)
+          currentValue = data[key].value
+        newValuesArray.push(currentValue)
+
+    newValuesArray
+
   normalize_data: ->
+
+    #find min and keys to pad arrays
+    keys = []
+    years = []
+    for data_item,key in @data
+      if !Array.isArray data_item.data
+        keys = keys.concat(Object.keys(data_item.data))
+
+    for k in keys
+      years.push parseInt(k.substring(0, k.indexOf('-')))
+
+    @options.xAxis.hash_min_year = _.min years
+    @options.xAxis.hash_max_year = _.max years
+    min_pad = []
+    max_pad = []
+
+    if @options.xAxis.hash_min_year < _.min(@options.xAxis.data)
+      y =  _.min(@options.xAxis.data) - @options.xAxis.hash_min_year
+      current = @options.xAxis.hash_min_year
+      min_pad = Array.apply(null, {length: y}).map(Number.call, -> current++)
+      @options.xAxis.padMinArraySize = y*12
+      @options.xAxis.padMinArray = true
+
+    if @options.xAxis.hash_max_year > _.max(@options.xAxis.data)
+      y =  @options.xAxis.hash_max_year - _.max(@options.xAxis.data)
+      current = _.max(@options.xAxis.data)
+      max_pad = Array.apply(null, {length: y}).map(Number.call, -> ++current)
+      @options.xAxis.padMaxArraySize = y*12
+      @options.xAxis.padMaxArray = true
+
+    newXAxis = min_pad.concat(@options.xAxis.data, max_pad)
+    @options.xAxis.data = newXAxis
+
     raw_data = []
-    for data_item in @data
-      raw_data.push data_item.data
+    for data_item,key in @data
+      if Array.isArray data_item.data
+        #pad arrays if have new x-axis
+        if @options.xAxis.hasOwnProperty('padMinArray')
+          min_pad = Array.apply(null, {length: @options.xAxis.padMinArraySize}).map(Number.call, -> null)
+          newPadMin = min_pad.concat(data_item.data)
+          @data[key].data = newPadMin
+          @.ipo = @.ipo + @options.xAxis.padMinArraySize/2 unless @.ipo is null #ipo position shift
+
+        if @options.xAxis.hasOwnProperty('padMaxArray')
+          max_pad = Array.apply(null, {length: @options.xAxis.padMaxArraySize}).map(Number.call, -> null)
+          newPadMax = data_item.data.concat(max_pad)
+          @data[key].data = newPadMax
+
+        raw_data.push data_item.data
+      else
+        converted = @convertToJChartArray(data_item.data)
+        raw_data.push  converted
+        @data[key].data = converted
 
     max_obj = _.max @data, (item) -> _max item.data
     max = _.max max_obj.data
@@ -77,7 +139,6 @@ class JchartCoordinate extends Jchart
       roundValues raw_data
 
   preprocess_data: ->
-
     if @options.yAxis.min?
       @min_data = @options.yAxis.min
     if @options.yAxis.max?

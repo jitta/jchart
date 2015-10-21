@@ -130,7 +130,8 @@ class JchartCoordinate extends Jchart
         raw_data.push data_item.data
       else
         converted = @convertToJChartArray(data_item.data)
-        raw_data.push  converted
+        @data[key].original_data = data_item.data
+        raw_data.push converted
         @data[key].data = converted
 
     max_obj = _.max @data, (item) -> _max item.data

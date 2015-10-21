@@ -27,27 +27,39 @@ class JchartLine extends JchartCoordinate
     @ctx.lineWidth = data.style.lineWidth or 2
     @ctx.strokeStyle = data.style.color or '#000'
     @ctx.fillStyle = data.style.color or '#000'
+    if data.style.line is 'dashed'
+      @ctx.setLineDash @options.line_dash
+    else
+      @ctx.setLineDash []
+
     null_count = 0
     #before = data.plot[0]
-    for plot in data.plot
+    
+    if data.hasOwnProperty 'original_data'
+      last_y = undefined
+      last_plot = undefined
+      for plot in data.plot
+        if plot? and last_y isnt plot.y
+          last_y = plot.y
+          if last_plot
+            @ctx.lineTo plot.x, last_y
+          else
+            @ctx.moveTo plot.x, last_y
+            last_plot = {x: plot.x, y: last_y}
 
-      if data.style.line is 'dashed'
-        @ctx.setLineDash(@options.line_dash);
-      else
-        @ctx.setLineDash([]);
-
-      if plot?
-        null_count = 0
-        if data.style.line is 'point'
-          @ctx.fillRect plot.x, plot.y, 3, 3
-        else
-          @ctx.lineTo plot.x, plot.y
-        last_data = plot
-      else ## start point
+    else
+      for plot in data.plot
         if plot?
-          @ctx.moveTo plot.x, plot.y
-
-      null_count++ if !plot?
+          null_count = 0
+          if data.style.line is 'point'
+            @ctx.fillRect plot.x, plot.y, 3, 3
+          else
+            @ctx.lineTo plot.x, plot.y
+          last_data = plot
+        else ## start point
+          if plot?
+            @ctx.moveTo plot.x, plot.y
+        null_count++ if !plot?
 
     @ctx.stroke()
     @ctx.closePath()

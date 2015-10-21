@@ -2606,6 +2606,7 @@ JchartCoordinate = (function(_super) {
         raw_data.push(data_item.data);
       } else {
         converted = this.convertToJChartArray(data_item.data);
+        this.data[key].original_data = data_item.data;
         raw_data.push(converted);
         this.data[key].data = converted;
       }
@@ -2882,35 +2883,56 @@ JchartLine = (function(_super) {
   };
 
   JchartLine.prototype.draw_line_graph = function(data) {
-    var last_data, null_count, plot, _i, _len, _ref;
+    var last_data, last_plot, last_y, null_count, plot, _i, _j, _len, _len1, _ref, _ref1;
     this.ctx.beginPath();
     this.ctx.lineWidth = data.style.lineWidth || 2;
     this.ctx.strokeStyle = data.style.color || '#000';
     this.ctx.fillStyle = data.style.color || '#000';
+    if (data.style.line === 'dashed') {
+      this.ctx.setLineDash(this.options.line_dash);
+    } else {
+      this.ctx.setLineDash([]);
+    }
     null_count = 0;
-    _ref = data.plot;
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      plot = _ref[_i];
-      if (data.style.line === 'dashed') {
-        this.ctx.setLineDash(this.options.line_dash);
-      } else {
-        this.ctx.setLineDash([]);
-      }
-      if (plot != null) {
-        null_count = 0;
-        if (data.style.line === 'point') {
-          this.ctx.fillRect(plot.x, plot.y, 3, 3);
-        } else {
-          this.ctx.lineTo(plot.x, plot.y);
+    if (data.hasOwnProperty('original_data')) {
+      last_y = void 0;
+      last_plot = void 0;
+      _ref = data.plot;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        plot = _ref[_i];
+        if ((plot != null) && last_y !== plot.y) {
+          last_y = plot.y;
+          if (last_plot) {
+            this.ctx.lineTo(plot.x, last_y);
+          } else {
+            this.ctx.moveTo(plot.x, last_y);
+            last_plot = {
+              x: plot.x,
+              y: last_y
+            };
+          }
         }
-        last_data = plot;
-      } else {
+      }
+    } else {
+      _ref1 = data.plot;
+      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+        plot = _ref1[_j];
         if (plot != null) {
-          this.ctx.moveTo(plot.x, plot.y);
+          null_count = 0;
+          if (data.style.line === 'point') {
+            this.ctx.fillRect(plot.x, plot.y, 3, 3);
+          } else {
+            this.ctx.lineTo(plot.x, plot.y);
+          }
+          last_data = plot;
+        } else {
+          if (plot != null) {
+            this.ctx.moveTo(plot.x, plot.y);
+          }
         }
-      }
-      if (plot == null) {
-        null_count++;
+        if (plot == null) {
+          null_count++;
+        }
       }
     }
     this.ctx.stroke();

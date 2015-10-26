@@ -2883,7 +2883,7 @@ JchartLine = (function(_super) {
   };
 
   JchartLine.prototype.draw_line_graph = function(data) {
-    var last_data, last_plot, last_y, null_count, plot, _i, _j, _len, _len1, _ref, _ref1;
+    var i, last_data, last_plot, last_y, null_count, plot, _i, _j, _len, _len1, _ref, _ref1;
     this.ctx.beginPath();
     this.ctx.lineWidth = data.style.lineWidth || 2;
     this.ctx.strokeStyle = data.style.color || '#000';
@@ -2898,14 +2898,18 @@ JchartLine = (function(_super) {
       last_y = void 0;
       last_plot = void 0;
       _ref = data.plot;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        plot = _ref[_i];
+      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+        plot = _ref[i];
         if ((plot != null) && last_y !== plot.y) {
           last_y = plot.y;
           if (last_plot) {
-            this.ctx.lineTo(plot.x, last_y);
+            if (data.plot[i + 1] === null) {
+              this.ctx.lineTo(data.plot[i].x, last_y);
+            } else {
+              this.ctx.lineTo(data.plot[i + 1].x, last_y);
+            }
           } else {
-            this.ctx.moveTo(plot.x, last_y);
+            this.ctx.moveTo(data.plot[i + 1].x, last_y);
             last_plot = {
               x: plot.x,
               y: last_y

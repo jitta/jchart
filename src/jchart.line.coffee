@@ -38,13 +38,16 @@ class JchartLine extends JchartCoordinate
     if data.hasOwnProperty 'original_data'
       last_y = undefined
       last_plot = undefined
-      for plot in data.plot
+      for plot,i in data.plot
         if plot? and last_y isnt plot.y
           last_y = plot.y
           if last_plot
-            @ctx.lineTo plot.x, last_y
+            if data.plot[i+1] is null
+              @ctx.lineTo data.plot[i].x, last_y
+            else
+              @ctx.lineTo data.plot[i+1].x, last_y
           else
-            @ctx.moveTo plot.x, last_y
+            @ctx.moveTo data.plot[i+1].x, last_y
             last_plot = {x: plot.x, y: last_y}
 
     else

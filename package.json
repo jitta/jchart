@@ -1,7 +1,7 @@
 {
   "name": "jchart",
   "description": "Light-weight Javscript chart render on Server/Client by canvas",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "author": "Jitta <dev@jitta.com>",
   "contributors": [
     "Yanin <khame@jitta.com>",

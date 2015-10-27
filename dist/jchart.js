@@ -2903,7 +2903,7 @@ JchartLine = (function(_super) {
         if ((plot != null) && last_y !== plot.y) {
           last_y = plot.y;
           if (last_plot) {
-            if (data.plot[i + 1] === null) {
+            if (data.plot[i + 1] === null || data.plot[i + 1] === void 0) {
               this.ctx.lineTo(data.plot[i].x, last_y);
             } else {
               this.ctx.lineTo(data.plot[i + 1].x, last_y);

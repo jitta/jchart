@@ -2516,26 +2516,40 @@ JchartCoordinate = (function(_super) {
     JchartCoordinate.__super__.constructor.call(this, this.canvas, this.data, this.options, this.ipo);
   }
 
-  JchartCoordinate.prototype.convertToJChartArray = function(data) {
-    var currentValue, key, newValuesArray, num, year, _i, _j, _len, _ref;
+  JchartCoordinate.prototype.convertToJChartArray = function(data, key_value) {
+    var currentValue, key, newValuesArray, nullCount, nullRightPad, num, value, year, _i, _j, _k, _len, _len1, _ref;
     currentValue = null;
+    nullRightPad = 0;
     newValuesArray = [];
+    newValuesArray.push(null);
     _ref = this.options.xAxis.data;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       year = _ref[_i];
       for (num = _j = 1; _j <= 12; num = ++_j) {
         key = year + '-' + num;
         if (data.hasOwnProperty(key)) {
-          currentValue = data[key].value;
+          currentValue = data[key][key_value];
+          nullRightPad = 0;
         }
+        nullRightPad++;
         newValuesArray.push(currentValue);
       }
+    }
+    nullCount = 1;
+    for (key = _k = 0, _len1 = newValuesArray.length; _k < _len1; key = ++_k) {
+      value = newValuesArray[key];
+      if (nullCount < nullRightPad) {
+        newValuesArray[(newValuesArray.length - 1) - key] = null;
+      } else {
+        break;
+      }
+      nullCount++;
     }
     return newValuesArray;
   };
 
   JchartCoordinate.prototype.normalize_data = function() {
-    var converted, current, data_item, k, key, keys, max, max_obj, max_pad, min_pad, newPadMax, newPadMin, newXAxis, raw_data, y, years, _i, _j, _k, _len, _len1, _len2, _ref, _ref1;
+    var current, data_item, k, key, keys, max, max_obj, max_pad, min_pad, newPadMax, newPadMin, newXAxis, raw_data, y, years, _i, _j, _k, _len, _len1, _len2, _ref, _ref1;
     keys = [];
     years = [];
     _ref = this.data;
@@ -2605,10 +2619,12 @@ JchartCoordinate = (function(_super) {
         }
         raw_data.push(data_item.data);
       } else {
-        converted = this.convertToJChartArray(data_item.data);
+        try {
+          this.data[key].formatted = this.convertToJChartArray(data_item.data, 'formatted');
+        } catch (_error) {}
         this.data[key].original_data = data_item.data;
-        raw_data.push(converted);
-        this.data[key].data = converted;
+        this.data[key].data = this.convertToJChartArray(data_item.data, 'value');
+        raw_data.push(data_item.data);
       }
     }
     max_obj = _.max(this.data, function(item) {
@@ -2903,13 +2919,9 @@ JchartLine = (function(_super) {
         if ((plot != null) && last_y !== plot.y) {
           last_y = plot.y;
           if (last_plot) {
-            if (data.plot[i + 1] === null || data.plot[i + 1] === void 0) {
-              this.ctx.lineTo(data.plot[i].x, last_y);
-            } else {
-              this.ctx.lineTo(data.plot[i + 1].x, last_y);
-            }
+            this.ctx.lineTo(data.plot[i].x, last_y);
           } else {
-            this.ctx.moveTo(data.plot[i + 1].x, last_y);
+            this.ctx.moveTo(data.plot[i].x, last_y);
             last_plot = {
               x: plot.x,
               y: last_y

@@ -66,20 +66,31 @@ class JchartCoordinate extends Jchart
 
     super @canvas, @data, @options, @ipo
 
-  convertToJChartArray: (data) ->
+  convertToJChartArray: (data, key_value) ->
     currentValue = null
+    nullRightPad = 0
     newValuesArray = []
+    newValuesArray.push(null)
     for year in @options.xAxis.data
       for num in [1..12]
         key = year + '-' + num
         if data.hasOwnProperty(key)
-          currentValue = data[key].value
+          currentValue = data[key][key_value]
+          nullRightPad = 0
+        nullRightPad++
         newValuesArray.push(currentValue)
+
+    nullCount = 1
+    for value, key in newValuesArray
+      if nullCount < nullRightPad
+        newValuesArray[(newValuesArray.length - 1) - key] = null
+      else
+        break
+      nullCount++
 
     newValuesArray
 
   normalize_data: ->
-
     #find min and keys to pad arrays
     keys = []
     years = []
@@ -129,10 +140,11 @@ class JchartCoordinate extends Jchart
 
         raw_data.push data_item.data
       else
-        converted = @convertToJChartArray(data_item.data)
+        try
+          @data[key].formatted = @convertToJChartArray(data_item.data, 'formatted')
         @data[key].original_data = data_item.data
-        raw_data.push converted
-        @data[key].data = converted
+        @data[key].data = @convertToJChartArray(data_item.data, 'value')
+        raw_data.push data_item.data
 
     max_obj = _.max @data, (item) -> _max item.data
     max = _.max max_obj.data

@@ -248,12 +248,12 @@ class JchartCoordinate extends Jchart
         leftOffset = if @options.yAxis.rightAlign then @graph_width - @options.graph.marginRight + @options.graph.marginLeft + @options.chart.lineWidth + @options.yAxis.tick.size  else @options.graph.marginLeft
         if @options.yAxis.label.align is 'left'
           @ctx.textAlign = 'right'
-          @ctx.textBaseline = 'middle'
-          start_position = @pl + leftOffset - 10
+          @ctx.textBaseline =  @options.yAxis.label.textBaseline or 'middle'
+          start_position = @pl + leftOffset - 12
           start_position -= @options.yAxis.tick.size if @options.yAxis.tick.enable
         else
           @ctx.textAlign = 'left'
-          @ctx.textBaseline = 'bottom'
+          @ctx.textBaseline =   @options.yAxis.label.textBaseline or 'bottom'
           start_position = @pl + leftOffset
         @ctx.fillText @options.yAxis.label.prefix + @auto_format(value) + @options.yAxis.label.suffix, start_position, @pt + y
 

@@ -42,12 +42,9 @@ class JchartLine extends JchartCoordinate
         if plot? and last_y isnt plot.y
           last_y = plot.y
           if last_plot
-            if data.plot[i+1] is null or data.plot[i+1] is undefined 
-              @ctx.lineTo data.plot[i].x, last_y
-            else
-              @ctx.lineTo data.plot[i+1].x, last_y
+            @ctx.lineTo data.plot[i].x, last_y
           else
-            @ctx.moveTo data.plot[i+1].x, last_y
+            @ctx.moveTo data.plot[i].x, last_y
             last_plot = {x: plot.x, y: last_y}
 
     else

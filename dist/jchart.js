@@ -2746,14 +2746,14 @@ JchartCoordinate = (function(_super) {
         leftOffset = this.options.yAxis.rightAlign ? this.graph_width - this.options.graph.marginRight + this.options.graph.marginLeft + this.options.chart.lineWidth + this.options.yAxis.tick.size : this.options.graph.marginLeft;
         if (this.options.yAxis.label.align === 'left') {
           this.ctx.textAlign = 'right';
-          this.ctx.textBaseline = 'middle';
-          start_position = this.pl + leftOffset - 10;
+          this.ctx.textBaseline = this.options.yAxis.label.textBaseline || 'middle';
+          start_position = this.pl + leftOffset - 12;
           if (this.options.yAxis.tick.enable) {
             start_position -= this.options.yAxis.tick.size;
           }
         } else {
           this.ctx.textAlign = 'left';
-          this.ctx.textBaseline = 'bottom';
+          this.ctx.textBaseline = this.options.yAxis.label.textBaseline || 'bottom';
           start_position = this.pl + leftOffset;
         }
         this.ctx.fillText(this.options.yAxis.label.prefix + this.auto_format(value) + this.options.yAxis.label.suffix, start_position, this.pt + y);

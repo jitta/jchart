@@ -261,7 +261,8 @@ class JchartCoordinate extends Jchart
         if @options.yAxis.label.align is 'left'
           @ctx.textAlign = 'right'
           @ctx.textBaseline =  @options.yAxis.label.textBaseline or 'middle'
-          start_position = @pl + leftOffset - 12
+          yAxisLabelOffset = this.options.yAxis.label.offset || -12;
+          start_position = @pl + leftOffset + yAxisLabelOffset
           start_position -= @options.yAxis.tick.size if @options.yAxis.tick.enable
         else
           @ctx.textAlign = 'left'

@@ -89,6 +89,7 @@ var line_options = {
     min: 0,
     max: null,
     label: {
+      suffix: '$',
       align: 'left'
     }
   },

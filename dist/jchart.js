@@ -2733,7 +2733,7 @@ JchartCoordinate = (function(_super) {
   };
 
   JchartCoordinate.prototype.horizontal_line = function() {
-    var height, i, interval, leftOffset, lines, start_position, value, y, _i, _ref;
+    var height, i, interval, leftOffset, lines, start_position, value, y, yAxisLabelOffset, _i, _ref;
     interval = this.max_data - this.min_data;
     lines = this.options.yAxis.breaks;
     this.ctx.beginPath();
@@ -2763,7 +2763,8 @@ JchartCoordinate = (function(_super) {
         if (this.options.yAxis.label.align === 'left') {
           this.ctx.textAlign = 'right';
           this.ctx.textBaseline = this.options.yAxis.label.textBaseline || 'middle';
-          start_position = this.pl + leftOffset - 12;
+          yAxisLabelOffset = this.options.yAxis.label.offset || -12;
+          start_position = this.pl + leftOffset + yAxisLabelOffset;
           if (this.options.yAxis.tick.enable) {
             start_position -= this.options.yAxis.tick.size;
           }

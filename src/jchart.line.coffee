@@ -1,13 +1,13 @@
 
 class JchartLine extends JchartCoordinate
 
-  constructor: (@canvas, @data, @options=null, @ipo) ->
+  constructor: (@canvas, @data, @options=null, @ipo, @volume) ->
 
     @options = _.merge
       line_dash: [6,2]
     , @options
 
-    super @canvas, @data, @options, @ipo
+    super @canvas, @data, @options, @ipo, @volume
     @normalize_data()
     @draw()
 
@@ -16,6 +16,9 @@ class JchartLine extends JchartCoordinate
     @preprocess_data()
 
     @drawGraph()
+
+    if @volume
+      @drawVolume @volume
 
   addLine: (data) ->
     @draw_line_graph data
@@ -191,5 +194,23 @@ class JchartLine extends JchartCoordinate
 
       ctx.closePath()
       ctx.fill()
+
+  drawVolume: (volume) ->
+    ctx =  @ctx
+    max = _.max volume.data
+    min = _.min volume.data
+    interval = max-min
+    width = @graph_width - (@options.graph.marginLeft + @options.graph.marginRight)
+    max_height = (@graph_height-(@options.graph.marginTop + @options.graph.marginTop)) / 5
+    barWidth = width / _.size(volume.data)
+    columnWidth = barWidth / 2
+    _i = 0
+    for value in volume.data
+      if value?
+        x = (_i+1) * barWidth - barWidth/2 + @options.chart.paddingLeft + @options.graph.marginLeft
+        y = @options.chart.height - (value-min+1) / interval * max_height - @options.graph.marginBottom - @options.chart.paddingBottom
+        ctx.fillStyle = volume.color or '#000'
+        ctx.fillRect x-columnWidth/2, y, columnWidth, (value-min+1)/interval*max_height - @options.chart.lineWidth+1
+      _i++
 
 Jchart.line = JchartLine

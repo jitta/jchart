@@ -2873,15 +2873,16 @@ var JchartLine,
 JchartLine = (function(_super) {
   __extends(JchartLine, _super);
 
-  function JchartLine(canvas, data, options, ipo) {
+  function JchartLine(canvas, data, options, ipo, volume) {
     this.canvas = canvas;
     this.data = data;
     this.options = options != null ? options : null;
     this.ipo = ipo;
+    this.volume = volume;
     this.options = _.merge({
       line_dash: [6, 2]
     }, this.options);
-    JchartLine.__super__.constructor.call(this, this.canvas, this.data, this.options, this.ipo);
+    JchartLine.__super__.constructor.call(this, this.canvas, this.data, this.options, this.ipo, this.volume);
     this.normalize_data();
     this.draw();
   }
@@ -2889,7 +2890,10 @@ JchartLine = (function(_super) {
   JchartLine.prototype.draw = function() {
     this.preprocess_style();
     this.preprocess_data();
-    return this.drawGraph();
+    this.drawGraph();
+    if (this.volume) {
+      return this.drawVolume(this.volume);
+    }
   };
 
   JchartLine.prototype.addLine = function(data) {
@@ -3094,6 +3098,32 @@ JchartLine = (function(_super) {
       ctx.closePath();
       return ctx.fill();
     }
+  };
+
+  JchartLine.prototype.drawVolume = function(volume) {
+    var barWidth, columnWidth, ctx, interval, max, max_height, min, value, width, x, y, _i, _j, _len, _ref, _results;
+    ctx = this.ctx;
+    max = _.max(volume.data);
+    min = _.min(volume.data);
+    interval = max - min;
+    width = this.graph_width - (this.options.graph.marginLeft + this.options.graph.marginRight);
+    max_height = (this.graph_height - (this.options.graph.marginTop + this.options.graph.marginTop)) / 5;
+    barWidth = width / _.size(volume.data);
+    columnWidth = barWidth / 2;
+    _i = 0;
+    _ref = volume.data;
+    _results = [];
+    for (_j = 0, _len = _ref.length; _j < _len; _j++) {
+      value = _ref[_j];
+      if (value != null) {
+        x = (_i + 1) * barWidth - barWidth / 2 + this.options.chart.paddingLeft + this.options.graph.marginLeft;
+        y = this.options.chart.height - (value - min + 1) / interval * max_height - this.options.graph.marginBottom - this.options.chart.paddingBottom;
+        ctx.fillStyle = volume.color || '#000';
+        ctx.fillRect(x - columnWidth / 2, y, columnWidth, (value - min + 1) / interval * max_height - this.options.chart.lineWidth + 1);
+      }
+      _results.push(_i++);
+    }
+    return _results;
   };
 
   return JchartLine;

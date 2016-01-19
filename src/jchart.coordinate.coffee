@@ -216,6 +216,9 @@ class JchartCoordinate extends Jchart
     @horizontal_line()
     @vertical_line()
 
+    if @volume
+      @drawVolume @volume
+
     for line in @data
       @addLine line
 

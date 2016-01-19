@@ -2719,6 +2719,9 @@ JchartCoordinate = (function(_super) {
     this.ctx.strokeStyle = this.options.chart.color;
     this.horizontal_line();
     this.vertical_line();
+    if (this.volume) {
+      this.drawVolume(this.volume);
+    }
     _ref = this.data;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       line = _ref[_i];
@@ -2890,10 +2893,7 @@ JchartLine = (function(_super) {
   JchartLine.prototype.draw = function() {
     this.preprocess_style();
     this.preprocess_data();
-    this.drawGraph();
-    if (this.volume) {
-      return this.drawVolume(this.volume);
-    }
+    return this.drawGraph();
   };
 
   JchartLine.prototype.addLine = function(data) {

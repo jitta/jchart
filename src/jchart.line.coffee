@@ -17,9 +17,6 @@ class JchartLine extends JchartCoordinate
 
     @drawGraph()
 
-    if @volume
-      @drawVolume @volume
-
   addLine: (data) ->
     @draw_line_graph data
     if data.style.fill_area

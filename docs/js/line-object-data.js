@@ -77,7 +77,11 @@ var line_data = {
       "color": "#47C6F1"
     }
   }],
-  "labels": [new Date().getFullYear()] //at least include current year for object datas only.
+  "labels": [new Date().getFullYear()], //at least include current year for object datas only.
+  "volume": {
+    "color": "#79848F",
+    "data": [ 49455,43365, 57735, 74221, 95010, 68689, 82843, 54340, 53187, 75813, 73112, 22688, 30169, 70812, 41553, 65122, 66078, 21695, 53838, 64048, 28719, 58503, 71045, 34345, 47652, 34629, 28922, 70654, 72662, 85978, 52528, 99857, 94296, null ]
+  }
 };
 
 var line_options = {
@@ -109,4 +113,4 @@ var line_canvas = document.createElement('canvas');
 line_canvas.width = line_options.chart.width;
 line_canvas.height = line_options.chart.height;
 document.body.appendChild(line_canvas);
-var jittaLineChart = new Jchart.line(line_canvas, line_data.data, line_options, line_data.ipo_index);
+var jittaLineChart = new Jchart.line(line_canvas, line_data.data, line_options, line_data.ipo_index, line_data.volume);

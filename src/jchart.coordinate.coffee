@@ -72,7 +72,7 @@ class JchartCoordinate extends Jchart
     newValuesArray = []
     newValuesArray.push(null)
     
-    if @options.xAxis.data.length is 0 then @options.xAxis.data.length = new Date().getFullYear()
+    if @options.xAxis.data.length is 0 then @options.xAxis.data = new Date().getFullYear()
 
     for year in @options.xAxis.data
       for num in [1..12]

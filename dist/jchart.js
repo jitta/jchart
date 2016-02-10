@@ -2518,19 +2518,19 @@ JchartCoordinate = (function(_super) {
   }
 
   JchartCoordinate.prototype.convertToJChartArray = function(data, key_value) {
-    var currentValue, key, newValuesArray, nullCount, nullRightPad, num, value, year, _i, _j, _k, _len, _len1, _ref;
+    var currentValue, hasedIndexArray, key, newValuesArray, nullCount, nullRightPad, num, value, year, _i, _j, _k, _len, _len1, _ref;
     currentValue = null;
     nullRightPad = 0;
     newValuesArray = [];
     newValuesArray.push(null);
-    if (this.options.xAxis.data.length === 0) {
-      this.options.xAxis.data = new Date().getFullYear();
-    }
+    hasedIndexArray = [];
+    hasedIndexArray.push(null);
     _ref = this.options.xAxis.data;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       year = _ref[_i];
       for (num = _j = 1; _j <= 12; num = ++_j) {
         key = year + '-' + num;
+        hasedIndexArray.push(key);
         if (data.hasOwnProperty(key)) {
           currentValue = data[key][key_value];
           nullRightPad = 0;
@@ -2551,12 +2551,16 @@ JchartCoordinate = (function(_super) {
     }
     return {
       newValuesArray: newValuesArray,
-      nullPadRight: nullRightPad
+      nullPadRight: nullRightPad,
+      hasedIndexArray: hasedIndexArray
     };
   };
 
   JchartCoordinate.prototype.normalize_data = function() {
     var converted, current, data_item, k, key, keys, max, max_obj, max_pad, minNullPadLefts, minNullPadRight, min_pad, newPadMax, newPadMin, newXAxis, nullPadLefts, nullPadRights, raw_data, y, years, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3, _results;
+    if (this.options.xAxis.data.length === 0) {
+      this.options.xAxis.data = [new Date().getFullYear()];
+    }
     keys = [];
     years = [];
     _ref = this.data;
@@ -2635,6 +2639,7 @@ JchartCoordinate = (function(_super) {
         converted = this.convertToJChartArray(data_item.data, 'value');
         this.data[key].data = converted.newValuesArray;
         this.data[key].nullPadRight = converted.nullPadRight;
+        this.data[key].hasedIndexArray = converted.hasedIndexArray;
         raw_data.push(data_item.data);
         nullPadRights.push(this.data[key].nullPadRight);
       }
@@ -2671,9 +2676,14 @@ JchartCoordinate = (function(_super) {
           data_item.processed_data = data_item.data.slice();
           data_item.processed_data.splice(0, minNullPadLefts);
           data_item.processed_data.splice((data_item.processed_data.length + 1) - minNullPadRight, minNullPadRight);
-          _results.push(data_item.data = data_item.processed_data);
+          data_item.data = data_item.processed_data;
+          data_item.processed_hased_index = data_item.hasedIndexArray.slice();
+          data_item.processed_hased_index.splice(0, minNullPadLefts);
+          data_item.processed_hased_index.splice((data_item.processed_hased_index.length + 1) - minNullPadRight, minNullPadRight);
+          _results.push(data_item.hasedIndexArray = data_item.processed_hased_index);
         } else {
-          _results.push(data_item.data = data_item.processed_data);
+          data_item.data = data_item.processed_data;
+          _results.push(data_item.processed_hased_index = data_item.hasedIndexArray);
         }
       }
       return _results;

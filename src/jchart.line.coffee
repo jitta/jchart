@@ -197,9 +197,12 @@ class JchartLine extends JchartCoordinate
     max = _.max volume.data
     min = _.min volume.data
     interval = max-min
-    width = @graph_width - (@options.graph.marginLeft + @options.graph.marginRight)
+    width = @graph_width - (@options.graph.marginLeft)
     max_height = (@graph_height-(@options.graph.marginTop + @options.graph.marginTop)) / 5
-    barWidth = width / _.size(volume.data)
+    if @options.chart.stretch 
+      barWidth = width / _.size(@.data[0].processed_hased_index)
+    else
+      barWidth = width / _.size(volume.data)
     columnWidth = barWidth / 2
     _i = 0
     for value in volume.data
@@ -207,7 +210,10 @@ class JchartLine extends JchartCoordinate
         x = (_i+1) * barWidth - barWidth/2 + @options.chart.paddingLeft + @options.graph.marginLeft
         y = @options.chart.height - (value-min+1) / interval * max_height - @options.graph.marginBottom - @options.chart.paddingBottom
         ctx.fillStyle = volume.color or '#000'
-        ctx.fillRect x-columnWidth/2, y, columnWidth, (value-min+1)/interval*max_height - @options.chart.lineWidth+1
+        if @options.chart.stretch
+          ctx.fillRect @.data[0].plot[_i].x - barWidth / 4, y, columnWidth, (value-min+1)/interval*max_height - @options.chart.lineWidth+1
+        else
+          ctx.fillRect x-columnWidth/2, y, columnWidth, (value-min+1)/interval*max_height - @options.chart.lineWidth+1
       _i++
 
 Jchart.line = JchartLine

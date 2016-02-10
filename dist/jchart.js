@@ -2553,7 +2553,7 @@ JchartCoordinate = (function(_super) {
   };
 
   JchartCoordinate.prototype.normalize_data = function() {
-    var converted, current, data_item, k, key, keys, max, max_obj, max_pad, minNullPadLefts, minNullPadRight, min_pad, newPadMax, newPadMin, newXAxis, nullPadLefts, nullPadRights, raw_data, y, years, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1, _ref2, _ref3, _results;
+    var converted, current, data_item, k, key, keys, max, max_obj, max_pad, minNullPadLefts, minNullPadRight, min_pad, newPadMax, newPadMin, newXAxis, nullPadLefts, nullPadRights, raw_data, y, years, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3, _results;
     keys = [];
     years = [];
     _ref = this.data;
@@ -2662,10 +2662,16 @@ JchartCoordinate = (function(_super) {
       minNullPadRight = _.min(nullPadRights);
       _ref3 = this.data;
       _results = [];
-      for (key = _m = 0, _len4 = _ref3.length; _m < _len4; key = ++_m) {
+      for (key in _ref3) {
         data_item = _ref3[key];
-        data_item.data.splice(0, minNullPadLefts);
-        _results.push(data_item.data.splice((data_item.data.length + 1) - minNullPadRight, minNullPadRight));
+        if (data_item.processed_data === void 0) {
+          data_item.processed_data = data_item.data.slice();
+          data_item.processed_data.splice(0, minNullPadLefts);
+          data_item.processed_data.splice((data_item.processed_data.length + 1) - minNullPadRight, minNullPadRight);
+          _results.push(data_item.data = data_item.processed_data);
+        } else {
+          _results.push(data_item.data = data_item.processed_data);
+        }
       }
       return _results;
     }

@@ -173,9 +173,14 @@ class JchartCoordinate extends Jchart
       
       minNullPadLefts = _.min nullPadLefts
       minNullPadRight = _.min nullPadRights
-      for data_item,key in @data
-        data_item.data .splice 0, minNullPadLefts
-        data_item.data .splice (data_item.data.length + 1) - minNullPadRight, minNullPadRight
+      for key, data_item of @data
+        if data_item.processed_data is undefined
+          data_item.processed_data = data_item.data.slice()
+          data_item.processed_data.splice 0, minNullPadLefts
+          data_item.processed_data.splice (data_item.processed_data.length + 1) - minNullPadRight, minNullPadRight
+          data_item.data = data_item.processed_data;
+        else
+          data_item.data = data_item.processed_data;
       
   preprocess_data: ->
     if @options.yAxis.min?

@@ -4,42 +4,46 @@ var line_data = {
     "name": "Revenue",
     "type": "line",
     "data": {
-      "2006-9":{
+      "2007-9":{
         "value":3.1443919773154465,
         "formatted":"3.14"
       },
-      "2007-9":{
+      "2008-9":{
         "value":3.8563582843751787,
         "formatted":"3.86"
       },
-      "2008-9":{
+      "2009-9":{
         "value":6.029157433763845,
         "formatted":"6.03"
       },
-      "2009-9":{
+      "2010-9":{
         "value":6.811789563728733,
         "formatted":"6.81"
       },
-      "2010-9":{
+      "2011-9":{
         "value":10.172666291316466,
         "formatted":"10.17"
       },
-      "2011-9":{
+      "2012-9":{
         "value":16.641047671623053,
         "formatted":"16.64"
       },
-      "2012-9":{
+      "2013-9":{
         "value":23.80546770713805,
         "formatted":"23.81"
       },
-      "2013-9":{
+      "2014-9":{
         "value":27.152857677174055,
         "formatted":"27.15"
       },
-      "2014-9":{
-        "value":null,
-        "formatted":"- -"
+      "2015-9":{
+        "value":30.344234324234324,
+        "formatted":"30.34"
       },
+      "2016-1":{
+        "value":32.344234324234324,
+        "formatted":"32.34"
+      }
     },
     "style": {
       "line": "dashed",
@@ -49,21 +53,24 @@ var line_data = {
     "name": "Revenue",
     "type": "line",
     "data": {
-      "2008-3": {
+      "2011-3": {
         "value": 5.421
       },
-      "2009-4": {
+      "2012-4": {
         "value": 7.305
       },
-      "2011-9": {
+      "2013-9": {
         "value": 10.029
       },
-      "2012-3": {
+      "2014-3": {
         "value": 20.278
       },
-      "2013-7": {
+      "2015-7": {
         "value": 25.367
       },
+      "2016-2": {
+        "value": 29.367
+      }
     },
     "style": {
       "line": "dashed",
@@ -76,7 +83,8 @@ var line_data = {
 var line_options = {
   chart: {
     width: 790,
-    height: 200 / 790 * window.innerWidth
+    height: 200 / 790 * window.innerWidth,
+    stretch: true
   },
   xAxis: {
     data: line_data.labels,

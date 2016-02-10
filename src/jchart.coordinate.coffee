@@ -94,9 +94,13 @@ class JchartCoordinate extends Jchart
     return {
       newValuesArray: newValuesArray
       nullPadRight: nullRightPad
+      hasedIndexArray: hasedIndexArray
     }
     
   normalize_data: ->
+    
+    this.options.xAxis.data = [new Date().getFullYear()] unless this.options.xAxis.data.length isnt 0
+    
     #find min and keys to pad arrays
     keys = []
     years = []

@@ -3160,9 +3160,13 @@ JchartLine = (function(_super) {
     max = _.max(volume.data);
     min = _.min(volume.data);
     interval = max - min;
-    width = this.graph_width - (this.options.graph.marginLeft + this.options.graph.marginRight);
+    width = this.graph_width - this.options.graph.marginLeft;
     max_height = (this.graph_height - (this.options.graph.marginTop + this.options.graph.marginTop)) / 5;
-    barWidth = width / _.size(volume.data);
+    if (this.options.chart.stretch) {
+      barWidth = width / _.size(this.data[0].processed_hased_index);
+    } else {
+      barWidth = width / _.size(volume.data);
+    }
     columnWidth = barWidth / 2;
     _i = 0;
     _ref = volume.data;
@@ -3173,7 +3177,11 @@ JchartLine = (function(_super) {
         x = (_i + 1) * barWidth - barWidth / 2 + this.options.chart.paddingLeft + this.options.graph.marginLeft;
         y = this.options.chart.height - (value - min + 1) / interval * max_height - this.options.graph.marginBottom - this.options.chart.paddingBottom;
         ctx.fillStyle = volume.color || '#000';
-        ctx.fillRect(x - columnWidth / 2, y, columnWidth, (value - min + 1) / interval * max_height - this.options.chart.lineWidth + 1);
+        if (this.options.chart.stretch) {
+          ctx.fillRect(this.data[0].plot[_i].x - barWidth / 4, y, columnWidth, (value - min + 1) / interval * max_height - this.options.chart.lineWidth + 1);
+        } else {
+          ctx.fillRect(x - columnWidth / 2, y, columnWidth, (value - min + 1) / interval * max_height - this.options.chart.lineWidth + 1);
+        }
       }
       _results.push(_i++);
     }

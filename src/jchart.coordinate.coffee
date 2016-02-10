@@ -71,12 +71,13 @@ class JchartCoordinate extends Jchart
     nullRightPad = 0
     newValuesArray = []
     newValuesArray.push(null)
-    
-    if @options.xAxis.data.length is 0 then @options.xAxis.data = new Date().getFullYear()
+    hasedIndexArray = []
+    hasedIndexArray.push(null)
 
     for year in @options.xAxis.data
       for num in [1..12]
         key = year + '-' + num
+        hasedIndexArray.push(key)
         if data.hasOwnProperty(key)
           currentValue = data[key][key_value]
           nullRightPad = 0
@@ -158,6 +159,7 @@ class JchartCoordinate extends Jchart
         converted = @convertToJChartArray(data_item.data, 'value')
         @data[key].data = converted.newValuesArray
         @data[key].nullPadRight = converted.nullPadRight
+        @data[key].hasedIndexArray = converted.hasedIndexArray
         raw_data.push data_item.data
         nullPadRights.push @data[key].nullPadRight
 
@@ -184,9 +186,15 @@ class JchartCoordinate extends Jchart
           data_item.processed_data = data_item.data.slice()
           data_item.processed_data.splice 0, minNullPadLefts
           data_item.processed_data.splice (data_item.processed_data.length + 1) - minNullPadRight, minNullPadRight
-          data_item.data = data_item.processed_data;
+          data_item.data = data_item.processed_data
+          
+          data_item.processed_hased_index = data_item.hasedIndexArray.slice()
+          data_item.processed_hased_index.splice 0, minNullPadLefts
+          data_item.processed_hased_index.splice (data_item.processed_hased_index.length + 1) - minNullPadRight, minNullPadRight
+          data_item.hasedIndexArray = data_item.processed_hased_index;
         else
           data_item.data = data_item.processed_data;
+          data_item.processed_hased_index = data_item.hasedIndexArray;
       
   preprocess_data: ->
     if @options.yAxis.min?

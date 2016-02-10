@@ -22,6 +22,7 @@ class Jchart
           family: 'Arial,sans-serif'
         color: '#888'
         background: '#ffffff'
+        stretch: false
       graph:
         border: true
         marginLeftIfDecimalPoints: 50

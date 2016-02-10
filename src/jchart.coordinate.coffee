@@ -71,6 +71,7 @@ class JchartCoordinate extends Jchart
     nullRightPad = 0
     newValuesArray = []
     newValuesArray.push(null)
+
     for year in @options.xAxis.data
       for num in [1..12]
         key = year + '-' + num
@@ -87,9 +88,12 @@ class JchartCoordinate extends Jchart
       else
         break
       nullCount++
-
-    newValuesArray
-
+    
+    return {
+      newValuesArray: newValuesArray
+      nullPadRight: nullRightPad
+    }
+    
   normalize_data: ->
     #find min and keys to pad arrays
     keys = []
@@ -124,6 +128,8 @@ class JchartCoordinate extends Jchart
     @options.xAxis.data = newXAxis
 
     raw_data = []
+    nullPadLefts = []
+    nullPadRights = []
     for data_item,key in @data
       if Array.isArray data_item.data
         #pad arrays if have new x-axis
@@ -141,16 +147,36 @@ class JchartCoordinate extends Jchart
         raw_data.push data_item.data
       else
         try
-          @data[key].formatted = @convertToJChartArray(data_item.data, 'formatted')
+          @data[key].formatted = @convertToJChartArray(data_item.data, 'formatted').newValuesArray
         @data[key].original_data = data_item.data
-        @data[key].data = @convertToJChartArray(data_item.data, 'value')
+        converted = @convertToJChartArray(data_item.data, 'value')
+        @data[key].data = converted.newValuesArray
+        @data[key].nullPadRight = converted.nullPadRight
         raw_data.push data_item.data
+        nullPadRights.push @data[key].nullPadRight
 
     max_obj = _.max @data, (item) -> _max item.data
     max = _.max max_obj.data
     if max >= 1.00
       roundValues raw_data
-
+      
+    if @options.chart.stretch
+      for data_item,key in @data
+        data_item.nullPadLeft = 0
+        data_item.data.some (item) ->
+          if item is null 
+            data_item.nullPadLeft++ 
+            return false
+          else 
+            return true
+        nullPadLefts.push data_item.nullPadLeft
+      
+      minNullPadLefts = _.min nullPadLefts
+      minNullPadRight = _.min nullPadRights
+      for data_item,key in @data
+        data_item.data .splice 0, minNullPadLefts
+        data_item.data .splice (data_item.data.length + 1) - minNullPadRight, minNullPadRight
+      
   preprocess_data: ->
     if @options.yAxis.min?
       @min_data = @options.yAxis.min

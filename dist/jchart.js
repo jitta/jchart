@@ -2524,7 +2524,7 @@ JchartCoordinate = (function(_super) {
     newValuesArray = [];
     newValuesArray.push(null);
     if (this.options.xAxis.data.length === 0) {
-      this.options.xAxis.data.length = new Date().getFullYear();
+      this.options.xAxis.data = new Date().getFullYear();
     }
     _ref = this.options.xAxis.data;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {

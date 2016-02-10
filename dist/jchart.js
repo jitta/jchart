@@ -2222,7 +2222,8 @@ Jchart = (function() {
           family: 'Arial,sans-serif'
         },
         color: '#888',
-        background: '#ffffff'
+        background: '#ffffff',
+        stretch: false
       },
       graph: {
         border: true,
@@ -2545,11 +2546,14 @@ JchartCoordinate = (function(_super) {
       }
       nullCount++;
     }
-    return newValuesArray;
+    return {
+      newValuesArray: newValuesArray,
+      nullPadRight: nullRightPad
+    };
   };
 
   JchartCoordinate.prototype.normalize_data = function() {
-    var current, data_item, k, key, keys, max, max_obj, max_pad, min_pad, newPadMax, newPadMin, newXAxis, raw_data, y, years, _i, _j, _k, _len, _len1, _len2, _ref, _ref1;
+    var converted, current, data_item, k, key, keys, max, max_obj, max_pad, minNullPadLefts, minNullPadRight, min_pad, newPadMax, newPadMin, newXAxis, nullPadLefts, nullPadRights, raw_data, y, years, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1, _ref2, _ref3, _results;
     keys = [];
     years = [];
     _ref = this.data;
@@ -2592,6 +2596,8 @@ JchartCoordinate = (function(_super) {
     newXAxis = min_pad.concat(this.options.xAxis.data, max_pad);
     this.options.xAxis.data = newXAxis;
     raw_data = [];
+    nullPadLefts = [];
+    nullPadRights = [];
     _ref1 = this.data;
     for (key = _k = 0, _len2 = _ref1.length; _k < _len2; key = ++_k) {
       data_item = _ref1[key];
@@ -2620,11 +2626,14 @@ JchartCoordinate = (function(_super) {
         raw_data.push(data_item.data);
       } else {
         try {
-          this.data[key].formatted = this.convertToJChartArray(data_item.data, 'formatted');
+          this.data[key].formatted = this.convertToJChartArray(data_item.data, 'formatted').newValuesArray;
         } catch (_error) {}
         this.data[key].original_data = data_item.data;
-        this.data[key].data = this.convertToJChartArray(data_item.data, 'value');
+        converted = this.convertToJChartArray(data_item.data, 'value');
+        this.data[key].data = converted.newValuesArray;
+        this.data[key].nullPadRight = converted.nullPadRight;
         raw_data.push(data_item.data);
+        nullPadRights.push(this.data[key].nullPadRight);
       }
     }
     max_obj = _.max(this.data, function(item) {
@@ -2632,7 +2641,33 @@ JchartCoordinate = (function(_super) {
     });
     max = _.max(max_obj.data);
     if (max >= 1.00) {
-      return roundValues(raw_data);
+      roundValues(raw_data);
+    }
+    if (this.options.chart.stretch) {
+      _ref2 = this.data;
+      for (key = _l = 0, _len3 = _ref2.length; _l < _len3; key = ++_l) {
+        data_item = _ref2[key];
+        data_item.nullPadLeft = 0;
+        data_item.data.some(function(item) {
+          if (item === null) {
+            data_item.nullPadLeft++;
+            return false;
+          } else {
+            return true;
+          }
+        });
+        nullPadLefts.push(data_item.nullPadLeft);
+      }
+      minNullPadLefts = _.min(nullPadLefts);
+      minNullPadRight = _.min(nullPadRights);
+      _ref3 = this.data;
+      _results = [];
+      for (key = _m = 0, _len4 = _ref3.length; _m < _len4; key = ++_m) {
+        data_item = _ref3[key];
+        data_item.data.splice(0, minNullPadLefts);
+        _results.push(data_item.data.splice((data_item.data.length + 1) - minNullPadRight, minNullPadRight));
+      }
+      return _results;
     }
   };
 

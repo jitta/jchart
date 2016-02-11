@@ -81,7 +81,7 @@ class JchartCoordinate extends Jchart
         monthly[last_key][key_value] = last_year_value
         diff_month = (new Date("#{key}")).diffMonth(new Date("#{last_key}")) + 1
         for month in [1..diff_month]
-          break if run_month >= key
+          break if run_month > key
           run_month.add(1, 'months')
           key_monthly = run_month.getFullYear() + '-' + (parseInt(run_month.getMonth())+1)
           monthly[key_monthly] = {}
@@ -104,6 +104,8 @@ class JchartCoordinate extends Jchart
         hasedIndexArray.push(key)
         if monthly.hasOwnProperty(key)
           currentValue = monthly[key][key_value]
+          if key_value is 'formatted'
+            currentValue = Math.round(currentValue, -2)
           nullRightPad = 0
         nullRightPad++
         newValuesArray.push(currentValue)

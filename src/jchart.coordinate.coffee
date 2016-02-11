@@ -233,10 +233,16 @@ class JchartCoordinate extends Jchart
           data_item.processed_hased_index = data_item.hasedIndexArray.slice()
           data_item.processed_hased_index.splice 0, minNullPadLefts
           data_item.processed_hased_index.splice (data_item.processed_hased_index.length + 1) - minNullPadRight, minNullPadRight
-          data_item.hasedIndexArray = data_item.processed_hased_index;
+          data_item.hasedIndexArray = data_item.processed_hased_index
+          
+          data_item.processed_originalArrayFill = data_item.originalArrayFill.slice()
+          data_item.processed_originalArrayFill.splice 0, minNullPadLefts
+          data_item.processed_originalArrayFill.splice (data_item.processed_originalArrayFill.length + 1) - minNullPadRight, minNullPadRight
+          data_item.originalArrayFill = data_item.processed_originalArrayFill
         else
-          data_item.data = data_item.processed_data;
-          data_item.processed_hased_index = data_item.hasedIndexArray;
+          data_item.data = data_item.processed_data
+          data_item.processed_hased_index = data_item.hasedIndexArray
+          data_item.processed_originalArrayFill = data_item.originalArrayFill
       
   preprocess_data: ->
     if @options.yAxis.min?

@@ -2575,7 +2575,6 @@ JchartCoordinate = (function(_super) {
       }
       i++;
     }
-    console.log(monthly);
     currentValue = null;
     nullRightPad = 0;
     newValuesArray = [];
@@ -2606,7 +2605,6 @@ JchartCoordinate = (function(_super) {
       }
       nullCount++;
     }
-    console.log(newValuesArray);
     return {
       newValuesArray: newValuesArray,
       nullPadRight: nullRightPad,

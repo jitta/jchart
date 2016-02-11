@@ -131,7 +131,7 @@ class JchartCoordinate extends Jchart
       else
         break
       nullCount++
-    console.log originalArrayFill
+
     return {
       newValuesArray: newValuesArray
       nullPadRight: nullRightPad

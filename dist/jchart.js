@@ -2623,7 +2623,6 @@ JchartCoordinate = (function(_super) {
       }
       nullCount++;
     }
-    console.log(originalArrayFill);
     return {
       newValuesArray: newValuesArray,
       nullPadRight: nullRightPad,

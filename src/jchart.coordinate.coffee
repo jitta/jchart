@@ -81,11 +81,13 @@ class JchartCoordinate extends Jchart
         monthly[last_key][key_value] = last_year_value
         diff_month = (new Date("#{key}")).diffMonth(new Date("#{last_key}")) + 1
         for month in [1..diff_month]
-          break if run_month > key
+          break if run_month >= key
           run_month.add(1, 'months')
           key_monthly = run_month.getFullYear() + '-' + (parseInt(run_month.getMonth())+1)
           monthly[key_monthly] = {}
-          monthly[key_monthly][key_value] = last_year_value + (this_year_value-last_year_value)/diff_month * month
+          monthly[key_monthly][key_value] = null
+          if this_year_value
+            monthly[key_monthly][key_value] = last_year_value + (this_year_value-last_year_value)/diff_month * month
           monthly[key_monthly][key_value] = 0 if monthly[key_monthly] < 0
       i++
     

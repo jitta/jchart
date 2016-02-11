@@ -67,6 +67,28 @@ class JchartCoordinate extends Jchart
     super @canvas, @data, @options, @ipo
 
   convertToJChartArray: (data, key_value) ->
+    
+    monthly = {}
+    keys = Object.keys(data)
+    i = 0
+    for key in keys
+      last_key = keys[i-1]
+      if data[key]? and data[last_key]?
+        last_year_value = data[last_key].value
+        this_year_value = data[key].value
+        run_month = new Date("#{last_key}")
+        monthly[last_key] = {}
+        monthly[last_key][key_value] = last_year_value
+        diff_month = (new Date("#{key}")).diffMonth(new Date("#{last_key}")) + 1
+        for month in [1..diff_month]
+          break if run_month > key
+          run_month.add(1, 'months')
+          key_monthly = run_month.getFullYear() + '-' + (parseInt(run_month.getMonth())+1)
+          monthly[key_monthly] = {}
+          monthly[key_monthly][key_value] = last_year_value + (this_year_value-last_year_value)/diff_month * month
+          monthly[key_monthly][key_value] = 0 if monthly[key_monthly] < 0
+      i++
+    
     currentValue = null
     nullRightPad = 0
     newValuesArray = []
@@ -78,8 +100,8 @@ class JchartCoordinate extends Jchart
       for num in [1..12]
         key = year + '-' + num
         hasedIndexArray.push(key)
-        if data.hasOwnProperty(key)
-          currentValue = data[key][key_value]
+        if monthly.hasOwnProperty(key)
+          currentValue = monthly[key][key_value]
           nullRightPad = 0
         nullRightPad++
         newValuesArray.push(currentValue)
@@ -91,7 +113,7 @@ class JchartCoordinate extends Jchart
       else
         break
       nullCount++
-    
+
     return {
       newValuesArray: newValuesArray
       nullPadRight: nullRightPad

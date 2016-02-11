@@ -176,6 +176,34 @@ roundValues = function(arrays) {
 
 
 /**
+ * Date helpers
+ * ============================================================
+ */
+
+Date.prototype.add = function(number, duration) {
+  if (duration === 'days') {
+    return this.setDate(this.getDate() + number);
+  } else if (duration === 'months') {
+    return this.setMonth(this.getMonth() + number);
+  } else {
+    return this.setYear(this.getYear() + number);
+  }
+};
+
+Date.prototype.diffMonth = function(d1) {
+  var d2, months;
+  d2 = this;
+  months = (d2.getFullYear() - d1.getFullYear()) * 12;
+  months -= d1.getMonth() + 1;
+  months += d2.getMonth();
+  if (months < 0) {
+    months = 0;
+  }
+  return months;
+};
+
+
+/**
  * @license
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash include="merge,min,max,size,filter"`
@@ -2518,7 +2546,36 @@ JchartCoordinate = (function(_super) {
   }
 
   JchartCoordinate.prototype.convertToJChartArray = function(data, key_value) {
-    var currentValue, hasedIndexArray, key, newValuesArray, nullCount, nullRightPad, num, value, year, _i, _j, _k, _len, _len1, _ref;
+    var currentValue, diff_month, hasedIndexArray, i, key, key_monthly, keys, last_key, last_year_value, month, monthly, newValuesArray, nullCount, nullRightPad, num, run_month, this_year_value, value, year, _i, _j, _k, _l, _len, _len1, _len2, _m, _ref;
+    monthly = {};
+    keys = Object.keys(data);
+    i = 0;
+    for (_i = 0, _len = keys.length; _i < _len; _i++) {
+      key = keys[_i];
+      last_key = keys[i - 1];
+      if ((data[key] != null) && (data[last_key] != null)) {
+        last_year_value = data[last_key].value;
+        this_year_value = data[key].value;
+        run_month = new Date("" + last_key);
+        monthly[last_key] = {};
+        monthly[last_key][key_value] = last_year_value;
+        diff_month = (new Date("" + key)).diffMonth(new Date("" + last_key)) + 1;
+        for (month = _j = 1; 1 <= diff_month ? _j <= diff_month : _j >= diff_month; month = 1 <= diff_month ? ++_j : --_j) {
+          if (run_month > key) {
+            break;
+          }
+          run_month.add(1, 'months');
+          key_monthly = run_month.getFullYear() + '-' + (parseInt(run_month.getMonth()) + 1);
+          monthly[key_monthly] = {};
+          monthly[key_monthly][key_value] = last_year_value + (this_year_value - last_year_value) / diff_month * month;
+          if (monthly[key_monthly] < 0) {
+            monthly[key_monthly][key_value] = 0;
+          }
+        }
+      }
+      i++;
+    }
+    console.log(monthly);
     currentValue = null;
     nullRightPad = 0;
     newValuesArray = [];
@@ -2526,13 +2583,13 @@ JchartCoordinate = (function(_super) {
     hasedIndexArray = [];
     hasedIndexArray.push(null);
     _ref = this.options.xAxis.data;
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      year = _ref[_i];
-      for (num = _j = 1; _j <= 12; num = ++_j) {
+    for (_k = 0, _len1 = _ref.length; _k < _len1; _k++) {
+      year = _ref[_k];
+      for (num = _l = 1; _l <= 12; num = ++_l) {
         key = year + '-' + num;
         hasedIndexArray.push(key);
-        if (data.hasOwnProperty(key)) {
-          currentValue = data[key][key_value];
+        if (monthly.hasOwnProperty(key)) {
+          currentValue = monthly[key][key_value];
           nullRightPad = 0;
         }
         nullRightPad++;
@@ -2540,7 +2597,7 @@ JchartCoordinate = (function(_super) {
       }
     }
     nullCount = 1;
-    for (key = _k = 0, _len1 = newValuesArray.length; _k < _len1; key = ++_k) {
+    for (key = _m = 0, _len2 = newValuesArray.length; _m < _len2; key = ++_m) {
       value = newValuesArray[key];
       if (nullCount < nullRightPad) {
         newValuesArray[(newValuesArray.length - 1) - key] = null;
@@ -2549,6 +2606,7 @@ JchartCoordinate = (function(_super) {
       }
       nullCount++;
     }
+    console.log(newValuesArray);
     return {
       newValuesArray: newValuesArray,
       nullPadRight: nullRightPad,
@@ -2958,7 +3016,7 @@ JchartLine = (function(_super) {
   };
 
   JchartLine.prototype.draw_line_graph = function(data) {
-    var i, last_data, last_plot, last_y, null_count, plot, _i, _j, _len, _len1, _ref, _ref1;
+    var last_data, null_count, plot, _i, _len, _ref;
     this.ctx.beginPath();
     this.ctx.lineWidth = data.style.lineWidth || 2;
     this.ctx.strokeStyle = data.style.color || '#000';
@@ -2969,45 +3027,24 @@ JchartLine = (function(_super) {
       this.ctx.setLineDash([]);
     }
     null_count = 0;
-    if (data.hasOwnProperty('original_data')) {
-      last_y = void 0;
-      last_plot = void 0;
-      _ref = data.plot;
-      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-        plot = _ref[i];
-        if ((plot != null) && last_y !== plot.y) {
-          last_y = plot.y;
-          if (last_plot) {
-            this.ctx.lineTo(data.plot[i].x, last_y);
-          } else {
-            this.ctx.moveTo(data.plot[i].x, last_y);
-            last_plot = {
-              x: plot.x,
-              y: last_y
-            };
-          }
+    _ref = data.plot;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      plot = _ref[_i];
+      if (plot != null) {
+        null_count = 0;
+        if (data.style.line === 'point') {
+          this.ctx.fillRect(plot.x, plot.y, 3, 3);
+        } else {
+          this.ctx.lineTo(plot.x, plot.y);
+        }
+        last_data = plot;
+      } else {
+        if (plot != null) {
+          this.ctx.moveTo(plot.x, plot.y);
         }
       }
-    } else {
-      _ref1 = data.plot;
-      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-        plot = _ref1[_j];
-        if (plot != null) {
-          null_count = 0;
-          if (data.style.line === 'point') {
-            this.ctx.fillRect(plot.x, plot.y, 3, 3);
-          } else {
-            this.ctx.lineTo(plot.x, plot.y);
-          }
-          last_data = plot;
-        } else {
-          if (plot != null) {
-            this.ctx.moveTo(plot.x, plot.y);
-          }
-        }
-        if (plot == null) {
-          null_count++;
-        }
+      if (plot == null) {
+        null_count++;
       }
     }
     this.ctx.stroke();

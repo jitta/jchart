@@ -2561,7 +2561,7 @@ JchartCoordinate = (function(_super) {
         monthly[last_key][key_value] = last_year_value;
         diff_month = (new Date("" + key)).diffMonth(new Date("" + last_key)) + 1;
         for (month = _j = 1; 1 <= diff_month ? _j <= diff_month : _j >= diff_month; month = 1 <= diff_month ? ++_j : --_j) {
-          if (run_month >= key) {
+          if (run_month > key) {
             break;
           }
           run_month.add(1, 'months');
@@ -2592,6 +2592,9 @@ JchartCoordinate = (function(_super) {
         hasedIndexArray.push(key);
         if (monthly.hasOwnProperty(key)) {
           currentValue = monthly[key][key_value];
+          if (key_value === 'formatted') {
+            currentValue = Math.round(currentValue, -2);
+          }
           nullRightPad = 0;
         }
         nullRightPad++;

@@ -2561,13 +2561,16 @@ JchartCoordinate = (function(_super) {
         monthly[last_key][key_value] = last_year_value;
         diff_month = (new Date("" + key)).diffMonth(new Date("" + last_key)) + 1;
         for (month = _j = 1; 1 <= diff_month ? _j <= diff_month : _j >= diff_month; month = 1 <= diff_month ? ++_j : --_j) {
-          if (run_month > key) {
+          if (run_month >= key) {
             break;
           }
           run_month.add(1, 'months');
           key_monthly = run_month.getFullYear() + '-' + (parseInt(run_month.getMonth()) + 1);
           monthly[key_monthly] = {};
-          monthly[key_monthly][key_value] = last_year_value + (this_year_value - last_year_value) / diff_month * month;
+          monthly[key_monthly][key_value] = null;
+          if (this_year_value) {
+            monthly[key_monthly][key_value] = last_year_value + (this_year_value - last_year_value) / diff_month * month;
+          }
           if (monthly[key_monthly] < 0) {
             monthly[key_monthly][key_value] = 0;
           }

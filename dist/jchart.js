@@ -2546,7 +2546,7 @@ JchartCoordinate = (function(_super) {
   }
 
   JchartCoordinate.prototype.convertToJChartArray = function(data, key_value) {
-    var currentValue, diff_month, hasedIndexArray, i, key, key_monthly, keys, last_key, last_year_value, month, monthly, newValuesArray, nullCount, nullRightPad, num, run_month, this_year_value, value, year, _i, _j, _k, _l, _len, _len1, _len2, _m, _ref;
+    var currentValue, diff_month, hasedIndexArray, i, key, key_monthly, keys, last_key, last_year_value, month, monthly, newValuesArray, nullCount, nullRightPad, nullRightPadoriginalArrayFillValue, num, originalArrayFill, originalArrayFillValue, run_month, this_year_value, value, year, _i, _j, _k, _l, _len, _len1, _len2, _m, _ref;
     monthly = {};
     keys = Object.keys(data);
     i = 0;
@@ -2581,11 +2581,15 @@ JchartCoordinate = (function(_super) {
       i++;
     }
     currentValue = null;
+    originalArrayFillValue = null;
     nullRightPad = 0;
+    nullRightPadoriginalArrayFillValue = 0;
     newValuesArray = [];
     newValuesArray.push(null);
     hasedIndexArray = [];
     hasedIndexArray.push(null);
+    originalArrayFill = [];
+    originalArrayFill.push(null);
     _ref = this.options.xAxis.data;
     for (_k = 0, _len1 = _ref.length; _k < _len1; _k++) {
       year = _ref[_k];
@@ -2600,7 +2604,13 @@ JchartCoordinate = (function(_super) {
           nullRightPad = 0;
         }
         nullRightPad++;
+        if (data.hasOwnProperty(key)) {
+          originalArrayFillValue = data[key][key_value];
+          nullRightPadoriginalArrayFillValue = 0;
+        }
+        nullRightPadoriginalArrayFillValue++;
         newValuesArray.push(currentValue);
+        originalArrayFill.push(originalArrayFillValue);
       }
     }
     nullCount = 1;
@@ -2613,10 +2623,12 @@ JchartCoordinate = (function(_super) {
       }
       nullCount++;
     }
+    console.log(originalArrayFill);
     return {
       newValuesArray: newValuesArray,
       nullPadRight: nullRightPad,
-      hasedIndexArray: hasedIndexArray
+      hasedIndexArray: hasedIndexArray,
+      originalArrayFill: originalArrayFill
     };
   };
 

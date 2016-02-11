@@ -94,23 +94,35 @@ class JchartCoordinate extends Jchart
       i++
 
     currentValue = null
+    originalArrayFillValue = null
     nullRightPad = 0
+    nullRightPadoriginalArrayFillValue = 0
     newValuesArray = []
     newValuesArray.push(null)
     hasedIndexArray = []
     hasedIndexArray.push(null)
+    originalArrayFill = []
+    originalArrayFill.push(null)
 
     for year in @options.xAxis.data
       for num in [1..12]
         key = year + '-' + num
         hasedIndexArray.push(key)
+        
         if monthly.hasOwnProperty(key)
           currentValue = monthly[key][key_value]
           if key_value is 'formatted'
             currentValue = if (currentValue is null) or (currentValue is undefined) then null else currentValue.toFixed(2)
           nullRightPad = 0
         nullRightPad++
+        
+        if data.hasOwnProperty(key)
+          originalArrayFillValue = data[key][key_value]
+          nullRightPadoriginalArrayFillValue = 0
+        nullRightPadoriginalArrayFillValue++
+          
         newValuesArray.push(currentValue)
+        originalArrayFill.push(originalArrayFillValue)
 
     nullCount = 1
     for value, key in newValuesArray
@@ -119,11 +131,12 @@ class JchartCoordinate extends Jchart
       else
         break
       nullCount++
-    
+    console.log originalArrayFill
     return {
       newValuesArray: newValuesArray
       nullPadRight: nullRightPad
       hasedIndexArray: hasedIndexArray
+      originalArrayFill: originalArrayFill
     }
     
   normalize_data: ->

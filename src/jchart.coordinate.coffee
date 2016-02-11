@@ -85,6 +85,7 @@ class JchartCoordinate extends Jchart
           run_month.add(1, 'months')
           key_monthly = run_month.getFullYear() + '-' + (parseInt(run_month.getMonth())+1)
           monthly[key_monthly] = {}
+          monthly[key_monthly][key_value] = null #prevent undefined
           if last_year_value is null
             monthly[key_monthly][key_value] = null
           else if this_year_value

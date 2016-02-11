@@ -2567,6 +2567,7 @@ JchartCoordinate = (function(_super) {
           run_month.add(1, 'months');
           key_monthly = run_month.getFullYear() + '-' + (parseInt(run_month.getMonth()) + 1);
           monthly[key_monthly] = {};
+          monthly[key_monthly][key_value] = null;
           if (last_year_value === null) {
             monthly[key_monthly][key_value] = null;
           } else if (this_year_value) {

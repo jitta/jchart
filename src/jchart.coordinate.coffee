@@ -105,7 +105,7 @@ class JchartCoordinate extends Jchart
         if monthly.hasOwnProperty(key)
           currentValue = monthly[key][key_value]
           if key_value is 'formatted'
-            currentValue = Math.round(currentValue, -2)
+            currentValue = currentValue.toFixed(2);
           nullRightPad = 0
         nullRightPad++
         newValuesArray.push(currentValue)

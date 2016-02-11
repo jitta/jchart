@@ -2593,7 +2593,7 @@ JchartCoordinate = (function(_super) {
         if (monthly.hasOwnProperty(key)) {
           currentValue = monthly[key][key_value];
           if (key_value === 'formatted') {
-            currentValue = Math.round(currentValue, -2);
+            currentValue = currentValue.toFixed(2);
           }
           nullRightPad = 0;
         }

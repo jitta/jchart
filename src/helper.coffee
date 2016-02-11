@@ -123,3 +123,24 @@ roundValues = (arrays) ->
     item.forEach (value, i) ->
       if (value != null)
         item[i] = parseFloat(value.toFixed(2))
+        
+###*
+ * Date helpers
+ * ============================================================
+###
+
+Date::add = (number, duration) ->
+  if duration == 'days'
+    @.setDate(@.getDate() + number)
+  else if duration == 'months'
+    @.setMonth(@.getMonth() + number)
+  else
+    @.setYear(@.getYear() + number)
+
+Date::diffMonth = (d1) ->
+  d2 = @
+  months = (d2.getFullYear() - d1.getFullYear()) * 12
+  months -= d1.getMonth() + 1
+  months += d2.getMonth()
+  months = 0 if months < 0
+  return months

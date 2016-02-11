@@ -2715,6 +2715,7 @@ JchartCoordinate = (function(_super) {
         this.data[key].data = converted.newValuesArray;
         this.data[key].nullPadRight = converted.nullPadRight;
         this.data[key].hasedIndexArray = converted.hasedIndexArray;
+        this.data[key].originalArrayFill = converted.originalArrayFill;
         raw_data.push(data_item.data);
         nullPadRights.push(this.data[key].nullPadRight);
       }

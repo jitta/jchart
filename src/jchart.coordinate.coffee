@@ -201,6 +201,7 @@ class JchartCoordinate extends Jchart
         @data[key].data = converted.newValuesArray
         @data[key].nullPadRight = converted.nullPadRight
         @data[key].hasedIndexArray = converted.hasedIndexArray
+        @data[key].originalArrayFill = converted.originalArrayFill
         raw_data.push data_item.data
         nullPadRights.push @data[key].nullPadRight
 

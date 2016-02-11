@@ -35,31 +35,18 @@ class JchartLine extends JchartCoordinate
     null_count = 0
     #before = data.plot[0]
     
-    if data.hasOwnProperty 'original_data'
-      last_y = undefined
-      last_plot = undefined
-      for plot,i in data.plot
-        if plot? and last_y isnt plot.y
-          last_y = plot.y
-          if last_plot
-            @ctx.lineTo data.plot[i].x, last_y
-          else
-            @ctx.moveTo data.plot[i].x, last_y
-            last_plot = {x: plot.x, y: last_y}
-
-    else
-      for plot in data.plot
+    for plot in data.plot
+      if plot?
+        null_count = 0
+        if data.style.line is 'point'
+          @ctx.fillRect plot.x, plot.y, 3, 3
+        else
+          @ctx.lineTo plot.x, plot.y
+        last_data = plot
+      else ## start point
         if plot?
-          null_count = 0
-          if data.style.line is 'point'
-            @ctx.fillRect plot.x, plot.y, 3, 3
-          else
-            @ctx.lineTo plot.x, plot.y
-          last_data = plot
-        else ## start point
-          if plot?
-            @ctx.moveTo plot.x, plot.y
-        null_count++ if !plot?
+          @ctx.moveTo plot.x, plot.y
+      null_count++ if !plot?
 
     @ctx.stroke()
     @ctx.closePath()

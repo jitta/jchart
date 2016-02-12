@@ -408,6 +408,8 @@ class JchartCoordinate extends Jchart
           _x = x
           if @options.xAxis.label.align is 'center'
             _x = x - barWidth/2
+          else if @options.xAxis.label.align is 'right'
+            _x = x
           # if @options.xAxis.tick.enable
           _y = y + @options.xAxis.tick.size
 

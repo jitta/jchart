@@ -2954,6 +2954,8 @@ JchartCoordinate = (function(_super) {
           _x = x;
           if (this.options.xAxis.label.align === 'center') {
             _x = x - barWidth / 2;
+          } else if (this.options.xAxis.label.align === 'right') {
+            _x = x;
           }
           _y = y + this.options.xAxis.tick.size;
           this.ctx.textBaseline = 'top';

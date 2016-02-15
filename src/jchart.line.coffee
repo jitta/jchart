@@ -198,7 +198,8 @@ class JchartLine extends JchartCoordinate
         y = @options.chart.height - (value-min+1) / interval * max_height - @options.graph.marginBottom - @options.chart.paddingBottom
         ctx.fillStyle = volume.color or '#000'
         if @options.chart.stretch
-          ctx.fillRect @.data[0].plot[_i].x - barWidth / 4, y, columnWidth, (value-min+1)/interval*max_height - @options.chart.lineWidth+1
+          try
+            ctx.fillRect @.data[0].plot[_i].x - barWidth / 4, y, columnWidth, (value-min+1)/interval*max_height - @options.chart.lineWidth+1
         else
           ctx.fillRect x-columnWidth/2, y, columnWidth, (value-min+1)/interval*max_height - @options.chart.lineWidth+1
       _i++

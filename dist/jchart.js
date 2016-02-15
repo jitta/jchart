@@ -3240,7 +3240,9 @@ JchartLine = (function(_super) {
         y = this.options.chart.height - (value - min + 1) / interval * max_height - this.options.graph.marginBottom - this.options.chart.paddingBottom;
         ctx.fillStyle = volume.color || '#000';
         if (this.options.chart.stretch) {
-          ctx.fillRect(this.data[0].plot[_i].x - barWidth / 4, y, columnWidth, (value - min + 1) / interval * max_height - this.options.chart.lineWidth + 1);
+          try {
+            ctx.fillRect(this.data[0].plot[_i].x - barWidth / 4, y, columnWidth, (value - min + 1) / interval * max_height - this.options.chart.lineWidth + 1);
+          } catch (_error) {}
         } else {
           ctx.fillRect(x - columnWidth / 2, y, columnWidth, (value - min + 1) / interval * max_height - this.options.chart.lineWidth + 1);
         }

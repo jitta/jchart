@@ -69,13 +69,15 @@ class JchartCoordinate extends Jchart
   convertToJChartArray: (data, key_value) ->
     
     monthly = {}
-    keys = Object.keys(data)
+    temp = padZeroMonth(data)
+    keys = Object.keys(temp)
     i = 0
+    
     for key in keys
       last_key = keys[i-1]
-      if data[key]? and data[last_key]?
-        last_year_value = data[last_key].value
-        this_year_value = data[key].value
+      if temp[key]? and temp[last_key]?
+        last_year_value = temp[last_key].value
+        this_year_value = temp[key].value
         run_month = new Date("#{last_key}")
         monthly[last_key] = {}
         monthly[last_key][key_value] = last_year_value

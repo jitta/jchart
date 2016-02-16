@@ -8,7 +8,7 @@
  * @param {Object} or [Array]
  * @return min_value
  */
-var color_meter, format, hexToRgb, rgbToHex, roundValues, _max, _min;
+var color_meter, format, hexToRgb, padZeroMonth, rgbToHex, roundValues, _max, _min;
 
 _min = function(obj) {
   var min, value, _i, _len;
@@ -172,6 +172,26 @@ roundValues = function(arrays) {
       }
     });
   });
+};
+
+
+/**
+ * Pad month with zeros
+ * ============================================================
+ */
+
+padZeroMonth = function(hash) {
+  var key, m, temp, value, year, _ref;
+  temp = {};
+  for (key in hash) {
+    value = hash[key];
+    _ref = key.split('-'), year = _ref[0], m = _ref[1];
+    if (m.length === 1) {
+      m = '0' + m;
+    }
+    temp["" + year + "-" + m] = value;
+  }
+  return temp;
 };
 
 
@@ -2546,16 +2566,17 @@ JchartCoordinate = (function(_super) {
   }
 
   JchartCoordinate.prototype.convertToJChartArray = function(data, key_value) {
-    var currentValue, diff_month, hasedIndexArray, i, key, key_monthly, keys, last_key, last_year_value, month, monthly, newValuesArray, nullCount, nullRightPad, nullRightPadoriginalArrayFillValue, num, originalArrayFill, originalArrayFillValue, run_month, this_year_value, value, year, _i, _j, _k, _l, _len, _len1, _len2, _m, _ref;
+    var currentValue, diff_month, hasedIndexArray, i, key, key_monthly, keys, last_key, last_year_value, month, monthly, newValuesArray, nullCount, nullRightPad, nullRightPadoriginalArrayFillValue, num, originalArrayFill, originalArrayFillValue, run_month, temp, this_year_value, value, year, _i, _j, _k, _l, _len, _len1, _len2, _m, _ref;
     monthly = {};
-    keys = Object.keys(data);
+    temp = padZeroMonth(data);
+    keys = Object.keys(temp);
     i = 0;
     for (_i = 0, _len = keys.length; _i < _len; _i++) {
       key = keys[_i];
       last_key = keys[i - 1];
-      if ((data[key] != null) && (data[last_key] != null)) {
-        last_year_value = data[last_key].value;
-        this_year_value = data[key].value;
+      if ((temp[key] != null) && (temp[last_key] != null)) {
+        last_year_value = temp[last_key].value;
+        this_year_value = temp[key].value;
         run_month = new Date("" + last_key);
         monthly[last_key] = {};
         monthly[last_key][key_value] = last_year_value;

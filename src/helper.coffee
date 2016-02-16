@@ -123,7 +123,20 @@ roundValues = (arrays) ->
     item.forEach (value, i) ->
       if (value != null)
         item[i] = parseFloat(value.toFixed(2))
-        
+
+###*
+ * Pad month with zeros
+ * ============================================================
+###
+
+padZeroMonth = (hash) ->
+  temp = {}
+  for key, value of hash
+    [year,m] = key.split('-')
+    m = '0' + m if m.length == 1
+    temp["#{year}-#{m}"] = value  
+  return temp
+
 ###*
  * Date helpers
  * ============================================================

@@ -90,7 +90,7 @@ class JchartCoordinate extends Jchart
           monthly[key_monthly][key_value] = null #prevent undefined
           if last_year_value is null
             monthly[key_monthly][key_value] = null
-          else if this_year_value
+          else if this_year_value or this_year_value is 0
             monthly[key_monthly][key_value] = last_year_value + (this_year_value-last_year_value)/diff_month * month
           monthly[key_monthly][key_value] = 0 if monthly[key_monthly] < 0
       i++

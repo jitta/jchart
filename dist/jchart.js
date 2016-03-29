@@ -2591,7 +2591,7 @@ JchartCoordinate = (function(_super) {
           monthly[key_monthly][key_value] = null;
           if (last_year_value === null) {
             monthly[key_monthly][key_value] = null;
-          } else if (this_year_value) {
+          } else if (this_year_value || this_year_value === 0) {
             monthly[key_monthly][key_value] = last_year_value + (this_year_value - last_year_value) / diff_month * month;
           }
           if (monthly[key_monthly] < 0) {

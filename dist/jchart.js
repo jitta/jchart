@@ -2741,7 +2741,7 @@ JchartCoordinate = (function(_super) {
         nullPadRights.push(this.data[key].nullPadRight);
       }
     }
-    max_obj = _.max(this.data, function(item) {
+    max_obj = _.maxBy(this.data, function(item) {
       return _max(item.data);
     });
     max = _.max(max_obj.data);
@@ -2805,7 +2805,7 @@ JchartCoordinate = (function(_super) {
         return _min(item.data);
       });
       min = _.min(min_obj.data);
-      max_obj = _.max(this.data, function(item) {
+      max_obj = _.maxBy(this.data, function(item) {
         return _max(item.data);
       });
       max = _.max(max_obj.data);

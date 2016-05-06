@@ -207,7 +207,7 @@ class JchartCoordinate extends Jchart
         raw_data.push data_item.data
         nullPadRights.push @data[key].nullPadRight
 
-    max_obj = _.max @data, (item) -> _max item.data
+    max_obj = _.maxBy @data, (item) -> _max item.data
     max = _.max max_obj.data
     if max >= 1.00
       roundValues raw_data
@@ -255,7 +255,7 @@ class JchartCoordinate extends Jchart
     if !@options.yAxis.min? or !@options.yAxis.max?
       min_obj = _.min @data, (item) -> _min item.data
       min = _.min min_obj.data
-      max_obj = _.max @data, (item) -> _max item.data
+      max_obj = _.maxBy @data, (item) -> _max item.data
       max = _.max max_obj.data
       pad = (max-min) * 0.1
       pad = @options.yAxis.breaks if pad == 0 

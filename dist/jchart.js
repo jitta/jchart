@@ -3088,7 +3088,7 @@ JchartLine = (function(_super) {
           this.ctx.fillRect(plot.x, plot.y, 3, 3);
         } else {
           this.ctx.lineTo(plot.x, plot.y);
-          hasChanged = (_ref1 = data.original_data) != null ? _ref1[(_ref2 = data.processed_hased_index) != null ? _ref2[index] : void 0] : void 0;
+          hasChanged = (_ref1 = data.original_data) != null ? _ref1[(_ref2 = data.hasedIndexArray) != null ? _ref2[index] : void 0] : void 0;
           if (hasChanged !== void 0) {
             circles.push(plot);
           }

@@ -35,21 +35,43 @@ class JchartLine extends JchartCoordinate
     null_count = 0
     #before = data.plot[0]
     
+    circles = []
+    index = 0
+    firstHit = false
+    
     for plot in data.plot
+      
       if plot?
         null_count = 0
+        if not firstHit
+          circles.push(plot)
+          firstHit = true
         if data.style.line is 'point'
           @ctx.fillRect plot.x, plot.y, 3, 3
         else
           @ctx.lineTo plot.x, plot.y
+          hasChanged = data.original_data?[data.processed_hased_index?[index]]
+          circles.push(plot) if hasChanged isnt undefined
         last_data = plot
       else ## start point
-        if plot?
+        if plot? 
           @ctx.moveTo plot.x, plot.y
+          
       null_count++ if !plot?
+      index++
 
     @ctx.stroke()
     @ctx.closePath()
+    
+    if @options.chart.linePoint?.enable is true
+      @ctx.setLineDash []
+      @ctx.fillStyle = @options.chart.linePoint?.fill or '#FFF'
+      for plot in circles
+        @ctx.beginPath()
+        @ctx.arc plot.x, plot.y, @options.chart.linePoint?.size or 5, 0, 2*Math.PI
+        @ctx.fill()
+        @ctx.stroke()
+        @ctx.closePath()
 
   addFlag: (index, text) ->
     width = @graph_width - (@options.graph.marginLeft + @options.graph.marginRight)

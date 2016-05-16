@@ -88,7 +88,8 @@ var line_options = {
   chart: {
     width: 790,
     height: 200 / 790 * window.innerWidth,
-    stretch: true
+    stretch: true,
+    linePoint: {enable: true, size: 5, fill: '#aaa'}
   },
   xAxis: {
     data: line_data.labels,

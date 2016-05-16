@@ -3061,7 +3061,7 @@ JchartLine = (function(_super) {
   };
 
   JchartLine.prototype.draw_line_graph = function(data) {
-    var last_data, null_count, plot, _i, _len, _ref;
+    var circles, firstHit, hasChanged, index, last_data, null_count, plot, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _results;
     this.ctx.beginPath();
     this.ctx.lineWidth = data.style.lineWidth || 2;
     this.ctx.strokeStyle = data.style.color || '#000';
@@ -3072,15 +3072,26 @@ JchartLine = (function(_super) {
       this.ctx.setLineDash([]);
     }
     null_count = 0;
+    circles = [];
+    index = 0;
+    firstHit = false;
     _ref = data.plot;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       plot = _ref[_i];
       if (plot != null) {
         null_count = 0;
+        if (!firstHit) {
+          circles.push(plot);
+          firstHit = true;
+        }
         if (data.style.line === 'point') {
           this.ctx.fillRect(plot.x, plot.y, 3, 3);
         } else {
           this.ctx.lineTo(plot.x, plot.y);
+          hasChanged = (_ref1 = data.original_data) != null ? _ref1[(_ref2 = data.processed_hased_index) != null ? _ref2[index] : void 0] : void 0;
+          if (hasChanged !== void 0) {
+            circles.push(plot);
+          }
         }
         last_data = plot;
       } else {
@@ -3091,9 +3102,24 @@ JchartLine = (function(_super) {
       if (plot == null) {
         null_count++;
       }
+      index++;
     }
     this.ctx.stroke();
-    return this.ctx.closePath();
+    this.ctx.closePath();
+    if (((_ref3 = this.options.chart.linePoint) != null ? _ref3.enable : void 0) === true) {
+      this.ctx.setLineDash([]);
+      this.ctx.fillStyle = ((_ref4 = this.options.chart.linePoint) != null ? _ref4.fill : void 0) || '#FFF';
+      _results = [];
+      for (_j = 0, _len1 = circles.length; _j < _len1; _j++) {
+        plot = circles[_j];
+        this.ctx.beginPath();
+        this.ctx.arc(plot.x, plot.y, ((_ref5 = this.options.chart.linePoint) != null ? _ref5.size : void 0) || 5, 0, 2 * Math.PI);
+        this.ctx.fill();
+        this.ctx.stroke();
+        _results.push(this.ctx.closePath());
+      }
+      return _results;
+    }
   };
 
   JchartLine.prototype.addFlag = function(index, text) {

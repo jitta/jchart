@@ -47,7 +47,8 @@ var line_data = {
     },
     "style": {
       "line": "dashed",
-      "color": "#C93"
+      "color": "#C93",
+      "fill_area": true
     }
   }, {
     "name": "Revenue",
@@ -74,7 +75,8 @@ var line_data = {
     },
     "style": {
       "line": "dashed",
-      "color": "#47C6F1"
+      "color": "#47C6F1",
+      "fill_area": true
     }
   }],
   "labels": [new Date().getFullYear()], //at least include current year for object datas only.

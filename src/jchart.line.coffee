@@ -19,10 +19,12 @@ class JchartLine extends JchartCoordinate
 
   addLine: (data) ->
     @draw_line_graph data
-    if data.style.fill_area
-      @fillArea data
 
   draw_line_graph: (data) ->
+    
+    if data.style.fill_area
+      @fillArea data
+    
     @ctx.beginPath()
     @ctx.lineWidth = data.style.lineWidth or 2
     @ctx.strokeStyle = data.style.color or '#000'

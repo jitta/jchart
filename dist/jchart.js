@@ -3054,14 +3054,14 @@ JchartLine = (function(_super) {
   };
 
   JchartLine.prototype.addLine = function(data) {
-    this.draw_line_graph(data);
-    if (data.style.fill_area) {
-      return this.fillArea(data);
-    }
+    return this.draw_line_graph(data);
   };
 
   JchartLine.prototype.draw_line_graph = function(data) {
     var circles, firstHit, hasChanged, index, last_data, null_count, plot, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _results;
+    if (data.style.fill_area) {
+      this.fillArea(data);
+    }
     this.ctx.beginPath();
     this.ctx.lineWidth = data.style.lineWidth || 2;
     this.ctx.strokeStyle = data.style.color || '#000';

@@ -3243,6 +3243,7 @@ JchartLine = (function(_super) {
       color = data.style.color;
     }
     ctx.fillStyle = 'rgba(' + color.r + ', ' + color.g + ', ' + color.b + ', 0.2)';
+    ctx.globalCompositeOperation = this.options.chart.fillBlendMode || 'multiply';
     ctx.beginPath();
     dataToFill = [];
     data.plot.forEach(function(item) {

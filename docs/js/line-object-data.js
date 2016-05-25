@@ -47,7 +47,7 @@ var line_data = {
     },
     "style": {
       "line": "dashed",
-      "color": "#C93",
+      "color": "#47C6F1",
       "fill_area": true
     }
   }, {
@@ -75,7 +75,7 @@ var line_data = {
     },
     "style": {
       "line": "dashed",
-      "color": "#47C6F1",
+      "color": "#FDB928",
       "fill_area": true
     }
   }],

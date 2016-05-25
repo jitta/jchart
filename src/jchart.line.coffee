@@ -184,6 +184,8 @@ class JchartLine extends JchartCoordinate
       color = data.style.color
 
     ctx.fillStyle = 'rgba('+color.r+', '+color.g+', '+color.b+', 0.2)' # '#EAF8FC'
+    ctx.globalCompositeOperation = @options.chart.fillBlendMode or 'multiply'
+    
     ctx.beginPath()
 
     dataToFill = []

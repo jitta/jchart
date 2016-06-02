@@ -263,7 +263,11 @@ class JchartCoordinate extends Jchart
 
       @max_data = max + pad if !@options.yAxis.max?
       @min_data = min if !@options.yAxis.min?
-
+    
+    # round y-axis values 
+    base10 = Math.pow( 10, Math.floor ( Math.log10 ( @max_data )) )
+    @max_data = Math.ceil( @max_data / base10 ) * base10
+    
     # auto calculate margin left from max text length
     if @options.graph.marginLeft is 'auto' # ~40
       if @auto_format(@max_data).indexOf(".") > 0

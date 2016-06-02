@@ -2792,7 +2792,7 @@ JchartCoordinate = (function(_super) {
   };
 
   JchartCoordinate.prototype.preprocess_data = function() {
-    var barWidth, digit, item, max, max_obj, max_text, min, min_obj, pad, value, _i, _j, _len, _len1, _ref, _ref1;
+    var barWidth, base10, digit, item, max, max_obj, max_text, min, min_obj, pad, value, _i, _j, _len, _len1, _ref, _ref1;
     if (this.options.yAxis.min != null) {
       this.min_data = this.options.yAxis.min;
     }
@@ -2820,6 +2820,8 @@ JchartCoordinate = (function(_super) {
         this.min_data = min;
       }
     }
+    base10 = Math.pow(10, Math.floor(Math.log10(this.max_data)));
+    this.max_data = Math.ceil(this.max_data / base10) * base10;
     if (this.options.graph.marginLeft === 'auto') {
       if (this.auto_format(this.max_data).indexOf(".") > 0) {
         this.options.graph.marginLeft = this.options.graph.marginLeftIfDecimalPoints;

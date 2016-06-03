@@ -2820,7 +2820,7 @@ JchartCoordinate = (function(_super) {
         this.min_data = min;
       }
     }
-    base10 = Math.pow(10, Math.floor(Math.log10(this.max_data)));
+    base10 = Math.pow(10, Math.floor(Math.log(this.max_data / Math.log(10))));
     this.max_data = Math.ceil(this.max_data / base10) * base10;
     if (this.options.graph.marginLeft === 'auto') {
       if (this.auto_format(this.max_data).indexOf(".") > 0) {

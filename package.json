@@ -11,7 +11,7 @@
   "devDependencies": {
     "canvas": "^1.1.6",
     "gulp": "^3.8.8",
-    "gulp-coffee": "^2.2.0",
+    "gulp-coffee": "2.2.0",
     "gulp-concat-util": "^0.4.0",
     "gulp-if": "^1.2.4",
     "gulp-plumber": "^0.6.6",

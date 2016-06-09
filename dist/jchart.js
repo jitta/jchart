@@ -8,13 +8,13 @@
  * @param {Object} or [Array]
  * @return min_value
  */
-var _max, _min, color_meter, format, hexToRgb, padZeroMonth, rgbToHex, roundValues;
+var color_meter, format, hexToRgb, padZeroMonth, rgbToHex, roundValues, _max, _min;
 
 _min = function(obj) {
-  var j, len, min, value;
+  var min, value, _i, _len;
   min = Infinity;
-  for (j = 0, len = obj.length; j < len; j++) {
-    value = obj[j];
+  for (_i = 0, _len = obj.length; _i < _len; _i++) {
+    value = obj[_i];
     if ((value != null) && value < min) {
       min = value;
     }
@@ -36,10 +36,10 @@ _min = function(obj) {
  */
 
 _max = function(obj) {
-  var j, len, max, value;
+  var max, value, _i, _len;
   max = -Infinity;
-  for (j = 0, len = obj.length; j < len; j++) {
-    value = obj[j];
+  for (_i = 0, _len = obj.length; _i < _len; _i++) {
+    value = obj[_i];
     if ((value != null) && value > max) {
       max = value;
     }
@@ -135,7 +135,7 @@ hexToRgb = function(hex) {
  */
 
 color_meter = function(cwith, ccolor) {
-  var __b, __g, __r, _b, _ccolor, _cwith, _g, _r, p1, p2, p3, perc1, perc2;
+  var p1, p2, p3, perc1, perc2, __b, __g, __r, _b, _ccolor, _cwith, _g, _r;
   if (!cwith && !ccolor) {
     return;
   }
@@ -181,15 +181,15 @@ roundValues = function(arrays) {
  */
 
 padZeroMonth = function(hash) {
-  var key, m, ref, temp, value, year;
+  var key, m, temp, value, year, _ref;
   temp = {};
   for (key in hash) {
     value = hash[key];
-    ref = key.split('-'), year = ref[0], m = ref[1];
+    _ref = key.split('-'), year = _ref[0], m = _ref[1];
     if (m.length === 1) {
       m = '0' + m;
     }
-    temp[year + "-" + m] = value;
+    temp["" + year + "-" + m] = value;
   }
   return temp;
 };
@@ -2248,8 +2248,8 @@ Jchart = (function() {
 
   Jchart.prototype.position = {};
 
-  function Jchart(canvas1, data, options, ipo) {
-    this.canvas = canvas1;
+  function Jchart(canvas, data, options, ipo) {
+    this.canvas = canvas;
     this.data = data;
     this.options = options != null ? options : null;
     this.ipo = ipo;
@@ -2315,15 +2315,15 @@ Jchart = (function() {
   };
 
   Jchart.prototype.process_legend = function() {
-    var data_legend, i, item, legend_width, len, results, text_height, x, y;
+    var data_legend, item, legend_width, text_height, x, y, _i, _len, _results;
     legend_width = this.options.legend.width;
     text_height = parseInt(this.options.legend.font.size.replace('px', '')) * 2;
     data_legend = _.filter(this.data, function(item) {
       return item.legend !== false;
     });
-    results = [];
-    for (i = 0, len = data_legend.length; i < len; i++) {
-      item = data_legend[i];
+    _results = [];
+    for (_i = 0, _len = data_legend.length; _i < _len; _i++) {
+      item = data_legend[_i];
       x = this.options.chart.width / 2 + ((_i + 1) - (data_legend.length + 1) / 2) * legend_width;
       y = this.options.chart.height - this.options.chart.paddingBottom + this.options.legend.marginTop;
       this.ctx.fillStyle = this.options.legend.color || this.options.chart.color;
@@ -2341,9 +2341,9 @@ Jchart = (function() {
       this.ctx.beginPath();
       this.ctx.moveTo(x - legend_width / 2.5, y + text_height);
       this.ctx.lineTo(x + legend_width / 2.5, y + text_height);
-      results.push(this.ctx.stroke());
+      _results.push(this.ctx.stroke());
     }
-    return results;
+    return _results;
   };
 
   Jchart.prototype.addLabel = function(text, option) {
@@ -2478,15 +2478,15 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 var JchartCoordinate,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-JchartCoordinate = (function(superClass) {
-  extend(JchartCoordinate, superClass);
+JchartCoordinate = (function(_super) {
+  __extends(JchartCoordinate, _super);
 
-  function JchartCoordinate(canvas, data1, options, ipo) {
+  function JchartCoordinate(canvas, data, options, ipo) {
     this.canvas = canvas;
-    this.data = data1;
+    this.data = data;
     this.options = options != null ? options : null;
     this.ipo = ipo;
     this.options = _.merge({
@@ -2565,13 +2565,13 @@ JchartCoordinate = (function(superClass) {
   }
 
   JchartCoordinate.prototype.convertToJChartArray = function(data, key_value) {
-    var currentValue, diff_month, hasedIndexArray, i, j, key, key_monthly, keys, l, last_key, last_year_value, len, len1, len2, m, month, monthly, n, newValuesArray, nullCount, nullRightPad, nullRightPadoriginalArrayFillValue, num, o, originalArrayFill, originalArrayFillValue, ref, ref1, run_month, temp, this_year_value, value, year;
+    var currentValue, diff_month, hasedIndexArray, i, key, key_monthly, keys, last_key, last_year_value, month, monthly, newValuesArray, nullCount, nullRightPad, nullRightPadoriginalArrayFillValue, num, originalArrayFill, originalArrayFillValue, run_month, temp, this_year_value, value, year, _i, _j, _k, _l, _len, _len1, _len2, _m, _ref;
     monthly = {};
     temp = padZeroMonth(data);
     keys = Object.keys(temp);
     i = 0;
-    for (j = 0, len = keys.length; j < len; j++) {
-      key = keys[j];
+    for (_i = 0, _len = keys.length; _i < _len; _i++) {
+      key = keys[_i];
       last_key = keys[i - 1];
       if ((temp[key] != null) && (temp[last_key] != null)) {
         last_year_value = temp[last_key].value;
@@ -2580,7 +2580,7 @@ JchartCoordinate = (function(superClass) {
         monthly[last_key] = {};
         monthly[last_key][key_value] = last_year_value;
         diff_month = (new Date("" + key)).diffMonth(new Date("" + last_key)) + 1;
-        for (month = l = 1, ref = diff_month; 1 <= ref ? l <= ref : l >= ref; month = 1 <= ref ? ++l : --l) {
+        for (month = _j = 1; 1 <= diff_month ? _j <= diff_month : _j >= diff_month; month = 1 <= diff_month ? ++_j : --_j) {
           if (run_month > key) {
             break;
           }
@@ -2610,10 +2610,10 @@ JchartCoordinate = (function(superClass) {
     hasedIndexArray.push(null);
     originalArrayFill = [];
     originalArrayFill.push(null);
-    ref1 = this.options.xAxis.data;
-    for (m = 0, len1 = ref1.length; m < len1; m++) {
-      year = ref1[m];
-      for (num = n = 1; n <= 12; num = ++n) {
+    _ref = this.options.xAxis.data;
+    for (_k = 0, _len1 = _ref.length; _k < _len1; _k++) {
+      year = _ref[_k];
+      for (num = _l = 1; _l <= 12; num = ++_l) {
         key = year + '-' + num;
         hasedIndexArray.push(key);
         if (monthly.hasOwnProperty(key)) {
@@ -2634,7 +2634,7 @@ JchartCoordinate = (function(superClass) {
       }
     }
     nullCount = 1;
-    for (key = o = 0, len2 = newValuesArray.length; o < len2; key = ++o) {
+    for (key = _m = 0, _len2 = newValuesArray.length; _m < _len2; key = ++_m) {
       value = newValuesArray[key];
       if (nullCount < nullRightPad) {
         newValuesArray[(newValuesArray.length - 1) - key] = null;
@@ -2652,21 +2652,21 @@ JchartCoordinate = (function(superClass) {
   };
 
   JchartCoordinate.prototype.normalize_data = function() {
-    var converted, current, data_item, j, k, key, keys, l, len, len1, len2, len3, m, max, max_obj, max_pad, minNullPadLefts, minNullPadRight, min_pad, n, newPadMax, newPadMin, newXAxis, nullPadLefts, nullPadRights, raw_data, ref, ref1, ref2, ref3, results, y, years;
+    var converted, current, data_item, k, key, keys, max, max_obj, max_pad, minNullPadLefts, minNullPadRight, min_pad, newPadMax, newPadMin, newXAxis, nullPadLefts, nullPadRights, raw_data, y, years, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3, _results;
     if (this.options.xAxis.data.length === 0) {
       this.options.xAxis.data = [new Date().getFullYear()];
     }
     keys = [];
     years = [];
-    ref = this.data;
-    for (key = j = 0, len = ref.length; j < len; key = ++j) {
-      data_item = ref[key];
+    _ref = this.data;
+    for (key = _i = 0, _len = _ref.length; _i < _len; key = ++_i) {
+      data_item = _ref[key];
       if (!Array.isArray(data_item.data)) {
         keys = keys.concat(Object.keys(data_item.data));
       }
     }
-    for (l = 0, len1 = keys.length; l < len1; l++) {
-      k = keys[l];
+    for (_j = 0, _len1 = keys.length; _j < _len1; _j++) {
+      k = keys[_j];
       years.push(parseInt(k.substring(0, k.indexOf('-'))));
     }
     this.options.xAxis.hash_min_year = _.min(years);
@@ -2700,9 +2700,9 @@ JchartCoordinate = (function(superClass) {
     raw_data = [];
     nullPadLefts = [];
     nullPadRights = [];
-    ref1 = this.data;
-    for (key = m = 0, len2 = ref1.length; m < len2; key = ++m) {
-      data_item = ref1[key];
+    _ref1 = this.data;
+    for (key = _k = 0, _len2 = _ref1.length; _k < _len2; key = ++_k) {
+      data_item = _ref1[key];
       if (Array.isArray(data_item.data)) {
         if (this.options.xAxis.hasOwnProperty('padMinArray')) {
           min_pad = Array.apply(null, {
@@ -2729,7 +2729,7 @@ JchartCoordinate = (function(superClass) {
       } else {
         try {
           this.data[key].formatted = this.convertToJChartArray(data_item.data, 'formatted').newValuesArray;
-        } catch (undefined) {}
+        } catch (_error) {}
         this.data[key].original_data = data_item.data;
         converted = this.convertToJChartArray(data_item.data, 'value');
         this.data[key].data = converted.newValuesArray;
@@ -2748,9 +2748,9 @@ JchartCoordinate = (function(superClass) {
       roundValues(raw_data);
     }
     if (this.options.chart.stretch) {
-      ref2 = this.data;
-      for (key = n = 0, len3 = ref2.length; n < len3; key = ++n) {
-        data_item = ref2[key];
+      _ref2 = this.data;
+      for (key = _l = 0, _len3 = _ref2.length; _l < _len3; key = ++_l) {
+        data_item = _ref2[key];
         data_item.nullPadLeft = 0;
         data_item.data.some(function(item) {
           if (item === null) {
@@ -2764,10 +2764,10 @@ JchartCoordinate = (function(superClass) {
       }
       minNullPadLefts = _.min(nullPadLefts);
       minNullPadRight = _.min(nullPadRights);
-      ref3 = this.data;
-      results = [];
-      for (key in ref3) {
-        data_item = ref3[key];
+      _ref3 = this.data;
+      _results = [];
+      for (key in _ref3) {
+        data_item = _ref3[key];
         if (data_item.processed_data === void 0) {
           data_item.processed_data = data_item.data.slice();
           data_item.processed_data.splice(0, minNullPadLefts);
@@ -2780,19 +2780,19 @@ JchartCoordinate = (function(superClass) {
           data_item.processed_originalArrayFill = data_item.originalArrayFill.slice();
           data_item.processed_originalArrayFill.splice(0, minNullPadLefts);
           data_item.processed_originalArrayFill.splice((data_item.processed_originalArrayFill.length + 1) - minNullPadRight, minNullPadRight);
-          results.push(data_item.originalArrayFill = data_item.processed_originalArrayFill);
+          _results.push(data_item.originalArrayFill = data_item.processed_originalArrayFill);
         } else {
           data_item.data = data_item.processed_data;
           data_item.processed_hased_index = data_item.hasedIndexArray;
-          results.push(data_item.processed_originalArrayFill = data_item.originalArrayFill);
+          _results.push(data_item.processed_originalArrayFill = data_item.originalArrayFill);
         }
       }
-      return results;
+      return _results;
     }
   };
 
   JchartCoordinate.prototype.preprocess_data = function() {
-    var barWidth, base10, digit, item, j, l, len, len1, max, max_obj, max_text, min, min_obj, pad, power10, ref, ref1, value;
+    var barWidth, base10, digit, item, max, max_obj, max_text, min, min_obj, pad, power10, value, _i, _j, _len, _len1, _ref, _ref1;
     if (this.options.yAxis.min != null) {
       this.min_data = this.options.yAxis.min;
     }
@@ -2845,14 +2845,14 @@ JchartCoordinate = (function(superClass) {
     this.inner_height = this.graph_height - (this.options.graph.marginTop + this.options.graph.marginBottom);
     this.pl = this.options.chart.paddingLeft;
     this.pt = this.options.chart.paddingTop;
-    ref = this.data;
-    for (j = 0, len = ref.length; j < len; j++) {
-      item = ref[j];
+    _ref = this.data;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      item = _ref[_i];
       barWidth = this.inner_width / (_.size(item.data) - 1);
       item.plot = [];
-      ref1 = item.data;
-      for (l = 0, len1 = ref1.length; l < len1; l++) {
-        value = ref1[l];
+      _ref1 = item.data;
+      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+        value = _ref1[_j];
         if (value != null) {
           item.plot.push({
             x: this.pl + _j * barWidth + this.options.graph.marginLeft,
@@ -2876,16 +2876,16 @@ JchartCoordinate = (function(superClass) {
   };
 
   JchartCoordinate.prototype.drawGraph = function() {
-    var j, len, line, ref;
+    var line, _i, _len, _ref;
     this.ctx.strokeStyle = this.options.chart.color;
     this.horizontal_line();
     this.vertical_line();
     if (this.volume) {
       this.drawVolume(this.volume);
     }
-    ref = this.data;
-    for (j = 0, len = ref.length; j < len; j++) {
-      line = ref[j];
+    _ref = this.data;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      line = _ref[_i];
       this.addLine(line);
     }
     if (this.ipo != null) {
@@ -2897,12 +2897,12 @@ JchartCoordinate = (function(superClass) {
   };
 
   JchartCoordinate.prototype.horizontal_line = function() {
-    var height, i, interval, j, leftOffset, lines, ref, start_position, value, y, yAxisLabelOffset;
+    var height, i, interval, leftOffset, lines, start_position, value, y, yAxisLabelOffset, _i, _ref;
     interval = this.max_data - this.min_data;
     lines = this.options.yAxis.breaks;
     this.ctx.beginPath();
     height = this.graph_height - (this.options.graph.marginTop + this.options.graph.marginBottom);
-    for (i = j = 0, ref = this.options.yAxis.breaks; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
+    for (i = _i = 0, _ref = this.options.yAxis.breaks; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
       value = this.min_data + interval / lines * i;
       y = height - height / lines * i + this.options.graph.marginTop;
       if (this.options.graph.background_stripe) {
@@ -2961,7 +2961,7 @@ JchartCoordinate = (function(superClass) {
   };
 
   JchartCoordinate.prototype.vertical_line = function() {
-    var _x, _y, barWidth, j, leftOffset, len, ref, value, width, x, y;
+    var barWidth, leftOffset, value, width, x, y, _i, _len, _ref, _x, _y;
     width = this.graph_width - (this.options.graph.marginLeft + this.options.graph.marginRight);
     this.ctx.beginPath();
     this.ctx.textAlign = 'center';
@@ -2969,9 +2969,9 @@ JchartCoordinate = (function(superClass) {
     this.ctx.strokeStyle = this.options.xAxis.color || this.options.chart.color;
     if ((this.options.xAxis.data != null) && this.options.xAxis.data.length > 0) {
       barWidth = width / this.options.xAxis.data.length;
-      ref = this.options.xAxis.data;
-      for (j = 0, len = ref.length; j < len; j++) {
-        value = ref[j];
+      _ref = this.options.xAxis.data;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        value = _ref[_i];
         x = (_i + 1) * barWidth + this.options.graph.marginLeft;
         y = this.graph_height - this.options.graph.marginBottom;
         if (this.options.xAxis.label.enable) {
@@ -3033,18 +3033,18 @@ JchartCoordinate = (function(superClass) {
 })(Jchart);
 
 var JchartLine,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-JchartLine = (function(superClass) {
-  extend(JchartLine, superClass);
+JchartLine = (function(_super) {
+  __extends(JchartLine, _super);
 
-  function JchartLine(canvas, data1, options, ipo, volume1) {
+  function JchartLine(canvas, data, options, ipo, volume) {
     this.canvas = canvas;
-    this.data = data1;
+    this.data = data;
     this.options = options != null ? options : null;
     this.ipo = ipo;
-    this.volume = volume1;
+    this.volume = volume;
     this.options = _.merge({
       line_dash: [6, 2]
     }, this.options);
@@ -3064,7 +3064,7 @@ JchartLine = (function(superClass) {
   };
 
   JchartLine.prototype.draw_line_graph = function(data) {
-    var circles, firstHit, hasChanged, index, j, k, last_data, len, len1, null_count, plot, ref, ref1, ref2, ref3, ref4, ref5, results;
+    var circles, firstHit, hasChanged, index, last_data, null_count, plot, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _results;
     if (data.style.fill_area) {
       this.fillArea(data);
     }
@@ -3081,9 +3081,9 @@ JchartLine = (function(superClass) {
     circles = [];
     index = 0;
     firstHit = false;
-    ref = data.plot;
-    for (j = 0, len = ref.length; j < len; j++) {
-      plot = ref[j];
+    _ref = data.plot;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      plot = _ref[_i];
       if (plot != null) {
         null_count = 0;
         if (!firstHit) {
@@ -3094,7 +3094,7 @@ JchartLine = (function(superClass) {
           this.ctx.fillRect(plot.x, plot.y, 3, 3);
         } else {
           this.ctx.lineTo(plot.x, plot.y);
-          hasChanged = (ref1 = data.original_data) != null ? ref1[(ref2 = data.hasedIndexArray) != null ? ref2[index] : void 0] : void 0;
+          hasChanged = (_ref1 = data.original_data) != null ? _ref1[(_ref2 = data.hasedIndexArray) != null ? _ref2[index] : void 0] : void 0;
           if (hasChanged !== void 0) {
             circles.push(plot);
           }
@@ -3112,24 +3112,24 @@ JchartLine = (function(superClass) {
     }
     this.ctx.stroke();
     this.ctx.closePath();
-    if (((ref3 = this.options.chart.linePoint) != null ? ref3.enable : void 0) === true) {
+    if (((_ref3 = this.options.chart.linePoint) != null ? _ref3.enable : void 0) === true) {
       this.ctx.setLineDash([]);
-      this.ctx.fillStyle = ((ref4 = this.options.chart.linePoint) != null ? ref4.fill : void 0) || '#FFF';
-      results = [];
-      for (k = 0, len1 = circles.length; k < len1; k++) {
-        plot = circles[k];
+      this.ctx.fillStyle = ((_ref4 = this.options.chart.linePoint) != null ? _ref4.fill : void 0) || '#FFF';
+      _results = [];
+      for (_j = 0, _len1 = circles.length; _j < _len1; _j++) {
+        plot = circles[_j];
         this.ctx.beginPath();
-        this.ctx.arc(plot.x, plot.y, ((ref5 = this.options.chart.linePoint) != null ? ref5.size : void 0) || 5, 0, 2 * Math.PI);
+        this.ctx.arc(plot.x, plot.y, ((_ref5 = this.options.chart.linePoint) != null ? _ref5.size : void 0) || 5, 0, 2 * Math.PI);
         this.ctx.fill();
         this.ctx.stroke();
-        results.push(this.ctx.closePath());
+        _results.push(this.ctx.closePath());
       }
-      return results;
+      return _results;
     }
   };
 
   JchartLine.prototype.addFlag = function(index, text) {
-    var barWidth, diff, overlap, ref, ref1, ref2, ref3, ref4, ref5, width, x, y;
+    var barWidth, diff, overlap, width, x, y, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
     width = this.graph_width - (this.options.graph.marginLeft + this.options.graph.marginRight);
     barWidth = width / _.size(this.data[0].data);
     x = index * barWidth + this.options.chart.paddingLeft + this.options.graph.marginLeft;
@@ -3143,11 +3143,11 @@ JchartLine = (function(superClass) {
     this.ctx.stroke();
     this.ctx.setLineDash([]);
     overlap = 0;
-    if (((ref = this.data[0]) != null ? (ref1 = ref.plot[index]) != null ? ref1.y : void 0 : void 0) != null) {
-      if (((ref2 = this.data[1]) != null ? (ref3 = ref2.plot[index]) != null ? ref3.y : void 0 : void 0) != null) {
+    if (((_ref = this.data[0]) != null ? (_ref1 = _ref.plot[index]) != null ? _ref1.y : void 0 : void 0) != null) {
+      if (((_ref2 = this.data[1]) != null ? (_ref3 = _ref2.plot[index]) != null ? _ref3.y : void 0 : void 0) != null) {
         diff = Math.abs((this.data[1].plot[index].y - this.data[0].plot[index].y) / this.data[0].plot[index].y * 100);
         if (diff < 15) {
-          if (((ref4 = this.data[1].plot[index - 1]) != null ? ref4.y : void 0) > ((ref5 = this.data[1]) != null ? ref5.plot[index].y : void 0)) {
+          if (((_ref4 = this.data[1].plot[index - 1]) != null ? _ref4.y : void 0) > ((_ref5 = this.data[1]) != null ? _ref5.plot[index].y : void 0)) {
             overlap = -20;
           } else {
             overlap = 20;
@@ -3171,31 +3171,31 @@ JchartLine = (function(superClass) {
   };
 
   JchartLine.prototype.multiLine = function(ctx, text, x, y) {
-    var j, len, lineHeight, results, t, texts;
+    var lineHeight, t, texts, _i, _len, _results;
     texts = text.split('\n');
     lineHeight = this.options.chart.font.size.replace('px', '');
-    results = [];
-    for (j = 0, len = texts.length; j < len; j++) {
-      t = texts[j];
-      results.push(ctx.fillText(t, x, y + _i * lineHeight));
+    _results = [];
+    for (_i = 0, _len = texts.length; _i < _len; _i++) {
+      t = texts[_i];
+      _results.push(ctx.fillText(t, x, y + _i * lineHeight));
     }
-    return results;
+    return _results;
   };
 
   JchartLine.prototype.shade = function() {
-    var a, above, above_color, b, barWidth, before_above, below_color, change, i, index, j, k, l, last_change, ref, ref1, ref2, ref3, ref4, results, start, x, y, y1, y2;
+    var a, above, above_color, b, barWidth, before_above, below_color, change, i, index, last_change, start, x, y, y1, y2, _i, _j, _k, _ref, _ref1, _results;
     before_above = null;
     above_color = 'rgba(253, 115, 109, 0.4)';
     below_color = 'rgba(0, 183, 151, 0.4)';
     this.ctx.fillStyle = above_color;
     last_change = 0;
     start = false;
-    results = [];
-    for (i = j = 0, ref = this.data[0].plot.length; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
+    _results = [];
+    for (i = _i = 0, _ref = this.data[0].plot.length; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
       if (((this.data[0].plot[i] == null) || (this.data[1].plot[i] == null)) && !start) {
-        results.push(last_change = i + 1);
+        _results.push(last_change = i + 1);
       } else if (((this.data[0].plot[i] == null) || (this.data[1].plot[i] == null)) && start) {
-        for (index = k = ref1 = i - 1, ref2 = last_change; ref1 <= ref2 ? k <= ref2 : k >= ref2; index = ref1 <= ref2 ? ++k : --k) {
+        for (index = _j = _ref1 = i - 1; _ref1 <= last_change ? _j <= last_change : _j >= last_change; index = _ref1 <= last_change ? ++_j : --_j) {
           this.ctx.lineTo(this.data[1].plot[index].x, this.data[1].plot[index].y);
         }
         this.ctx.closePath();
@@ -3205,7 +3205,7 @@ JchartLine = (function(superClass) {
       } else if ((this.data[0].plot[i] != null) && (this.data[1].plot[i] != null) && !start) {
         this.ctx.beginPath();
         this.ctx.moveTo(this.data[0].plot[i].x, this.data[0].plot[i].y);
-        results.push(start = true);
+        _results.push(start = true);
       } else {
         above = this.data[0].plot[i].y < this.data[1].plot[i].y ? true : false;
         change = (before_above != null) && before_above !== above ? true : false;
@@ -3221,7 +3221,7 @@ JchartLine = (function(superClass) {
             x = this.data[0].plot[i - 1].x + (a * barWidth / (a + b));
             y = _min([y1, y2]) + (a * b) / (a + b);
             this.ctx.lineTo(x, y);
-            for (index = l = ref3 = i, ref4 = last_change; ref3 <= ref4 ? l <= ref4 : l >= ref4; index = ref3 <= ref4 ? ++l : --l) {
+            for (index = _k = i; i <= last_change ? _k <= last_change : _k >= last_change; index = i <= last_change ? ++_k : --_k) {
               this.ctx.lineTo(this.data[1].plot[index].x, this.data[1].plot[index].y);
             }
             this.ctx.closePath();
@@ -3234,10 +3234,10 @@ JchartLine = (function(superClass) {
             last_change = i;
           }
         }
-        results.push(before_above = above);
+        _results.push(before_above = above);
       }
     }
-    return results;
+    return _results;
   };
 
   JchartLine.prototype.fillArea = function(data) {
@@ -3270,7 +3270,7 @@ JchartLine = (function(superClass) {
   };
 
   JchartLine.prototype.drawVolume = function(volume) {
-    var _i, barWidth, columnWidth, ctx, interval, j, len, max, max_height, min, ref, results, value, width, x, y;
+    var barWidth, columnWidth, ctx, interval, max, max_height, min, value, width, x, y, _i, _j, _len, _ref, _results;
     ctx = this.ctx;
     max = _.max(volume.data);
     min = _.min(volume.data);
@@ -3284,10 +3284,10 @@ JchartLine = (function(superClass) {
     }
     columnWidth = barWidth / 2;
     _i = 0;
-    ref = volume.data;
-    results = [];
-    for (j = 0, len = ref.length; j < len; j++) {
-      value = ref[j];
+    _ref = volume.data;
+    _results = [];
+    for (_j = 0, _len = _ref.length; _j < _len; _j++) {
+      value = _ref[_j];
       if (value != null) {
         x = (_i + 1) * barWidth - barWidth / 2 + this.options.chart.paddingLeft + this.options.graph.marginLeft;
         y = this.options.chart.height - (value - min + 1) / interval * max_height - this.options.graph.marginBottom - this.options.chart.paddingBottom;
@@ -3295,14 +3295,14 @@ JchartLine = (function(superClass) {
         if (this.options.chart.stretch) {
           try {
             ctx.fillRect(this.data[0].plot[_i].x - barWidth / 4, y, columnWidth, (value - min + 1) / interval * max_height - this.options.chart.lineWidth + 1);
-          } catch (undefined) {}
+          } catch (_error) {}
         } else {
           ctx.fillRect(x - columnWidth / 2, y, columnWidth, (value - min + 1) / interval * max_height - this.options.chart.lineWidth + 1);
         }
       }
-      results.push(_i++);
+      _results.push(_i++);
     }
-    return results;
+    return _results;
   };
 
   return JchartLine;
@@ -3312,15 +3312,15 @@ JchartLine = (function(superClass) {
 Jchart.line = JchartLine;
 
 var JchartBar,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-JchartBar = (function(superClass) {
-  extend(JchartBar, superClass);
+JchartBar = (function(_super) {
+  __extends(JchartBar, _super);
 
-  function JchartBar(canvas, data1, options, ipo) {
+  function JchartBar(canvas, data, options, ipo) {
     this.canvas = canvas;
-    this.data = data1;
+    this.data = data;
     this.options = options != null ? options : null;
     this.ipo = ipo;
     this.options = _.merge({
@@ -3342,14 +3342,14 @@ JchartBar = (function(superClass) {
   };
 
   JchartBar.prototype.draw_column_graph = function(data) {
-    var barWidth, columnWidth, i, len, ref, results, value, x, y;
+    var barWidth, columnWidth, value, x, y, _i, _len, _ref, _results;
     barWidth = this.inner_width / _.size(data.data);
     columnWidth = barWidth / 2;
     this.ctx.textBaseline = 'bottom';
-    ref = data.data;
-    results = [];
-    for (i = 0, len = ref.length; i < len; i++) {
-      value = ref[i];
+    _ref = data.data;
+    _results = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      value = _ref[_i];
       if (value != null) {
         x = (_i + 1) * barWidth + this.options.graph.marginLeft;
         if (this.options.xAxis.label.align === 'center' || this.options.xAxis.tick.align === 'center') {
@@ -3360,15 +3360,15 @@ JchartBar = (function(superClass) {
         this.ctx.fillRect(this.pl + x - columnWidth / 2, this.pt + y, columnWidth, (value - this.min_data) / this.interval * this.inner_height - this.options.chart.lineWidth + 1);
         if (data.caption) {
           this.ctx.fillStyle = this.options.chart.color;
-          results.push(this.ctx.fillText(value.format(2), this.pl + x, this.pt + y - this.options.captionMargin));
+          _results.push(this.ctx.fillText(value.format(2), this.pl + x, this.pt + y - this.options.captionMargin));
         } else {
-          results.push(void 0);
+          _results.push(void 0);
         }
       } else {
-        results.push(void 0);
+        _results.push(void 0);
       }
     }
-    return results;
+    return _results;
   };
 
   return JchartBar;

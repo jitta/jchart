@@ -2792,7 +2792,7 @@ JchartCoordinate = (function(_super) {
   };
 
   JchartCoordinate.prototype.preprocess_data = function() {
-    var barWidth, base10, digit, item, max, max_obj, max_text, min, min_obj, pad, power10, value, _i, _j, _len, _len1, _ref, _ref1;
+    var barWidth, base10, digit, item, lower, max, max_data, max_obj, max_text, min, min_obj, pad, power10, value, _i, _j, _len, _len1, _ref, _ref1;
     if (this.options.yAxis.min != null) {
       this.min_data = this.options.yAxis.min;
     }
@@ -2822,10 +2822,12 @@ JchartCoordinate = (function(_super) {
     }
     power10 = Math.pow(10, Math.floor(Math.log(this.max_data) / Math.log(10)));
     base10 = this.max_data / power10;
-    this.max_data = Math.ceil(base10) * power10;
-    if (base10 - Math.floor(base10) < 0.5) {
-      this.max_data -= power10 / 2;
+    lower = base10 - Math.floor(base10) < 0.5 && base10 - Math.floor(base10) > 0;
+    max_data = Math.ceil(base10) * power10;
+    if (lower) {
+      max_data -= power10 / 2;
     }
+    this.max_data = max_data;
     if (this.options.graph.marginLeft === 'auto') {
       if (this.auto_format(this.max_data).indexOf(".") > 0) {
         this.options.graph.marginLeft = this.options.graph.marginLeftIfDecimalPoints;

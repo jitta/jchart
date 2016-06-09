@@ -1,13 +1,13 @@
 
 class JchartCoordinate extends Jchart
-  
+
   constructor: (@canvas, @data, @options=null, @ipo) ->
 
     @options = _.merge
       legend:
         width: 75
         lineWidth: 2
-        font: 
+        font:
           style: 'italic'
           weight: '400'
           size: '11px'
@@ -22,14 +22,14 @@ class JchartCoordinate extends Jchart
         border:
           enable: true
           color: "#888"
-        grid: 
+        grid:
           enable: true
           align: 'margin' # or center
         tick:
           enable: true
           align: 'margin'
           size: 10
-        label: 
+        label:
           enable: true
           align: 'margin'
           font : {}
@@ -45,13 +45,13 @@ class JchartCoordinate extends Jchart
         border:
           enable: true
           color: "#888"
-        grid: 
+        grid:
           enable: false
           align: 'margin' # or center
-        tick: 
+        tick:
           enable: true
           size: 10
-        label: 
+        label:
           enable: true
           align: 'left' # or right
           font : {}
@@ -67,12 +67,12 @@ class JchartCoordinate extends Jchart
     super @canvas, @data, @options, @ipo
 
   convertToJChartArray: (data, key_value) ->
-    
+
     monthly = {}
     temp = padZeroMonth(data)
     keys = Object.keys(temp)
     i = 0
-    
+
     for key in keys
       last_key = keys[i-1]
       if temp[key]? and temp[last_key]?
@@ -110,19 +110,19 @@ class JchartCoordinate extends Jchart
       for num in [1..12]
         key = year + '-' + num
         hasedIndexArray.push(key)
-        
+
         if monthly.hasOwnProperty(key)
           currentValue = monthly[key][key_value]
           if key_value is 'formatted'
             currentValue = if (currentValue is null) or (currentValue is undefined) then null else currentValue.toFixed(2)
           nullRightPad = 0
         nullRightPad++
-        
+
         if data.hasOwnProperty(key)
           originalArrayFillValue = data[key][key_value]
           nullRightPadoriginalArrayFillValue = 0
         nullRightPadoriginalArrayFillValue++
-          
+
         newValuesArray.push(currentValue)
         originalArrayFill.push(originalArrayFillValue)
 
@@ -140,11 +140,11 @@ class JchartCoordinate extends Jchart
       hasedIndexArray: hasedIndexArray
       originalArrayFill: originalArrayFill
     }
-    
+
   normalize_data: ->
-    
+
     this.options.xAxis.data = [new Date().getFullYear()] unless this.options.xAxis.data.length isnt 0
-    
+
     #find min and keys to pad arrays
     keys = []
     years = []
@@ -211,18 +211,18 @@ class JchartCoordinate extends Jchart
     max = _.max max_obj.data
     if max >= 1.00
       roundValues raw_data
-      
+
     if @options.chart.stretch
       for data_item,key in @data
         data_item.nullPadLeft = 0
         data_item.data.some (item) ->
-          if item is null 
-            data_item.nullPadLeft++ 
+          if item is null
+            data_item.nullPadLeft++
             return false
-          else 
+          else
             return true
         nullPadLefts.push data_item.nullPadLeft
-      
+
       minNullPadLefts = _.min nullPadLefts
       minNullPadRight = _.min nullPadRights
       for key, data_item of @data
@@ -231,12 +231,12 @@ class JchartCoordinate extends Jchart
           data_item.processed_data.splice 0, minNullPadLefts
           data_item.processed_data.splice (data_item.processed_data.length + 1) - minNullPadRight, minNullPadRight
           data_item.data = data_item.processed_data
-          
+
           data_item.processed_hased_index = data_item.hasedIndexArray.slice()
           data_item.processed_hased_index.splice 0, minNullPadLefts
           data_item.processed_hased_index.splice (data_item.processed_hased_index.length + 1) - minNullPadRight, minNullPadRight
           data_item.hasedIndexArray = data_item.processed_hased_index
-          
+
           data_item.processed_originalArrayFill = data_item.originalArrayFill.slice()
           data_item.processed_originalArrayFill.splice 0, minNullPadLefts
           data_item.processed_originalArrayFill.splice (data_item.processed_originalArrayFill.length + 1) - minNullPadRight, minNullPadRight
@@ -245,7 +245,7 @@ class JchartCoordinate extends Jchart
           data_item.data = data_item.processed_data
           data_item.processed_hased_index = data_item.hasedIndexArray
           data_item.processed_originalArrayFill = data_item.originalArrayFill
-      
+
   preprocess_data: ->
     if @options.yAxis.min?
       @min_data = @options.yAxis.min
@@ -258,16 +258,18 @@ class JchartCoordinate extends Jchart
       max_obj = _.max @data, (item) -> _max item.data
       max = _.max max_obj.data
       pad = (max-min) * 0.1
-      pad = @options.yAxis.breaks if pad == 0 
+      pad = @options.yAxis.breaks if pad == 0
       pad = 0
 
       @max_data = max + pad if !@options.yAxis.max?
       @min_data = min if !@options.yAxis.min?
-    
-    # round y-axis values 
-    base10 = Math.pow( 10, Math.floor ( Math.log ( @max_data ) / Math.log(10) ) )
-    @max_data = Math.ceil( @max_data / base10 ) * base10
-    
+
+    # round y-axis values
+    power10 = Math.pow( 10, Math.floor(Math.log(@max_data) / Math.log(10)) )
+    base10 = @max_data / power10
+    @max_data = Math.ceil(base10) * power10
+    @max_data -= power10 / 2 if base10 - Math.floor(base10) < 0.5
+
     # auto calculate margin left from max text length
     if @options.graph.marginLeft is 'auto' # ~40
       if @auto_format(@max_data).indexOf(".") > 0
@@ -281,7 +283,7 @@ class JchartCoordinate extends Jchart
     # assign variables
     @graph_width = @options.chart.width - @options.chart.paddingLeft - @options.chart.paddingRight
     @graph_height = @options.chart.height - @options.chart.paddingTop - @options.chart.paddingBottom
-    
+
     @interval = @max_data - @min_data
     @inner_width = @graph_width - (@options.graph.marginLeft + @options.graph.marginRight)
     @inner_height = @graph_height - (@options.graph.marginTop + @options.graph.marginBottom)

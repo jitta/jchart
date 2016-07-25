@@ -50,19 +50,19 @@ Number::format = format = (decimals, dec = '.', sep = ',') ->
     return '-'
   n = if not isFinite(+number) then 0 else +number
   prec = if not isFinite(+decimals) then 0 else Math.abs(decimals)
-  
+
   return (number/1000000000).format(decimals)+'B' if number > 1000000000
   return (number/1000000).format(decimals)+'M' if number > 1000000
-  
+
   toFixedFix = (n, prec) ->
     k = Math.pow(10, prec);
     '' + Math.round(n * k) / k;
-    
+
   # Fix for IE parseFloat(0.55).toFixed(0) = 0;
   s = (if prec then toFixedFix n, prec else '' + Math.round n).split('.');
   if s[0].length > 3
     s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
-  if (s[1] || '').length < prec 
+  if (s[1] || '').length < prec
     s[1] = s[1] || '';
     s[1] += new Array(prec - s[1].length + 1).join('0');
   s.join(dec);
@@ -121,7 +121,7 @@ color_meter = (cwith, ccolor) ->
 roundValues = (arrays) ->
   arrays.forEach (item) ->
     item.forEach (value, i) ->
-      if (value != null)
+      if (value isnt undefined and value isnt null)
         item[i] = parseFloat(value.toFixed(2))
 
 ###*
@@ -134,7 +134,7 @@ padZeroMonth = (hash) ->
   for key, value of hash
     [year,m] = key.split('-')
     m = '0' + m if m.length == 1
-    temp["#{year}-#{m}"] = value  
+    temp["#{year}-#{m}"] = value
   return temp
 
 ###*

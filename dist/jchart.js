@@ -167,7 +167,7 @@ color_meter = function(cwith, ccolor) {
 roundValues = function(arrays) {
   return arrays.forEach(function(item) {
     return item.forEach(function(value, i) {
-      if (value !== null) {
+      if (value !== void 0 && value !== null) {
         return item[i] = parseFloat(value.toFixed(2));
       }
     });

@@ -2513,7 +2513,11 @@ JchartCoordinate = (function(_super) {
         },
         grid: {
           enable: true,
-          align: 'margin'
+          align: 'margin',
+          type: 'dash',
+          dashStyled: [2, 1],
+          color: this.options.chart.color,
+          lineWidth: 1
         },
         tick: {
           enable: true,
@@ -2541,7 +2545,11 @@ JchartCoordinate = (function(_super) {
         },
         grid: {
           enable: false,
-          align: 'margin'
+          align: 'margin',
+          type: 'solid',
+          dashStyled: [2, 1],
+          color: this.options.chart.color,
+          lineWidth: 5
         },
         tick: {
           enable: true,
@@ -2914,13 +2922,16 @@ JchartCoordinate = (function(_super) {
         }
       }
       if (this.options.yAxis.grid.enable) {
-        this.ctx.strokeStyle = this.options.chart.color;
-        this.ctx.setLineDash([2, 1]);
+        this.ctx.strokeStyle = this.options.yAxis.grid.color;
+        if (this.options.yAxis.grid.type === 'dash') {
+          this.ctx.setLineDash(this.options.yAxis.grid.dashStyled);
+        }
         this.ctx.beginPath();
         this.ctx.moveTo(this.pl + this.options.graph.marginLeft, this.pt + y);
         this.ctx.lineTo(this.pl + this.graph_width, this.pt + y, 2);
         this.ctx.stroke();
         this.ctx.setLineDash([]);
+        this.ctx.strokeStyle = this.options.chart.color;
       }
       if (this.options.yAxis.label.enable) {
         this.ctx.fillStyle = this.options.yAxis.label.color || this.options.chart.label.color;
@@ -2995,13 +3006,17 @@ JchartCoordinate = (function(_super) {
           } else {
             _x = x;
           }
-          this.ctx.lineWidth = 0.5;
-          this.ctx.setLineDash([2, 1]);
+          this.ctx.strokeStyle = this.options.xAxis.grid.color;
+          this.ctx.lineWidth = this.options.xAxis.grid.lineWidth;
+          if (this.options.xAxis.grid.type === 'dash') {
+            this.ctx.setLineDash(this.options.xAxis.grid.dashStyled);
+          }
           this.ctx.beginPath();
           this.ctx.moveTo(this.pl + _x, this.pt);
           this.ctx.lineTo(this.pl + _x, this.pt + y);
           this.ctx.stroke();
           this.ctx.setLineDash([]);
+          this.ctx.strokeStyle = this.options.xAxis.color || this.options.chart.color;
         }
         if (this.options.xAxis.tick.enable) {
           if (this.options.xAxis.tick.align === 'center') {

@@ -25,6 +25,10 @@ class JchartCoordinate extends Jchart
         grid:
           enable: true
           align: 'margin' # or center
+          type: 'dash'
+          dashStyled: [2,1]
+          color: @options.chart.color
+          lineWidth: 1
         tick:
           enable: true
           align: 'margin'
@@ -48,6 +52,10 @@ class JchartCoordinate extends Jchart
         grid:
           enable: false
           align: 'margin' # or center
+          type: 'solid'
+          dashStyled: [2,1]
+          color: @options.chart.color
+          lineWidth: 5
         tick:
           enable: true
           size: 10
@@ -351,13 +359,16 @@ class JchartCoordinate extends Jchart
         #   @ctx.fillRect( @pl +@options.graph.marginLeft + @options.chart.lineWidth, @pt + y, @pl + @graph_width, @pt + height/lines - @options.chart.lineWidth)
 
       if @options.yAxis.grid.enable
-        @ctx.strokeStyle = @options.chart.color
-        @ctx.setLineDash([2,1]);
+        @ctx.strokeStyle = @options.yAxis.grid.color
+        if @options.yAxis.grid.type is 'dash'
+          @ctx.setLineDash(@options.yAxis.grid.dashStyled);
+
         @ctx.beginPath()
         @ctx.moveTo @pl + @options.graph.marginLeft, @pt + y
         @ctx.lineTo @pl + @graph_width, @pt + y, 2
         @ctx.stroke()
         @ctx.setLineDash([]);
+        @ctx.strokeStyle = @options.chart.color
 
       # fill text label
       if @options.yAxis.label.enable
@@ -432,13 +443,17 @@ class JchartCoordinate extends Jchart
             _x = x - barWidth/2
           else
             _x = x
-          @ctx.lineWidth = 0.5
-          @ctx.setLineDash([2,1]);
+          @ctx.strokeStyle = @options.xAxis.grid.color
+          @ctx.lineWidth = @options.xAxis.grid.lineWidth
+          if @options.xAxis.grid.type is 'dash'
+            @ctx.setLineDash(@options.xAxis.grid.dashStyled);
+
           @ctx.beginPath()
           @ctx.moveTo @pl + _x, @pt
           @ctx.lineTo @pl + _x, @pt + y
           @ctx.stroke()
           @ctx.setLineDash([]);
+          @ctx.strokeStyle = @options.xAxis.color or @options.chart.color
 
         # tick
         if @options.xAxis.tick.enable

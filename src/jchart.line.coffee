@@ -35,16 +35,17 @@ class JchartLine extends JchartCoordinate
 
       original_datas = original_datas.concat(original_data)
 
+      lineWidth = data.style.lineWidth or 2
       index = 0
       firstHit = false
       for plot in data.plot
         if plot?
           if not firstHit
-            circles.push(plot)
+            circles.push({'plot': plot, 'lineWidth': lineWidth})
             firstHit = true
           else
             hasChanged = data.original_data?[data.hasedIndexArray?[index]]
-            circles.push(plot) if hasChanged isnt undefined
+            circles.push({'plot': plot, 'lineWidth': lineWidth}) if hasChanged isnt undefined
         index++
 
     @canvas.addEventListener('mousemove', ((e) ->
@@ -52,12 +53,14 @@ class JchartLine extends JchartCoordinate
       y = e.clientY
       if circles.length > 0
         i = 0
-        for plot in circles
-          lineWidth = 2
+        for circle in circles
+          lineWidth = circle.lineWidth
+          plot = circle.plot
           r = @options.chart.linePoint?.size or 5
           r += lineWidth
           c = 2*r
-          if (x >= plot.x && x <= plot.x + c) && (y >= plot.y && y <= plot.y + c)
+
+          if (x >= plot.x && x <= plot.x + c) && (y >= plot.y - r && y <= plot.y + r)
             hoverCircleEvent = new CustomEvent('data-hover', {'detail': original_datas[i]});
             this.canvas.dispatchEvent(hoverCircleEvent);
             return

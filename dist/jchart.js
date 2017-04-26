@@ -3085,7 +3085,7 @@ JchartLine = (function(_super) {
   };
 
   JchartLine.prototype.addMouseHoverEvent = function() {
-    var circles, data, firstHit, hasChanged, index, original_data, original_datas, plot, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3;
+    var circles, data, firstHit, hasChanged, index, lineWidth, original_data, original_datas, plot, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3;
     circles = [];
     original_datas = [];
     _ref = this.data;
@@ -3097,6 +3097,7 @@ JchartLine = (function(_super) {
         return data.original_data[key];
       });
       original_datas = original_datas.concat(original_data);
+      lineWidth = data.style.lineWidth || 2;
       index = 0;
       firstHit = false;
       _ref1 = data.plot;
@@ -3104,12 +3105,18 @@ JchartLine = (function(_super) {
         plot = _ref1[_j];
         if (plot != null) {
           if (!firstHit) {
-            circles.push(plot);
+            circles.push({
+              'plot': plot,
+              'lineWidth': lineWidth
+            });
             firstHit = true;
           } else {
             hasChanged = (_ref2 = data.original_data) != null ? _ref2[(_ref3 = data.hasedIndexArray) != null ? _ref3[index] : void 0] : void 0;
             if (hasChanged !== void 0) {
-              circles.push(plot);
+              circles.push({
+                'plot': plot,
+                'lineWidth': lineWidth
+              });
             }
           }
         }
@@ -3117,18 +3124,19 @@ JchartLine = (function(_super) {
       }
     }
     return this.canvas.addEventListener('mousemove', (function(e) {
-      var c, hoverCircleEvent, i, lineWidth, r, x, y, _k, _len2, _ref4;
+      var c, circle, hoverCircleEvent, i, r, x, y, _k, _len2, _ref4;
       x = e.clientX;
       y = e.clientY;
       if (circles.length > 0) {
         i = 0;
         for (_k = 0, _len2 = circles.length; _k < _len2; _k++) {
-          plot = circles[_k];
-          lineWidth = 2;
+          circle = circles[_k];
+          lineWidth = circle.lineWidth;
+          plot = circle.plot;
           r = ((_ref4 = this.options.chart.linePoint) != null ? _ref4.size : void 0) || 5;
           r += lineWidth;
           c = 2 * r;
-          if ((x >= plot.x && x <= plot.x + c) && (y >= plot.y && y <= plot.y + c)) {
+          if ((x >= plot.x && x <= plot.x + c) && (y >= plot.y - r && y <= plot.y + r)) {
             hoverCircleEvent = new CustomEvent('data-hover', {
               'detail': original_datas[i]
             });

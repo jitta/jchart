@@ -10,6 +10,8 @@ class JchartLine extends JchartCoordinate
     super @canvas, @data, @options, @ipo, @volume
     @normalize_data()
     @draw()
+    if @options.chart.linePoint?.enable is true
+      @addMouseHoverEvent()
 
   draw: ->
     @preprocess_style()
@@ -20,11 +22,53 @@ class JchartLine extends JchartCoordinate
   addLine: (data) ->
     @draw_line_graph data
 
+  addMouseHoverEvent: ->
+    circles = []
+    original_datas = []
+    for data in @data
+      # convert data object to array of value that sorted by key
+      original_data = Object.keys(data.original_data).sort((s1, s2) ->
+        return s1.localeCompare(s2)
+      ).map((key) ->
+        return data.original_data[key]
+      )
+
+      original_datas = original_datas.concat(original_data)
+
+      index = 0
+      firstHit = false
+      for plot in data.plot
+        if plot?
+          if not firstHit
+            circles.push(plot)
+            firstHit = true
+          else
+            hasChanged = data.original_data?[data.hasedIndexArray?[index]]
+            circles.push(plot) if hasChanged isnt undefined
+        index++
+
+    @canvas.addEventListener('mousemove', ((e) ->
+      x = e.clientX
+      y = e.clientY
+      if circles.length > 0
+        i = 0
+        for plot in circles
+          lineWidth = 2
+          r = @options.chart.linePoint?.size or 5
+          r += lineWidth
+          c = 2*r
+          if (x >= plot.x && x <= plot.x + c) && (y >= plot.y && y <= plot.y + c)
+            hoverCircleEvent = new CustomEvent('data-hover', {'detail': original_datas[i]});
+            this.canvas.dispatchEvent(hoverCircleEvent);
+            return
+          i++
+      ).bind(this)
+    )
+
   draw_line_graph: (data) ->
-    
     if data.style.fill_area
       @fillArea data
-    
+
     @ctx.beginPath()
     @ctx.lineWidth = data.style.lineWidth or 2
     @ctx.strokeStyle = data.style.color or '#000'
@@ -36,13 +80,13 @@ class JchartLine extends JchartCoordinate
 
     null_count = 0
     #before = data.plot[0]
-    
+
     circles = []
     index = 0
     firstHit = false
-    
+
     for plot in data.plot
-      
+
       if plot?
         null_count = 0
         if not firstHit
@@ -56,15 +100,15 @@ class JchartLine extends JchartCoordinate
           circles.push(plot) if hasChanged isnt undefined
         last_data = plot
       else ## start point
-        if plot? 
+        if plot?
           @ctx.moveTo plot.x, plot.y
-          
+
       null_count++ if !plot?
       index++
 
     @ctx.stroke()
     @ctx.closePath()
-    
+
     if @options.chart.linePoint?.enable is true
       @ctx.setLineDash []
       @ctx.fillStyle = @options.chart.linePoint?.fill or '#FFF'
@@ -78,7 +122,7 @@ class JchartLine extends JchartCoordinate
   addFlag: (index, text) ->
     width = @graph_width - (@options.graph.marginLeft + @options.graph.marginRight)
     barWidth = width / _.size @data[0].data
-    
+
     x = index*barWidth + @options.chart.paddingLeft + @options.graph.marginLeft
     y = @graph_height - @options.graph.marginBottom
 
@@ -185,7 +229,7 @@ class JchartLine extends JchartCoordinate
 
     ctx.fillStyle = 'rgba('+color.r+', '+color.g+', '+color.b+', 0.2)' # '#EAF8FC'
     ctx.globalCompositeOperation = @options.chart.fillBlendMode or 'multiply'
-    
+
     ctx.beginPath()
 
     dataToFill = []
@@ -212,7 +256,7 @@ class JchartLine extends JchartCoordinate
     interval = max-min
     width = @graph_width - (@options.graph.marginLeft)
     max_height = (@graph_height-(@options.graph.marginTop + @options.graph.marginTop)) / 5
-    if @options.chart.stretch 
+    if @options.chart.stretch
       barWidth = width / _.size(@.data[0].processed_hased_index)
     else
       barWidth = width / _.size(volume.data)

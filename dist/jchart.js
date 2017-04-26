@@ -3057,6 +3057,7 @@ JchartLine = (function(_super) {
   __extends(JchartLine, _super);
 
   function JchartLine(canvas, data, options, ipo, volume) {
+    var _ref;
     this.canvas = canvas;
     this.data = data;
     this.options = options != null ? options : null;
@@ -3068,6 +3069,9 @@ JchartLine = (function(_super) {
     JchartLine.__super__.constructor.call(this, this.canvas, this.data, this.options, this.ipo, this.volume);
     this.normalize_data();
     this.draw();
+    if (((_ref = this.options.chart.linePoint) != null ? _ref.enable : void 0) === true) {
+      this.addMouseHoverEvent();
+    }
   }
 
   JchartLine.prototype.draw = function() {
@@ -3078,6 +3082,63 @@ JchartLine = (function(_super) {
 
   JchartLine.prototype.addLine = function(data) {
     return this.draw_line_graph(data);
+  };
+
+  JchartLine.prototype.addMouseHoverEvent = function() {
+    var circles, data, firstHit, hasChanged, index, original_data, original_datas, plot, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3;
+    circles = [];
+    original_datas = [];
+    _ref = this.data;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      data = _ref[_i];
+      original_data = Object.keys(data.original_data).sort(function(s1, s2) {
+        return s1.localeCompare(s2);
+      }).map(function(key) {
+        return data.original_data[key];
+      });
+      original_datas = original_datas.concat(original_data);
+      index = 0;
+      firstHit = false;
+      _ref1 = data.plot;
+      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+        plot = _ref1[_j];
+        if (plot != null) {
+          if (!firstHit) {
+            circles.push(plot);
+            firstHit = true;
+          } else {
+            hasChanged = (_ref2 = data.original_data) != null ? _ref2[(_ref3 = data.hasedIndexArray) != null ? _ref3[index] : void 0] : void 0;
+            if (hasChanged !== void 0) {
+              circles.push(plot);
+            }
+          }
+        }
+        index++;
+      }
+    }
+    return this.canvas.addEventListener('mousemove', (function(e) {
+      var c, hoverCircleEvent, i, lineWidth, r, x, y, _k, _len2, _ref4;
+      x = e.clientX;
+      y = e.clientY;
+      if (circles.length > 0) {
+        i = 0;
+        for (_k = 0, _len2 = circles.length; _k < _len2; _k++) {
+          plot = circles[_k];
+          lineWidth = 2;
+          r = ((_ref4 = this.options.chart.linePoint) != null ? _ref4.size : void 0) || 5;
+          r += lineWidth;
+          c = 2 * r;
+          if ((x >= plot.x && x <= plot.x + c) && (y >= plot.y && y <= plot.y + c)) {
+            hoverCircleEvent = new CustomEvent('data-hover', {
+              'detail': original_datas[i]
+            });
+            this.canvas.dispatchEvent(hoverCircleEvent);
+            return;
+          }
+          i++;
+        }
+      }
+    }).bind(this));
   };
 
   JchartLine.prototype.draw_line_graph = function(data) {

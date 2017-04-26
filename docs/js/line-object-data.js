@@ -113,6 +113,7 @@ var line_options = {
 };
 
 var line_canvas = document.createElement('canvas');
+line_canvas.addEventListener('data-hover', function(e) {console.log(e.detail)})
 line_canvas.width = line_options.chart.width;
 line_canvas.height = line_options.chart.height;
 document.body.appendChild(line_canvas);

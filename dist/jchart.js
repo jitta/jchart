@@ -3132,9 +3132,9 @@ JchartLine = (function(_super) {
         i = 0;
         for (_k = 0, _len2 = circles.length; _k < _len2; _k++) {
           circle = circles[_k];
-          lineWidth = circle.lineWidth;
+          lineWidth = parseInt(circle.lineWidth, 10);
           plot = circle.plot;
-          r = ((_ref4 = this.options.chart.linePoint) != null ? _ref4.size : void 0) || 5;
+          r = parseInt(((_ref4 = this.options.chart.linePoint) != null ? _ref4.size : void 0) || 5, 10);
           r += lineWidth;
           if ((x >= plot.x - r && x <= plot.x + r) && (y >= plot.y - r && y <= plot.y + r)) {
             hoverCircleEvent = new CustomEvent('data-hover', {

@@ -55,9 +55,9 @@ class JchartLine extends JchartCoordinate
       if circles.length > 0
         i = 0
         for circle in circles
-          lineWidth = circle.lineWidth
+          lineWidth = parseInt(circle.lineWidth, 10)
           plot = circle.plot
-          r = @options.chart.linePoint?.size or 5
+          r = parseInt(@options.chart.linePoint?.size or 5, 10)
           r += lineWidth
 
           if (x >= plot.x - r && x <= plot.x + r) && (y >= plot.y - r && y <= plot.y + r)

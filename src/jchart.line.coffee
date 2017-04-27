@@ -30,7 +30,7 @@ class JchartLine extends JchartCoordinate
       original_data = Object.keys(data.original_data).sort((s1, s2) ->
         return s1.localeCompare(s2)
       ).map((key) ->
-        return data.original_data[key]
+        return Object.assign(data.original_data[key], {'date': key})
       )
 
       original_datas = original_datas.concat(original_data)
@@ -61,10 +61,12 @@ class JchartLine extends JchartCoordinate
           r += lineWidth
 
           if (x >= plot.x - r && x <= plot.x + r) && (y >= plot.y - r && y <= plot.y + r)
-            hoverCircleEvent = new CustomEvent('data-hover', {'detail': original_datas[i]});
+            hoverCircleEvent = new CustomEvent('data-hover', {'detail': {status: 'on', data: original_datas[i]}});
             this.canvas.dispatchEvent(hoverCircleEvent);
             return
           i++
+        hoverCircleEvent = new CustomEvent('data-hover', {'detail': {status: 'off'}});
+        this.canvas.dispatchEvent(hoverCircleEvent);
       ).bind(this)
     )
 

@@ -3094,7 +3094,9 @@ JchartLine = (function(_super) {
       original_data = Object.keys(data.original_data).sort(function(s1, s2) {
         return s1.localeCompare(s2);
       }).map(function(key) {
-        return data.original_data[key];
+        return Object.assign(data.original_data[key], {
+          'date': key
+        });
       });
       original_datas = original_datas.concat(original_data);
       lineWidth = data.style.lineWidth || 2;
@@ -3138,13 +3140,22 @@ JchartLine = (function(_super) {
           r += lineWidth;
           if ((x >= plot.x - r && x <= plot.x + r) && (y >= plot.y - r && y <= plot.y + r)) {
             hoverCircleEvent = new CustomEvent('data-hover', {
-              'detail': original_datas[i]
+              'detail': {
+                status: 'on',
+                data: original_datas[i]
+              }
             });
             this.canvas.dispatchEvent(hoverCircleEvent);
             return;
           }
           i++;
         }
+        hoverCircleEvent = new CustomEvent('data-hover', {
+          'detail': {
+            status: 'off'
+          }
+        });
+        return this.canvas.dispatchEvent(hoverCircleEvent);
       }
     }).bind(this));
   };

@@ -3124,9 +3124,10 @@ JchartLine = (function(_super) {
       }
     }
     return this.canvas.addEventListener('mousemove', (function(e) {
-      var c, circle, hoverCircleEvent, i, r, x, y, _k, _len2, _ref4;
-      x = e.clientX;
-      y = e.clientY;
+      var circle, hoverCircleEvent, i, r, rect, x, y, _k, _len2, _ref4;
+      rect = this.canvas.getBoundingClientRect();
+      x = e.clientX - rect.left;
+      y = e.clientY - rect.top;
       if (circles.length > 0) {
         i = 0;
         for (_k = 0, _len2 = circles.length; _k < _len2; _k++) {
@@ -3135,8 +3136,7 @@ JchartLine = (function(_super) {
           plot = circle.plot;
           r = ((_ref4 = this.options.chart.linePoint) != null ? _ref4.size : void 0) || 5;
           r += lineWidth;
-          c = 2 * r;
-          if ((x >= plot.x && x <= plot.x + c) && (y >= plot.y - r && y <= plot.y + r)) {
+          if ((x >= plot.x - r && x <= plot.x + r) && (y >= plot.y - r && y <= plot.y + r)) {
             hoverCircleEvent = new CustomEvent('data-hover', {
               'detail': original_datas[i]
             });

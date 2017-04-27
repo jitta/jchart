@@ -49,8 +49,9 @@ class JchartLine extends JchartCoordinate
         index++
 
     @canvas.addEventListener('mousemove', ((e) ->
-      x = e.clientX
-      y = e.clientY
+      rect = this.canvas.getBoundingClientRect()
+      x = e.clientX - rect.left
+      y = e.clientY - rect.top
       if circles.length > 0
         i = 0
         for circle in circles
@@ -58,9 +59,8 @@ class JchartLine extends JchartCoordinate
           plot = circle.plot
           r = @options.chart.linePoint?.size or 5
           r += lineWidth
-          c = 2*r
 
-          if (x >= plot.x && x <= plot.x + c) && (y >= plot.y - r && y <= plot.y + r)
+          if (x >= plot.x - r && x <= plot.x + r) && (y >= plot.y - r && y <= plot.y + r)
             hoverCircleEvent = new CustomEvent('data-hover', {'detail': original_datas[i]});
             this.canvas.dispatchEvent(hoverCircleEvent);
             return

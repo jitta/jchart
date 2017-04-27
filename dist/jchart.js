@@ -3142,7 +3142,8 @@ JchartLine = (function(_super) {
             hoverCircleEvent = new CustomEvent('data-hover', {
               'detail': {
                 status: 'on',
-                data: original_datas[i]
+                data: original_datas[i],
+                position: plot
               }
             });
             this.canvas.dispatchEvent(hoverCircleEvent);

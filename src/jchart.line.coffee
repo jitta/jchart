@@ -61,7 +61,7 @@ class JchartLine extends JchartCoordinate
           r += lineWidth
 
           if (x >= plot.x - r && x <= plot.x + r) && (y >= plot.y - r && y <= plot.y + r)
-            hoverCircleEvent = new CustomEvent('data-hover', {'detail': {status: 'on', data: original_datas[i]}});
+            hoverCircleEvent = new CustomEvent('data-hover', {'detail': {status: 'on', data: original_datas[i], position: plot}});
             this.canvas.dispatchEvent(hoverCircleEvent);
             return
           i++

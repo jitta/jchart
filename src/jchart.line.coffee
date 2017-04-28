@@ -27,9 +27,7 @@ class JchartLine extends JchartCoordinate
     original_datas = []
     for data in @data
       # convert data object to array of value that sorted by key
-      original_data = Object.keys(data.original_data).sort((s1, s2) ->
-        return s1.localeCompare(s2)
-      ).map((key) ->
+      original_data = Object.keys(data.original_data).map((key) ->
         return Object.assign(data.original_data[key], {'date': key})
       )
 

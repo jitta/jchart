@@ -3091,9 +3091,7 @@ JchartLine = (function(_super) {
     _ref = this.data;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       data = _ref[_i];
-      original_data = Object.keys(data.original_data).sort(function(s1, s2) {
-        return s1.localeCompare(s2);
-      }).map(function(key) {
+      original_data = Object.keys(data.original_data).map(function(key) {
         return Object.assign(data.original_data[key], {
           'date': key
         });

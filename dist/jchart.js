@@ -2846,7 +2846,7 @@ JchartCoordinate = (function(_super) {
         if (this.max_data > 10) {
           this.max_data = Math.round(this.max_data);
         }
-        max_text = this.options.yAxis.label.prefix + this.max_data + this.options.yAxis.label.suffix;
+        max_text = this.options.yAxis.label.prefix + this.auto_format(this.max_data) + this.options.yAxis.label.suffix;
         digit = max_text.replace('.', '').length;
         this.options.graph.marginLeft = 10 + digit * 8 + this.options.yAxis.tick.size;
       }

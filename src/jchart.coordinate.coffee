@@ -286,7 +286,7 @@ class JchartCoordinate extends Jchart
         @options.graph.marginLeft = @options.graph.marginLeftIfDecimalPoints
       else
         @max_data = Math.round(@max_data) if @max_data > 10
-        max_text = @options.yAxis.label.prefix + @max_data + @options.yAxis.label.suffix
+        max_text = @options.yAxis.label.prefix + @auto_format(@max_data) + @options.yAxis.label.suffix
         digit = max_text.replace('.','').length
         @options.graph.marginLeft = 10 + digit*8 + @options.yAxis.tick.size
 

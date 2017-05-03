@@ -82,6 +82,9 @@ Number.prototype.format = format = function(decimals, dec, sep) {
   if (number > 1000000) {
     return (number / 1000000).format(decimals) + 'M';
   }
+  if (number > 1000) {
+    return (number / 1000).format(decimals) + 'K';
+  }
   toFixedFix = function(n, prec) {
     var k;
     k = Math.pow(10, prec);
@@ -2449,7 +2452,7 @@ Jchart = (function() {
       return num.format(format);
     } else {
       interval = this.max_data - this.min_data;
-      if (interval > this.options.yAxis.breaks + 2) {
+      if (interval > this.options.yAxis.breaks + 2 && num < 1000000) {
         format = 0;
       } else if (interval > 1) {
         format = 1;

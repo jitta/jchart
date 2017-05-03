@@ -157,7 +157,7 @@ class Jchart
       num.format(format)
     else
       interval = @max_data-@min_data
-      if interval > @options.yAxis.breaks + 2
+      if interval > @options.yAxis.breaks + 2 and num < 1000000
         format = 0 
       else if interval > 1
         format = 1

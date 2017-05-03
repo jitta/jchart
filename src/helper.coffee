@@ -53,6 +53,7 @@ Number::format = format = (decimals, dec = '.', sep = ',') ->
 
   return (number/1000000000).format(decimals)+'B' if number > 1000000000
   return (number/1000000).format(decimals)+'M' if number > 1000000
+  return (number/1000).format(decimals)+'K' if number > 1000
 
   toFixedFix = (n, prec) ->
     k = Math.pow(10, prec);

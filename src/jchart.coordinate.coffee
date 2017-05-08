@@ -118,7 +118,6 @@ class JchartCoordinate extends Jchart
       for num in [1..12]
         key = year + '-' + num
         hasedIndexArray.push(key)
-
         if monthly.hasOwnProperty(key)
           currentValue = monthly[key][key_value]
           if key_value is 'formatted'
@@ -416,9 +415,12 @@ class JchartCoordinate extends Jchart
     @ctx.fillStyle = @options.xAxis.color or @options.chart.color
     @ctx.strokeStyle = @options.xAxis.color or @options.chart.color
 
-    if @options.xAxis.data? and @options.xAxis.data.length > 0
-      barWidth = width / @options.xAxis.data.length
-      for value in @options.xAxis.data
+    xAxisData = ['2015Q1', '2016Q2'] || @options.xAxis.data
+
+    if xAxisData
+      barWidth = width / xAxisData.length
+      
+      for value in xAxisData
         x = (_i+1) * barWidth + @options.graph.marginLeft
         y = @graph_height - @options.graph.marginBottom
 

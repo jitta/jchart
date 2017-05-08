@@ -4,20 +4,20 @@ var line_data = {
     name: "Revenue",
     type: "line",
     data: {
-      "2013-12":{
+      "2015-6":{
         value: 12000,
         formatted: "12,000"
       },
-      "2014-12":{
-        value: 50000,
+      "2015-9":{
+        value: 35000,
         formatted: "50,000"
       },
       "2015-12":{
-        value: 1500000,
+        value: 60000,
         formatted: "1,500,000"
       },
-      "2016-12":{
-        value: 1100000,
+      "2016-3":{
+        value: 65000,
         formatted: "1,100,000"
       }
     },
@@ -27,13 +27,14 @@ var line_data = {
       fill_area: false
     }
   }],
-  labels: [new Date().getFullYear()], //at least include current year for object datas only.
+  labels: [2015], //at least include current year for object datas only.
 };
 
 var line_options = {
   chart: {
     width: 790,
     height: 200 / 790 * window.innerWidth,
+    linePoint: {enable: true, size: 2, fill: '#000'}
   },
   xAxis: {
     data: line_data.labels,

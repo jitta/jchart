@@ -2013,4 +2013,4 @@ lodash.VERSION = '2.4.1';
 /*--------------------------------------------------------------------------*/
 
 // check `_` before overwrite it to root
-if (!root._) { root._ = lodash; }
+if (!root._jcld) { root._jcld = lodash; }

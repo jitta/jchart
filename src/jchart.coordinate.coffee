@@ -3,7 +3,7 @@ class JchartCoordinate extends Jchart
 
   constructor: (@canvas, @data, @options=null, @ipo) ->
 
-    @options = _.merge
+    @options = _jcld.merge
       legend:
         width: 75
         lineWidth: 2
@@ -163,21 +163,21 @@ class JchartCoordinate extends Jchart
     for k in keys
       years.push parseInt(k.substring(0, k.indexOf('-')))
 
-    @options.xAxis.hash_min_year = _.min years
-    @options.xAxis.hash_max_year = _.max years
+    @options.xAxis.hash_min_year = _jcld.min years
+    @options.xAxis.hash_max_year = _jcld.max years
     min_pad = []
     max_pad = []
 
-    if @options.xAxis.hash_min_year < _.min(@options.xAxis.data)
-      y =  _.min(@options.xAxis.data) - @options.xAxis.hash_min_year
+    if @options.xAxis.hash_min_year < _jcld.min(@options.xAxis.data)
+      y =  _jcld.min(@options.xAxis.data) - @options.xAxis.hash_min_year
       current = @options.xAxis.hash_min_year
       min_pad = Array.apply(null, {length: y}).map(Number.call, -> current++)
       @options.xAxis.padMinArraySize = y*12
       @options.xAxis.padMinArray = true
 
-    if @options.xAxis.hash_max_year > _.max(@options.xAxis.data)
-      y =  @options.xAxis.hash_max_year - _.max(@options.xAxis.data)
-      current = _.max(@options.xAxis.data)
+    if @options.xAxis.hash_max_year > _jcld.max(@options.xAxis.data)
+      y =  @options.xAxis.hash_max_year - _jcld.max(@options.xAxis.data)
+      current = _jcld.max(@options.xAxis.data)
       max_pad = Array.apply(null, {length: y}).map(Number.call, -> ++current)
       @options.xAxis.padMaxArraySize = y*12
       @options.xAxis.padMaxArray = true
@@ -215,8 +215,8 @@ class JchartCoordinate extends Jchart
         raw_data.push data_item.data
         nullPadRights.push @data[key].nullPadRight
 
-    max_obj = _.max @data, (item) -> _max item.data
-    max = _.max max_obj.data
+    max_obj = _jcld.max @data, (item) -> _max item.data
+    max = _jcld.max max_obj.data
     if max >= 1.00
       roundValues raw_data
 
@@ -231,8 +231,8 @@ class JchartCoordinate extends Jchart
             return true
         nullPadLefts.push data_item.nullPadLeft
 
-      minNullPadLefts = _.min nullPadLefts
-      minNullPadRight = _.min nullPadRights
+      minNullPadLefts = _jcld.min nullPadLefts
+      minNullPadRight = _jcld.min nullPadRights
       for key, data_item of @data
         if data_item.processed_data is undefined
           data_item.processed_data = data_item.data.slice()
@@ -261,10 +261,10 @@ class JchartCoordinate extends Jchart
       @max_data = @options.yAxis.max
 
     if !@options.yAxis.min? or !@options.yAxis.max?
-      min_obj = _.min @data, (item) -> _min item.data
-      min = _.min min_obj.data
-      max_obj = _.max @data, (item) -> _max item.data
-      max = _.max max_obj.data
+      min_obj = _jcld.min @data, (item) -> _min item.data
+      min = _jcld.min min_obj.data
+      max_obj = _jcld.max @data, (item) -> _max item.data
+      max = _jcld.max max_obj.data
       pad = (max-min) * 0.1
       pad = @options.yAxis.breaks if pad == 0
       pad = 0
@@ -286,7 +286,7 @@ class JchartCoordinate extends Jchart
         @options.graph.marginLeft = @options.graph.marginLeftIfDecimalPoints
       else
         @max_data = Math.round(@max_data) if @max_data > 10
-        max_text = @options.yAxis.label.prefix + @max_data + @options.yAxis.label.suffix
+        max_text = @options.yAxis.label.prefix + @auto_format(@max_data) + @options.yAxis.label.suffix
         digit = max_text.replace('.','').length
         @options.graph.marginLeft = 10 + digit*8 + @options.yAxis.tick.size
 
@@ -303,7 +303,7 @@ class JchartCoordinate extends Jchart
 
     ## build plot position
     for item in @data
-      barWidth = @inner_width / (_.size(item.data)-1)
+      barWidth = @inner_width / (_jcld.size(item.data)-1)
       item.plot = []
       for value in item.data
         if value?

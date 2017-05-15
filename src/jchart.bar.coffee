@@ -3,7 +3,7 @@ class JchartBar extends JchartCoordinate
 
   constructor: (@canvas, @data, @options=null, @ipo) ->
 
-    @options = _.merge
+    @options = _jcld.merge
       captionMargin: 0
     , @options
 
@@ -21,7 +21,7 @@ class JchartBar extends JchartCoordinate
     @draw_column_graph data
     
   draw_column_graph: (data) ->
-    barWidth = @inner_width / _.size(data.data)
+    barWidth = @inner_width / _jcld.size(data.data)
     columnWidth = barWidth / 2
     @ctx.textBaseline = 'bottom'
 

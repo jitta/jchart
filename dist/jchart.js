@@ -2569,17 +2569,19 @@ JchartCoordinate = (function(_super) {
         min: null,
         max: null,
         breaks: 5,
-        rightAlign: false
+        rightAlign: false,
+        scopedRange: false
       }
     }, this.options);
     JchartCoordinate.__super__.constructor.call(this, this.canvas, this.data, this.options, this.ipo);
   }
 
   JchartCoordinate.prototype.convertToJChartArray = function(data, key_value) {
-    var currentValue, diff_month, hasedIndexArray, i, key, key_monthly, keys, last_key, last_year_value, month, monthly, newValuesArray, nullCount, nullRightPad, nullRightPadoriginalArrayFillValue, num, originalArrayFill, originalArrayFillValue, run_month, temp, this_year_value, value, year, _i, _j, _k, _l, _len, _len1, _len2, _m, _ref;
+    var currentValue, diff_month, firstKey, hasedIndexArray, i, key, key_monthly, keys, last_key, last_year_value, month, monthly, newValuesArray, nullCount, nullRightPad, nullRightPadoriginalArrayFillValue, num, originalArrayFill, originalArrayFillValue, run_month, temp, this_year_value, value, year, _i, _j, _k, _l, _len, _len1, _len2, _m, _ref;
     monthly = {};
     temp = padZeroMonth(data);
     keys = Object.keys(temp);
+    firstKey = keys[0];
     i = 0;
     for (_i = 0, _len = keys.length; _i < _len; _i++) {
       key = keys[_i];
@@ -2595,7 +2597,9 @@ JchartCoordinate = (function(_super) {
           if (run_month > key) {
             break;
           }
-          run_month.add(1, 'months');
+          if (last_key !== firstKey) {
+            run_month.add(1, 'months');
+          }
           key_monthly = run_month.getFullYear() + '-' + (parseInt(run_month.getMonth()) + 1);
           monthly[key_monthly] = {};
           monthly[key_monthly][key_value] = null;
@@ -2820,6 +2824,14 @@ JchartCoordinate = (function(_super) {
       });
       max = _.max(max_obj.data);
       pad = (max - min) * 0.1;
+      if (this.options.yAxis.scopedRange === true) {
+        min = _.min(min_obj.data, function(item) {
+          if (item !== null) {
+            return min = item;
+          }
+        });
+        min = min - pad;
+      }
       if (pad === 0) {
         pad = this.options.yAxis.breaks;
       }
@@ -2876,7 +2888,10 @@ JchartCoordinate = (function(_super) {
         }
       }
     }
-    return this.xAxiz_zero_position = this.pt + this.inner_height - (0 - this.min_data) / this.interval * this.inner_height + this.options.graph.marginTop;
+    this.xAxiz_zero_position = this.pt + this.inner_height - (0 - this.min_data) / this.interval * this.inner_height + this.options.graph.marginTop;
+    if (this.options.yAxis.scopedRange === true) {
+      return this.xAxiz_zero_position = this.pt + this.graph_height - this.options.graph.marginBottom;
+    }
   };
 
   JchartCoordinate.prototype.preprocess_style = function() {
@@ -2977,17 +2992,17 @@ JchartCoordinate = (function(_super) {
   };
 
   JchartCoordinate.prototype.vertical_line = function() {
-    var barWidth, leftOffset, value, width, x, y, _i, _len, _ref, _x, _y;
+    var barWidth, leftOffset, value, width, x, xAxisData, y, _i, _len, _x, _y;
     width = this.graph_width - (this.options.graph.marginLeft + this.options.graph.marginRight);
     this.ctx.beginPath();
     this.ctx.textAlign = 'center';
     this.ctx.fillStyle = this.options.xAxis.color || this.options.chart.color;
     this.ctx.strokeStyle = this.options.xAxis.color || this.options.chart.color;
-    if ((this.options.xAxis.data != null) && this.options.xAxis.data.length > 0) {
-      barWidth = width / this.options.xAxis.data.length;
-      _ref = this.options.xAxis.data;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        value = _ref[_i];
+    xAxisData = this.options.xAxis.forceLabels || this.options.xAxis.data;
+    if (xAxisData) {
+      barWidth = width / xAxisData.length;
+      for (_i = 0, _len = xAxisData.length; _i < _len; _i++) {
+        value = xAxisData[_i];
         x = (_i + 1) * barWidth + this.options.graph.marginLeft;
         y = this.graph_height - this.options.graph.marginBottom;
         if (this.options.xAxis.label.enable) {

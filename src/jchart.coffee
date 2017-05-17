@@ -6,7 +6,7 @@ class Jchart
 
   constructor: (@canvas, @data, @options=null, @ipo) ->
 
-    @options = _.merge
+    @options = _jcld.merge
       chart:
         width: 1060
         height: 480
@@ -65,7 +65,7 @@ class Jchart
   process_legend: () ->
     legend_width = @options.legend.width
     text_height = parseInt(@options.legend.font.size.replace('px',''))*2
-    data_legend = _.filter @data, (item) -> item.legend isnt false
+    data_legend = _jcld.filter @data, (item) -> item.legend isnt false
     for item in data_legend
       x = @options.chart.width/2 + ((_i+1)-(data_legend.length+1)/2) * legend_width
       y = @options.chart.height - @options.chart.paddingBottom + @options.legend.marginTop
@@ -90,7 +90,7 @@ class Jchart
 
   addLabel: (text, option) ->
     option = {} unless option?
-    option = _.merge
+    option = _jcld.merge
       font:
         style: @options.chart.font.style
         weight: @options.chart.font.weight
@@ -166,7 +166,7 @@ class Jchart
       return num.format(format)
 
   font_format: (font) ->
-    font = _.merge @options.chart.font, font
+    font = _jcld.merge @options.chart.font, font
     b = ' '
     return font.weight + b + font.style + b + font.size + b + font.family
 

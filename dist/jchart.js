@@ -2240,7 +2240,7 @@ lodash.VERSION = '2.4.1';
 /*--------------------------------------------------------------------------*/
 
 // check `_` before overwrite it to root
-if (!root._) { root._ = lodash; }
+if (!root._jcld) { root._jcld = lodash; }
 
 var Jchart;
 
@@ -2256,7 +2256,7 @@ Jchart = (function() {
     this.data = data;
     this.options = options != null ? options : null;
     this.ipo = ipo;
-    this.options = _.merge({
+    this.options = _jcld.merge({
       chart: {
         width: 1060,
         height: 480,
@@ -2321,7 +2321,7 @@ Jchart = (function() {
     var data_legend, item, legend_width, text_height, x, y, _i, _len, _results;
     legend_width = this.options.legend.width;
     text_height = parseInt(this.options.legend.font.size.replace('px', '')) * 2;
-    data_legend = _.filter(this.data, function(item) {
+    data_legend = _jcld.filter(this.data, function(item) {
       return item.legend !== false;
     });
     _results = [];
@@ -2354,7 +2354,7 @@ Jchart = (function() {
     if (option == null) {
       option = {};
     }
-    option = _.merge({
+    option = _jcld.merge({
       font: {
         style: this.options.chart.font.style,
         weight: this.options.chart.font.weight,
@@ -2465,7 +2465,7 @@ Jchart = (function() {
 
   Jchart.prototype.font_format = function(font) {
     var b;
-    font = _.merge(this.options.chart.font, font);
+    font = _jcld.merge(this.options.chart.font, font);
     b = ' ';
     return font.weight + b + font.style + b + font.size + b + font.family;
   };
@@ -2492,7 +2492,7 @@ JchartCoordinate = (function(_super) {
     this.data = data;
     this.options = options != null ? options : null;
     this.ipo = ipo;
-    this.options = _.merge({
+    this.options = _jcld.merge({
       legend: {
         width: 75,
         lineWidth: 2,
@@ -2684,12 +2684,12 @@ JchartCoordinate = (function(_super) {
       k = keys[_j];
       years.push(parseInt(k.substring(0, k.indexOf('-'))));
     }
-    this.options.xAxis.hash_min_year = _.min(years);
-    this.options.xAxis.hash_max_year = _.max(years);
+    this.options.xAxis.hash_min_year = _jcld.min(years);
+    this.options.xAxis.hash_max_year = _jcld.max(years);
     min_pad = [];
     max_pad = [];
-    if (this.options.xAxis.hash_min_year < _.min(this.options.xAxis.data)) {
-      y = _.min(this.options.xAxis.data) - this.options.xAxis.hash_min_year;
+    if (this.options.xAxis.hash_min_year < _jcld.min(this.options.xAxis.data)) {
+      y = _jcld.min(this.options.xAxis.data) - this.options.xAxis.hash_min_year;
       current = this.options.xAxis.hash_min_year;
       min_pad = Array.apply(null, {
         length: y
@@ -2699,9 +2699,9 @@ JchartCoordinate = (function(_super) {
       this.options.xAxis.padMinArraySize = y * 12;
       this.options.xAxis.padMinArray = true;
     }
-    if (this.options.xAxis.hash_max_year > _.max(this.options.xAxis.data)) {
-      y = this.options.xAxis.hash_max_year - _.max(this.options.xAxis.data);
-      current = _.max(this.options.xAxis.data);
+    if (this.options.xAxis.hash_max_year > _jcld.max(this.options.xAxis.data)) {
+      y = this.options.xAxis.hash_max_year - _jcld.max(this.options.xAxis.data);
+      current = _jcld.max(this.options.xAxis.data);
       max_pad = Array.apply(null, {
         length: y
       }).map(Number.call, function() {
@@ -2755,10 +2755,10 @@ JchartCoordinate = (function(_super) {
         nullPadRights.push(this.data[key].nullPadRight);
       }
     }
-    max_obj = _.max(this.data, function(item) {
+    max_obj = _jcld.max(this.data, function(item) {
       return _max(item.data);
     });
-    max = _.max(max_obj.data);
+    max = _jcld.max(max_obj.data);
     if (max >= 1.00) {
       roundValues(raw_data);
     }
@@ -2777,8 +2777,8 @@ JchartCoordinate = (function(_super) {
         });
         nullPadLefts.push(data_item.nullPadLeft);
       }
-      minNullPadLefts = _.min(nullPadLefts);
-      minNullPadRight = _.min(nullPadRights);
+      minNullPadLefts = _jcld.min(nullPadLefts);
+      minNullPadRight = _jcld.min(nullPadRights);
       _ref3 = this.data;
       _results = [];
       for (key in _ref3) {
@@ -2815,14 +2815,14 @@ JchartCoordinate = (function(_super) {
       this.max_data = this.options.yAxis.max;
     }
     if ((this.options.yAxis.min == null) || (this.options.yAxis.max == null)) {
-      min_obj = _.min(this.data, function(item) {
+      min_obj = _jcld.min(this.data, function(item) {
         return _min(item.data);
       });
-      min = _.min(min_obj.data);
-      max_obj = _.max(this.data, function(item) {
+      min = _jcld.min(min_obj.data);
+      max_obj = _jcld.max(this.data, function(item) {
         return _max(item.data);
       });
-      max = _.max(max_obj.data);
+      max = _jcld.max(max_obj.data);
       pad = (max - min) * 0.1;
       if (this.options.yAxis.scopedRange === true) {
         min = _.min(min_obj.data, function(item) {
@@ -2873,7 +2873,7 @@ JchartCoordinate = (function(_super) {
     _ref = this.data;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       item = _ref[_i];
-      barWidth = this.inner_width / (_.size(item.data) - 1);
+      barWidth = this.inner_width / (_jcld.size(item.data) - 1);
       item.plot = [];
       _ref1 = item.data;
       for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
@@ -3081,7 +3081,7 @@ JchartLine = (function(_super) {
     this.options = options != null ? options : null;
     this.ipo = ipo;
     this.volume = volume;
-    this.options = _.merge({
+    this.options = _jcld.merge({
       line_dash: [6, 2]
     }, this.options);
     JchartLine.__super__.constructor.call(this, this.canvas, this.data, this.options, this.ipo, this.volume);
@@ -3245,7 +3245,7 @@ JchartLine = (function(_super) {
   JchartLine.prototype.addFlag = function(index, text) {
     var barWidth, diff, overlap, width, x, y, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
     width = this.graph_width - (this.options.graph.marginLeft + this.options.graph.marginRight);
-    barWidth = width / _.size(this.data[0].data);
+    barWidth = width / _jcld.size(this.data[0].data);
     x = index * barWidth + this.options.chart.paddingLeft + this.options.graph.marginLeft;
     y = this.graph_height - this.options.graph.marginBottom;
     this.ctx.lineWidth = 1;
@@ -3386,15 +3386,15 @@ JchartLine = (function(_super) {
   JchartLine.prototype.drawVolume = function(volume) {
     var barWidth, columnWidth, ctx, interval, max, max_height, min, value, width, x, y, _i, _j, _len, _ref, _results;
     ctx = this.ctx;
-    max = _.max(volume.data);
-    min = _.min(volume.data);
+    max = _jcld.max(volume.data);
+    min = _jcld.min(volume.data);
     interval = max - min;
     width = this.graph_width - this.options.graph.marginLeft;
     max_height = (this.graph_height - (this.options.graph.marginTop + this.options.graph.marginTop)) / 5;
     if (this.options.chart.stretch) {
-      barWidth = width / _.size(this.data[0].processed_hased_index);
+      barWidth = width / _jcld.size(this.data[0].processed_hased_index);
     } else {
-      barWidth = width / _.size(volume.data);
+      barWidth = width / _jcld.size(volume.data);
     }
     columnWidth = barWidth / 2;
     _i = 0;
@@ -3437,7 +3437,7 @@ JchartBar = (function(_super) {
     this.data = data;
     this.options = options != null ? options : null;
     this.ipo = ipo;
-    this.options = _.merge({
+    this.options = _jcld.merge({
       captionMargin: 0
     }, this.options);
     JchartBar.__super__.constructor.call(this, this.canvas, this.data, this.options, this.ipo);
@@ -3457,7 +3457,7 @@ JchartBar = (function(_super) {
 
   JchartBar.prototype.draw_column_graph = function(data) {
     var barWidth, columnWidth, value, x, y, _i, _len, _ref, _results;
-    barWidth = this.inner_width / _.size(data.data);
+    barWidth = this.inner_width / _jcld.size(data.data);
     columnWidth = barWidth / 2;
     this.ctx.textBaseline = 'bottom';
     _ref = data.data;

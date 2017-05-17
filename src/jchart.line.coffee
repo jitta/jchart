@@ -3,7 +3,7 @@ class JchartLine extends JchartCoordinate
 
   constructor: (@canvas, @data, @options=null, @ipo, @volume) ->
 
-    @options = _.merge
+    @options = _jcld.merge
       line_dash: [6,2]
     , @options
 
@@ -124,7 +124,7 @@ class JchartLine extends JchartCoordinate
 
   addFlag: (index, text) ->
     width = @graph_width - (@options.graph.marginLeft + @options.graph.marginRight)
-    barWidth = width / _.size @data[0].data
+    barWidth = width / _jcld.size @data[0].data
 
     x = index*barWidth + @options.chart.paddingLeft + @options.graph.marginLeft
     y = @graph_height - @options.graph.marginBottom
@@ -254,15 +254,15 @@ class JchartLine extends JchartCoordinate
 
   drawVolume: (volume) ->
     ctx =  @ctx
-    max = _.max volume.data
-    min = _.min volume.data
+    max = _jcld.max volume.data
+    min = _jcld.min volume.data
     interval = max-min
     width = @graph_width - (@options.graph.marginLeft)
     max_height = (@graph_height-(@options.graph.marginTop + @options.graph.marginTop)) / 5
     if @options.chart.stretch
-      barWidth = width / _.size(@.data[0].processed_hased_index)
+      barWidth = width / _jcld.size(@.data[0].processed_hased_index)
     else
-      barWidth = width / _.size(volume.data)
+      barWidth = width / _jcld.size(volume.data)
     columnWidth = barWidth / 2
     _i = 0
     for value in volume.data

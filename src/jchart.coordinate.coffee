@@ -70,6 +70,7 @@ class JchartCoordinate extends Jchart
         max: null
         breaks: 5
         rightAlign: false
+        scopedRange: false
     , @options
 
     super @canvas, @data, @options, @ipo
@@ -265,11 +266,18 @@ class JchartCoordinate extends Jchart
       max_obj = _.max @data, (item) -> _max item.data
       max = _.max max_obj.data
       pad = (max-min) * 0.1
+      
+      if @options.yAxis.scopedRange is true
+        min = _.min min_obj.data, (item) -> 
+          min = item if item isnt null
+        min = (min - pad)
+      
       pad = @options.yAxis.breaks if pad == 0
       pad = 0
 
       @max_data = max + pad if !@options.yAxis.max?
       @min_data = min if !@options.yAxis.min?
+      
 
     # round y-axis values
     power10 = Math.pow(10, Math.floor(Math.log(@max_data) / Math.log(10)))
@@ -311,8 +319,11 @@ class JchartCoordinate extends Jchart
             y: @pt + @inner_height - (value-@min_data) / @interval * @inner_height + @options.graph.marginTop
         else
           item.plot.push null
-
+  
     @xAxiz_zero_position = @pt + @inner_height - (0-@min_data) / @interval * @inner_height + @options.graph.marginTop
+    
+    if @options.yAxis.scopedRange is true
+      @xAxiz_zero_position = @pt + @graph_height - @options.graph.marginBottom
 
   preprocess_style: ->
     @ctx.font = @font_format(@options.chart.font)

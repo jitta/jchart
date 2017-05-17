@@ -43,9 +43,8 @@ var line_options = {
     }
   },
   yAxis: {
+    scopedRange: true,
     breaks: 5,
-    min: 0,
-    max: null,
     label: {
       align: 'left'
     }

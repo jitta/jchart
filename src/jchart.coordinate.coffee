@@ -426,7 +426,7 @@ class JchartCoordinate extends Jchart
     @ctx.fillStyle = @options.xAxis.color or @options.chart.color
     @ctx.strokeStyle = @options.xAxis.color or @options.chart.color
 
-    xAxisData = ['2015Q1', '2016Q2'] || @options.xAxis.data
+    xAxisData = @options.xAxis.forceLabels or @options.xAxis.data
 
     if xAxisData
       barWidth = width / xAxisData.length

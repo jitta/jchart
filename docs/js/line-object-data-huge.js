@@ -27,16 +27,18 @@ var line_data = {
       fill_area: false
     }
   }],
-  labels: [2015], //at least include current year for object datas only.
+  labels: [2016], //at least include current year for object datas only.
 };
 
 var line_options = {
   chart: {
     width: 790,
     height: 200 / 790 * window.innerWidth,
-    linePoint: {enable: true, size: 2, fill: '#000'}
+    linePoint: {enable: true, size: 2, fill: '#000'},
+    stretch: true
   },
   xAxis: {
+    forceLabels: ['2015Q2', '2015Q3','2015Q4', '2016Q1'],
     data: line_data.labels,
     label: {
       align: 'center'

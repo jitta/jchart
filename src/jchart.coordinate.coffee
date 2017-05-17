@@ -80,6 +80,7 @@ class JchartCoordinate extends Jchart
     monthly = {}
     temp = padZeroMonth(data)
     keys = Object.keys(temp)
+    firstKey = keys[0]
     i = 0
 
     for key in keys
@@ -93,7 +94,8 @@ class JchartCoordinate extends Jchart
         diff_month = (new Date("#{key}")).diffMonth(new Date("#{last_key}")) + 1
         for month in [1..diff_month]
           break if run_month > key
-          run_month.add(1, 'months')
+          if last_key isnt firstKey
+            run_month.add(1, 'months')
           key_monthly = run_month.getFullYear() + '-' + (parseInt(run_month.getMonth())+1)
           monthly[key_monthly] = {}
           monthly[key_monthly][key_value] = null #prevent undefined

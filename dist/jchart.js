@@ -2273,7 +2273,11 @@ Jchart = (function() {
         },
         color: '#888',
         background: '#ffffff',
-        stretch: false
+        stretch: false,
+        padNulls: {
+          left: null,
+          right: null
+        }
       },
       graph: {
         border: true,
@@ -2803,8 +2807,8 @@ JchartCoordinate = (function(_super) {
         });
         nullPadLefts.push(data_item.nullPadLeft);
       }
-      minNullPadLefts = _jcld.min(nullPadLefts);
-      minNullPadRight = _jcld.min(nullPadRights);
+      minNullPadLefts = this.options.chart.padNulls.left ? this.options.chart.padNulls.left : _jcld.min(nullPadLefts);
+      minNullPadRight = this.options.chart.padNulls.right ? this.options.chart.padNulls.right : _jcld.min(nullPadRights);
       _ref3 = this.data;
       _results = [];
       for (key in _ref3) {

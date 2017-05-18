@@ -34,13 +34,17 @@ var line_options = {
     width: 790,
     height: 200 / 790 * window.innerWidth,
     linePoint: {enable: true, size: 4, fill: '#fff'},
-    stretch: false
+    stretch: true,
+    padNulls: {
+      left: 3,
+      right: 4
+    }
   },
   xAxis: {
-    // forceLabels: ['2015Q2', '2015Q3','2015Q4', '2016Q1'],
+    forceLabels: ['2015Q2', '2015Q3','2015Q4', '2016Q1', '2016Q2', ''],
     data: line_data.labels,
     label: {
-      align: 'center'
+      align: 'right'
     }
   },
   yAxis: {

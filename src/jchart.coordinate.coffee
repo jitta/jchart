@@ -249,7 +249,7 @@ class JchartCoordinate extends Jchart
     max = _jcld.max max_obj.data
     if max >= 1.00
       roundValues raw_data
-
+      
     if @options.chart.stretch
       for data_item,key in @data
         data_item.nullPadLeft = 0
@@ -260,9 +260,9 @@ class JchartCoordinate extends Jchart
           else
             return true
         nullPadLefts.push data_item.nullPadLeft
-
-      minNullPadLefts = _jcld.min nullPadLefts
-      minNullPadRight = _jcld.min nullPadRights
+        
+      minNullPadLefts = if @options.chart.padNulls.left then @options.chart.padNulls.left else _jcld.min nullPadLefts
+      minNullPadRight = if @options.chart.padNulls.right then @options.chart.padNulls.right else _jcld.min nullPadRights
       for key, data_item of @data
         if data_item.processed_data is undefined
           data_item.processed_data = data_item.data.slice()

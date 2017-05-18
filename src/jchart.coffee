@@ -23,6 +23,9 @@ class Jchart
         color: '#888'
         background: '#ffffff'
         stretch: false
+        padNulls:
+          left: null
+          right: null
       graph:
         border: true
         marginLeftIfDecimalPoints: 50

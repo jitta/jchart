@@ -2761,14 +2761,14 @@ JchartCoordinate = (function(_super) {
         this.data[key].original_data = data_item.data;
         formattedKeys = {};
         Object.keys(data_item.data).forEach(function(toFormatKey) {
-          var splitKey;
+          var newFormatKey, splitKey;
           if (typeof toFormatKey === 'string') {
             splitKey = toFormatKey.split('-');
             if (splitKey[1].length === 1) {
               splitKey[1] = "0" + splitKey[1];
             }
-            toFormatKey = splitKey.join('-');
-            return formattedKeys[toFormatKey] = true;
+            newFormatKey = splitKey.join('-');
+            return formattedKeys[newFormatKey] = data_item.data[toFormatKey];
           }
         });
         this.data[key].formattedKeys = formattedKeys;
@@ -3135,8 +3135,8 @@ JchartLine = (function(_super) {
     _ref = this.data;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       data = _ref[_i];
-      original_data = Object.keys(data.original_data).map(function(key) {
-        return Object.assign(data.original_data[key], {
+      original_data = Object.keys(data.formattedKeys).map(function(key) {
+        return Object.assign(data.formattedKeys[key], {
           'date': key
         });
       });
@@ -3155,7 +3155,7 @@ JchartLine = (function(_super) {
             });
             firstHit = true;
           } else {
-            hasChanged = (_ref2 = data.original_data) != null ? _ref2[(_ref3 = data.hasedIndexArray) != null ? _ref3[index] : void 0] : void 0;
+            hasChanged = (_ref2 = data.formattedKeys) != null ? _ref2[(_ref3 = data.hasedIndexArray) != null ? _ref3[index] : void 0] : void 0;
             if (hasChanged !== void 0) {
               circles.push({
                 'plot': plot,

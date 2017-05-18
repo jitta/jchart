@@ -27,8 +27,8 @@ class JchartLine extends JchartCoordinate
     original_datas = []
     for data in @data
       # convert data object to array of value that sorted by key
-      original_data = Object.keys(data.original_data).map((key) ->
-        return Object.assign(data.original_data[key], {'date': key})
+      original_data = Object.keys(data.formattedKeys).map((key) ->
+        return Object.assign(data.formattedKeys[key], {'date': key})
       )
 
       original_datas = original_datas.concat(original_data)
@@ -42,7 +42,7 @@ class JchartLine extends JchartCoordinate
             circles.push({'plot': plot, 'lineWidth': lineWidth})
             firstHit = true
           else
-            hasChanged = data.original_data?[data.hasedIndexArray?[index]]
+            hasChanged = data.formattedKeys?[data.hasedIndexArray?[index]]
             circles.push({'plot': plot, 'lineWidth': lineWidth}) if hasChanged isnt undefined
         index++
 

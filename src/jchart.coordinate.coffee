@@ -233,9 +233,9 @@ class JchartCoordinate extends Jchart
             splitKey = toFormatKey.split('-')
             if splitKey[1].length is 1
               splitKey[1] = "0#{splitKey[1]}"
-            toFormatKey = splitKey.join('-')
-            formattedKeys[toFormatKey] = true
-        
+            newFormatKey = splitKey.join('-')
+            formattedKeys[newFormatKey] = data_item.data[toFormatKey]
+
         @data[key].formattedKeys = formattedKeys
         converted = @convertToJChartArray(data_item.data, 'value')
         @data[key].data = converted.newValuesArray

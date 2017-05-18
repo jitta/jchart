@@ -99,7 +99,7 @@ class JchartLine extends JchartCoordinate
           @ctx.fillRect plot.x, plot.y, 3, 3
         else
           @ctx.lineTo plot.x, plot.y
-          hasChanged = data.original_data?[data.hasedIndexArray?[index]]
+          hasChanged = data.formattedKeys?[data.hasedIndexArray?[index]]
           circles.push(plot) if hasChanged isnt undefined
         last_data = plot
       else ## start point

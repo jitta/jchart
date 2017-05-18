@@ -2577,7 +2577,7 @@ JchartCoordinate = (function(_super) {
   }
 
   JchartCoordinate.prototype.convertToJChartArray = function(data, key_value) {
-    var currentValue, diff_month, firstKey, hasedIndexArray, i, key, key_monthly, keys, last_key, last_year_value, month, monthly, newValuesArray, nullCount, nullRightPad, nullRightPadoriginalArrayFillValue, num, originalArrayFill, originalArrayFillValue, run_month, temp, this_year_value, value, year, _i, _j, _k, _l, _len, _len1, _len2, _m, _ref;
+    var currentValue, diff_month, firstKey, hasedIndexArray, i, key, key_monthly, keys, last_key, last_year_value, month, monthly, newValuesArray, nextMonth, nullCount, nullRightPad, nullRightPadoriginalArrayFillValue, num, originalArrayFill, originalArrayFillValue, run_month, splitLastKey, temp, this_year_value, value, year, _i, _j, _k, _l, _len, _len1, _len2, _m, _ref;
     monthly = {};
     temp = padZeroMonth(data);
     keys = Object.keys(temp);
@@ -2586,6 +2586,13 @@ JchartCoordinate = (function(_super) {
     for (_i = 0, _len = keys.length; _i < _len; _i++) {
       key = keys[_i];
       last_key = keys[i - 1];
+      if (last_key) {
+        splitLastKey = last_key.split('-');
+        if (splitLastKey[1].length === 1) {
+          splitLastKey[1] = "0" + splitLastKey[1];
+        }
+        last_key = splitLastKey.join('-');
+      }
       if ((temp[key] != null) && (temp[last_key] != null)) {
         last_year_value = temp[last_key].value;
         this_year_value = temp[key].value;
@@ -2597,10 +2604,12 @@ JchartCoordinate = (function(_super) {
           if (run_month > key) {
             break;
           }
-          if (last_key !== firstKey) {
-            run_month.add(1, 'months');
+          run_month.add(1, 'months');
+          nextMonth = parseInt(run_month.getMonth()) + 1;
+          if (nextMonth.toString().length === 1) {
+            nextMonth = "0" + nextMonth;
           }
-          key_monthly = run_month.getFullYear() + '-' + (parseInt(run_month.getMonth()) + 1);
+          key_monthly = run_month.getFullYear() + '-' + nextMonth;
           monthly[key_monthly] = {};
           monthly[key_monthly][key_value] = null;
           if (last_year_value === null) {
@@ -2629,7 +2638,11 @@ JchartCoordinate = (function(_super) {
     for (_k = 0, _len1 = _ref.length; _k < _len1; _k++) {
       year = _ref[_k];
       for (num = _l = 1; _l <= 12; num = ++_l) {
-        key = year + '-' + num;
+        nextMonth = num;
+        if (nextMonth.toString().length === 1) {
+          nextMonth = "0" + nextMonth;
+        }
+        key = year + '-' + nextMonth;
         hasedIndexArray.push(key);
         if (monthly.hasOwnProperty(key)) {
           currentValue = monthly[key][key_value];
@@ -2667,7 +2680,7 @@ JchartCoordinate = (function(_super) {
   };
 
   JchartCoordinate.prototype.normalize_data = function() {
-    var converted, current, data_item, k, key, keys, max, max_obj, max_pad, minNullPadLefts, minNullPadRight, min_pad, newPadMax, newPadMin, newXAxis, nullPadLefts, nullPadRights, raw_data, y, years, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3, _results;
+    var converted, current, data_item, formattedKeys, k, key, keys, max, max_obj, max_pad, minNullPadLefts, minNullPadRight, min_pad, newPadMax, newPadMin, newXAxis, nullPadLefts, nullPadRights, raw_data, y, years, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3, _results;
     if (this.options.xAxis.data.length === 0) {
       this.options.xAxis.data = [new Date().getFullYear()];
     }
@@ -2746,6 +2759,19 @@ JchartCoordinate = (function(_super) {
           this.data[key].formatted = this.convertToJChartArray(data_item.data, 'formatted').newValuesArray;
         } catch (_error) {}
         this.data[key].original_data = data_item.data;
+        formattedKeys = {};
+        Object.keys(data_item.data).forEach(function(toFormatKey) {
+          var splitKey;
+          if (typeof toFormatKey === 'string') {
+            splitKey = toFormatKey.split('-');
+            if (splitKey[1].length === 1) {
+              splitKey[1] = "0" + splitKey[1];
+            }
+            toFormatKey = splitKey.join('-');
+            return formattedKeys[toFormatKey] = true;
+          }
+        });
+        this.data[key].formattedKeys = formattedKeys;
         converted = this.convertToJChartArray(data_item.data, 'value');
         this.data[key].data = converted.newValuesArray;
         this.data[key].nullPadRight = converted.nullPadRight;
@@ -2825,7 +2851,7 @@ JchartCoordinate = (function(_super) {
       max = _jcld.max(max_obj.data);
       pad = (max - min) * 0.1;
       if (this.options.yAxis.scopedRange === true) {
-        min = _.min(min_obj.data, function(item) {
+        min = _jcld.min(min_obj.data, function(item) {
           if (item !== null) {
             return min = item;
           }
@@ -3208,7 +3234,7 @@ JchartLine = (function(_super) {
           this.ctx.fillRect(plot.x, plot.y, 3, 3);
         } else {
           this.ctx.lineTo(plot.x, plot.y);
-          hasChanged = (_ref1 = data.original_data) != null ? _ref1[(_ref2 = data.hasedIndexArray) != null ? _ref2[index] : void 0] : void 0;
+          hasChanged = (_ref1 = data.formattedKeys) != null ? _ref1[(_ref2 = data.hasedIndexArray) != null ? _ref2[index] : void 0] : void 0;
           if (hasChanged !== void 0) {
             circles.push(plot);
           }

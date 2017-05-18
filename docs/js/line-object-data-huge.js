@@ -33,7 +33,7 @@ var line_options = {
   chart: {
     width: 790,
     height: 200 / 790 * window.innerWidth,
-    linePoint: {enable: true, size: 2, fill: '#000'},
+    linePoint: {enable: true, size: 4, fill: '#fff'},
     stretch: false
   },
   xAxis: {

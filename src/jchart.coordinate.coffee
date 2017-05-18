@@ -85,6 +85,13 @@ class JchartCoordinate extends Jchart
 
     for key in keys
       last_key = keys[i-1]
+      
+      if last_key
+        splitLastKey = last_key.split('-')
+        if splitLastKey[1].length is 1
+          splitLastKey[1] = "0#{splitLastKey[1]}"
+        last_key = splitLastKey.join('-')
+      
       if temp[key]? and temp[last_key]?
         last_year_value = temp[last_key].value
         this_year_value = temp[key].value
@@ -94,9 +101,14 @@ class JchartCoordinate extends Jchart
         diff_month = (new Date("#{key}")).diffMonth(new Date("#{last_key}")) + 1
         for month in [1..diff_month]
           break if run_month > key
-          if last_key isnt firstKey
-            run_month.add(1, 'months')
-          key_monthly = run_month.getFullYear() + '-' + (parseInt(run_month.getMonth())+1)
+          run_month.add(1, 'months')
+            
+          nextMonth =  (parseInt(run_month.getMonth())+1)
+          if nextMonth.toString().length is 1
+            nextMonth = "0#{nextMonth}"
+          
+          key_monthly = run_month.getFullYear() + '-' + nextMonth
+
           monthly[key_monthly] = {}
           monthly[key_monthly][key_value] = null #prevent undefined
           if last_year_value is null
@@ -119,7 +131,12 @@ class JchartCoordinate extends Jchart
 
     for year in @options.xAxis.data
       for num in [1..12]
-        key = year + '-' + num
+        
+        nextMonth = num
+        if nextMonth.toString().length is 1
+          nextMonth = "0#{nextMonth}"
+          
+        key = year + '-' + nextMonth
         hasedIndexArray.push(key)
         if monthly.hasOwnProperty(key)
           currentValue = monthly[key][key_value]
@@ -209,6 +226,17 @@ class JchartCoordinate extends Jchart
         try
           @data[key].formatted = @convertToJChartArray(data_item.data, 'formatted').newValuesArray
         @data[key].original_data = data_item.data
+        
+        formattedKeys = {}
+        Object.keys(data_item.data).forEach (toFormatKey) ->
+          if typeof toFormatKey is 'string'
+            splitKey = toFormatKey.split('-')
+            if splitKey[1].length is 1
+              splitKey[1] = "0#{splitKey[1]}"
+            toFormatKey = splitKey.join('-')
+            formattedKeys[toFormatKey] = true
+        
+        @data[key].formattedKeys = formattedKeys
         converted = @convertToJChartArray(data_item.data, 'value')
         @data[key].data = converted.newValuesArray
         @data[key].nullPadRight = converted.nullPadRight
@@ -270,7 +298,7 @@ class JchartCoordinate extends Jchart
       pad = (max-min) * 0.1
       
       if @options.yAxis.scopedRange is true
-        min = _.min min_obj.data, (item) -> 
+        min = _jcld.min min_obj.data, (item) -> 
           min = item if item isnt null
         min = (min - pad)
       

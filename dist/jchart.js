@@ -2684,7 +2684,7 @@ JchartCoordinate = (function(_super) {
   };
 
   JchartCoordinate.prototype.normalize_data = function() {
-    var converted, current, data_item, formattedKeys, k, key, keys, max, max_obj, max_pad, minNullPadLefts, minNullPadRight, min_pad, newPadMax, newPadMin, newXAxis, nullPadLefts, nullPadRights, raw_data, y, years, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3, _results;
+    var converted, current, data_item, formattedKeys, k, key, keys, max, max_obj, max_pad, minNullPadLefts, minNullPadRight, min_pad, newPadMax, newPadMin, newXAxis, nullPadLefts, nullPadRights, num, raw_data, y, years, _i, _j, _k, _l, _len, _len1, _len2, _len3, _m, _n, _o, _p, _q, _r, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
     if (this.options.xAxis.data.length === 0) {
       this.options.xAxis.data = [new Date().getFullYear()];
     }
@@ -2807,8 +2807,8 @@ JchartCoordinate = (function(_super) {
         });
         nullPadLefts.push(data_item.nullPadLeft);
       }
-      minNullPadLefts = this.options.chart.padNulls.left ? this.options.chart.padNulls.left : _jcld.min(nullPadLefts);
-      minNullPadRight = this.options.chart.padNulls.right ? this.options.chart.padNulls.right : _jcld.min(nullPadRights);
+      minNullPadLefts = _jcld.min(nullPadLefts);
+      minNullPadRight = _jcld.min(nullPadRights);
       _ref3 = this.data;
       _results = [];
       for (key in _ref3) {
@@ -2817,14 +2817,44 @@ JchartCoordinate = (function(_super) {
           data_item.processed_data = data_item.data.slice();
           data_item.processed_data.splice(0, minNullPadLefts);
           data_item.processed_data.splice((data_item.processed_data.length + 1) - minNullPadRight, minNullPadRight);
+          if (this.options.chart.padNulls.left !== null) {
+            for (num = _m = 1, _ref4 = this.options.chart.padNulls.left; 1 <= _ref4 ? _m <= _ref4 : _m >= _ref4; num = 1 <= _ref4 ? ++_m : --_m) {
+              data_item.processed_data.unshift(null);
+            }
+          }
+          if (this.options.chart.padNulls.right !== null) {
+            for (num = _n = 1, _ref5 = this.options.chart.padNulls.right; 1 <= _ref5 ? _n <= _ref5 : _n >= _ref5; num = 1 <= _ref5 ? ++_n : --_n) {
+              data_item.processed_data.push(null);
+            }
+          }
           data_item.data = data_item.processed_data;
           data_item.processed_hased_index = data_item.hasedIndexArray.slice();
           data_item.processed_hased_index.splice(0, minNullPadLefts);
           data_item.processed_hased_index.splice((data_item.processed_hased_index.length + 1) - minNullPadRight, minNullPadRight);
+          if (this.options.chart.padNulls.left !== null) {
+            for (num = _o = 1, _ref6 = this.options.chart.padNulls.left; 1 <= _ref6 ? _o <= _ref6 : _o >= _ref6; num = 1 <= _ref6 ? ++_o : --_o) {
+              data_item.processed_hased_index.unshift(null);
+            }
+          }
+          if (this.options.chart.padNulls.right !== null) {
+            for (num = _p = 1, _ref7 = this.options.chart.padNulls.right; 1 <= _ref7 ? _p <= _ref7 : _p >= _ref7; num = 1 <= _ref7 ? ++_p : --_p) {
+              data_item.processed_hased_index.push(null);
+            }
+          }
           data_item.hasedIndexArray = data_item.processed_hased_index;
           data_item.processed_originalArrayFill = data_item.originalArrayFill.slice();
           data_item.processed_originalArrayFill.splice(0, minNullPadLefts);
           data_item.processed_originalArrayFill.splice((data_item.processed_originalArrayFill.length + 1) - minNullPadRight, minNullPadRight);
+          if (this.options.chart.padNulls.left !== null) {
+            for (num = _q = 1, _ref8 = this.options.chart.padNulls.left; 1 <= _ref8 ? _q <= _ref8 : _q >= _ref8; num = 1 <= _ref8 ? ++_q : --_q) {
+              data_item.processed_originalArrayFill.unshift(null);
+            }
+          }
+          if (this.options.chart.padNulls.right !== null) {
+            for (num = _r = 1, _ref9 = this.options.chart.padNulls.right; 1 <= _ref9 ? _r <= _ref9 : _r >= _ref9; num = 1 <= _ref9 ? ++_r : --_r) {
+              data_item.processed_originalArrayFill.push(null);
+            }
+          }
           _results.push(data_item.originalArrayFill = data_item.processed_originalArrayFill);
         } else {
           data_item.data = data_item.processed_data;

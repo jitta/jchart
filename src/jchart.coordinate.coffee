@@ -261,23 +261,47 @@ class JchartCoordinate extends Jchart
             return true
         nullPadLefts.push data_item.nullPadLeft
         
-      minNullPadLefts = if @options.chart.padNulls.left then @options.chart.padNulls.left else _jcld.min nullPadLefts
-      minNullPadRight = if @options.chart.padNulls.right then @options.chart.padNulls.right else _jcld.min nullPadRights
+      minNullPadLefts = _jcld.min nullPadLefts
+      minNullPadRight = _jcld.min nullPadRights
       for key, data_item of @data
         if data_item.processed_data is undefined
           data_item.processed_data = data_item.data.slice()
           data_item.processed_data.splice 0, minNullPadLefts
           data_item.processed_data.splice (data_item.processed_data.length + 1) - minNullPadRight, minNullPadRight
+          
+          if @options.chart.padNulls.left isnt null
+            for num in [1..@options.chart.padNulls.left]
+              data_item.processed_data.unshift(null)
+          if @options.chart.padNulls.right isnt null
+            for num in [1..@options.chart.padNulls.right]
+              data_item.processed_data.push(null)
+          
           data_item.data = data_item.processed_data
 
           data_item.processed_hased_index = data_item.hasedIndexArray.slice()
           data_item.processed_hased_index.splice 0, minNullPadLefts
           data_item.processed_hased_index.splice (data_item.processed_hased_index.length + 1) - minNullPadRight, minNullPadRight
+          
+          if @options.chart.padNulls.left isnt null
+            for num in [1..@options.chart.padNulls.left]
+              data_item.processed_hased_index.unshift(null)
+          if @options.chart.padNulls.right isnt null
+            for num in [1..@options.chart.padNulls.right]
+              data_item.processed_hased_index.push(null)
+          
           data_item.hasedIndexArray = data_item.processed_hased_index
 
           data_item.processed_originalArrayFill = data_item.originalArrayFill.slice()
           data_item.processed_originalArrayFill.splice 0, minNullPadLefts
           data_item.processed_originalArrayFill.splice (data_item.processed_originalArrayFill.length + 1) - minNullPadRight, minNullPadRight
+          
+          if @options.chart.padNulls.left isnt null
+            for num in [1..@options.chart.padNulls.left]
+              data_item.processed_originalArrayFill.unshift(null)
+          if @options.chart.padNulls.right isnt null
+            for num in [1..@options.chart.padNulls.right]
+              data_item.processed_originalArrayFill.push(null)
+          
           data_item.originalArrayFill = data_item.processed_originalArrayFill
         else
           data_item.data = data_item.processed_data

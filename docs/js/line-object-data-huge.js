@@ -37,7 +37,7 @@ var line_options = {
     stretch: true,
     padNulls: {
       left: 3,
-      right: 4
+      right: 3
     }
   },
   xAxis: {
